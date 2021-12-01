@@ -23,7 +23,7 @@ def apply_rules(board):
         
         return True
 
-        # Checks if the snake not hitted itself or other snakes
+        # Checks if the snake hitted itself or other snakes
 
 
 
