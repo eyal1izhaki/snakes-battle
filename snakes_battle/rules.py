@@ -1,3 +1,7 @@
+
+# All the rules of the game should be defined here.
+# For example, If snake eats a fruit, we grows. If a snake hit a border a loses and so on...
+
 import random
 
 import settings
