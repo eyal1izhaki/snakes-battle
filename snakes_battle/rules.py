@@ -10,14 +10,14 @@ import settings
 def apply_rules(board):
     for snake in board.snakes:
 
-        # Checks if this snake eat a fruit
+        # Rule: Snake eat a fruit
         for fruit in board.fruits:
             if snake.body_pos[0] == fruit.pos: # if head of snake in the same position of the fruit
                 snake.eat(fruit)
                 board.fruit_eaten(fruit)
 
 
-        # checks if the snake hitted a border
+        # Rule: Snake hitted a border
         if snake.body_pos[0][0] == settings.BORDER_THICKNESS-1: # Hitted left border
             snake_lost(snake)
 
@@ -31,7 +31,7 @@ def apply_rules(board):
             snake_lost(snake)
 
 
-        # Checks if the snake hitted itself or other snakes
+        # Rule: Snake hitted itself or other snakes
         for _snake in board.snakes:
 
             if snake == _snake: # snake hitted itself.
@@ -45,7 +45,10 @@ def snake_lost(snake):
     time.sleep(5)
     sys.exit(0)
 
+
 def get_new_fruit_position(board):
+    # Returns an empty cell so a fruit can be placed there
+    
     board._update_empty_cells()
     return list(random.choice(board.empty_cells))
 

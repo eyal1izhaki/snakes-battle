@@ -15,10 +15,11 @@ class Snake:
         # TODO: Set a random location for the new snakes and In what length a snake is created?
         self.body_pos = [head_pos, [head_pos[0],
                                     head_pos[1]-1], [head_pos[0], head_pos[1]-2]]
-
     def _grow_in_one_unit(self):
         # Makes the snake one cell longer. Will be called when a snake eats a fruit for example
 
+
+        # TODO: Fix the growth of the snake, the new unit should be added in the previous position of the tail
         tail_x, tail_y = self.body_pos[-1]
 
         if self.direction == Direction.DOWN:
