@@ -11,12 +11,15 @@ class Snake:
         self.color = color
         self.direction = Direction.DOWN
         self.length = 3
+
+        # TODO: Set a random location for the new snakes and In what length a snake is created?
         self.body_pos = [head_pos, [head_pos[0],
                                     head_pos[1]-1], [head_pos[0], head_pos[1]-2]]
-
     def _grow_in_one_unit(self):
         # Makes the snake one cell longer. Will be called when a snake eats a fruit for example
 
+
+        # TODO: Fix the growth of the snake, the new unit should be added in the previous position of the tail
         tail_x, tail_y = self.body_pos[-1]
 
         if self.direction == Direction.DOWN:
@@ -63,6 +66,8 @@ class Snake:
         # Changes the position of the snake's head. The position of each block in the snake's body
         # varies depending on the position of the neighboring block.
 
+        self._update_body_pos()
+        
         if self.direction == Direction.DOWN:
             self.body_pos[0][1] += 1
         elif self.direction == Direction.UP:
@@ -72,8 +77,6 @@ class Snake:
         elif self.direction == Direction.RIGHT:
             self.body_pos[0][0] += 1
 
-        # After changing the head position, We now updating the the position of the rest of the body
-        self._update_body_pos()
 
     def eat(self, fruit):
         # The snake eats a fruit, it grows as the fruit value.
