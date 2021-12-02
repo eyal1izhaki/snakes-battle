@@ -1,5 +1,6 @@
 import settings
 import random
+import copy
 
 from snakes_battle import rules
 
@@ -47,3 +48,9 @@ class Board:
 
     def fruit_eaten(self, fruit):
         self.fruits.remove(fruit)
+
+    def get_board_state(self):
+        return {
+            "snakes": copy.deepcopy(self.snakes),
+            "fruits": copy.deepcopy(self.fruits)
+            }
