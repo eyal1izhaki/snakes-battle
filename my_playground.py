@@ -50,11 +50,9 @@ while True:
                     board.add_fruit(Fruit((232, 17, 35)))
 
     
-    # snake_a.move_one_cell()
-    board.add_fruit(Fruit((232, 17, 35)))
-    
-    if not rules.apply_rules(board):
-        sleep(10)
+    snake_a.move_one_cell()
+
+    rules.apply_rules(board)
 
     graphics.update_screen(surface, board)
     
