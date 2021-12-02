@@ -3,7 +3,8 @@
 # For example, If snake eats a fruit, we grows. If a snake hit a border a loses and so on...
 
 import random
-
+import sys
+import time
 import settings
 
 def apply_rules(board):
@@ -15,21 +16,34 @@ def apply_rules(board):
                 snake.eat(fruit)
                 board.fruit_eaten(fruit)
 
+
         # checks if the snake hitted a border
         if snake.body_pos[0][0] == settings.BORDER_THICKNESS-1: # Hitted left border
-            return False
+            snake_lost(snake)
+
         if snake.body_pos[0][0] == settings.BOARD_SIZE[0] - settings.BORDER_THICKNESS: # Hitted right border
-            return False
+            snake_lost(snake)
+
         if snake.body_pos[0][1] == settings.BORDER_THICKNESS-1: # Hitted upper border
-            return False
+            snake_lost(snake)
+
         if snake.body_pos[0][1] == settings.BOARD_SIZE[1] - settings.BORDER_THICKNESS: # Hitted bottom border
-            return False
-        
-        return True
+            snake_lost(snake)
+
 
         # Checks if the snake hitted itself or other snakes
+        for _snake in board.snakes:
 
+            if snake == _snake: # snake hitted itself.
+                if snake.body_pos[0] in _snake.body_pos[1:]:
+                    snake_lost(snake)
 
+            elif snake.body_pos[0] in _snake.body_pos: # snake hitted other snakes
+                snake_lost(snake)
+
+def snake_lost(snake):
+    time.sleep(5)
+    sys.exit(0)
 
 def get_new_fruit_position(board):
     board._update_empty_cells()

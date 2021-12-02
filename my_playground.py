@@ -52,8 +52,7 @@ while True:
     
     snake_a.move_one_cell()
 
-    if not rules.apply_rules(board):
-        sleep(10)
+    rules.apply_rules(board)
 
     graphics.update_screen(surface, board)
     
