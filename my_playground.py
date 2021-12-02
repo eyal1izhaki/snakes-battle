@@ -6,6 +6,7 @@ import pygame
 import sys
 from time import sleep
 
+
 from snakes_battle.board import Board
 from snakes_battle.fruit import Fruit
 from snakes_battle.ai_snake import AISnake
