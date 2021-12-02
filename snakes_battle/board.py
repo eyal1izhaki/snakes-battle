@@ -1,5 +1,6 @@
 import settings
 import random
+import copy
 
 from snakes_battle import rules
 
@@ -11,7 +12,16 @@ class Board:
         self.fruits = []
         self.empty_cells = [] # Current empty cells. You have to call _update_empty_cells function every time before accessing this variable.
         self.all_cells_pos = [] # All potentially empty cells.
+        self.border_cells = []
 
+
+        # Initilazing the 'border_cells' list.
+        for x in range(settings.BOARD_SIZE[0]):
+            for y in range(settings.BOARD_SIZE[1]):
+                if x < settings.BORDER_THICKNESS or x >= settings.BOARD_SIZE[0] - settings.BORDER_THICKNESS or y < settings.BORDER_THICKNESS or y >= settings.BOARD_SIZE[1] - settings.BORDER_THICKNESS:
+                    self.border_cells.append((x,y))
+
+        # Initilazing the 'all_cells_pos' with all the cells on the board except the borders cells.
         for x in range(settings.BORDER_THICKNESS+1,settings.BOARD_SIZE[0]+1-settings.BORDER_THICKNESS):
             for y in range(settings.BORDER_THICKNESS+1,settings.BOARD_SIZE[1]+1-settings.BORDER_THICKNESS):
                 self.all_cells_pos.append((x,y))
@@ -39,3 +49,9 @@ class Board:
 
     def fruit_eaten(self, fruit):
         self.fruits.remove(fruit)
+
+    def get_board_state(self):
+        return {
+            "snakes": copy.deepcopy(self.snakes),
+            "fruits": copy.deepcopy(self.fruits)
+            }

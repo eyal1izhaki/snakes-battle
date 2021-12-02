@@ -1,3 +1,4 @@
+import settings
 
 class Direction:
     RIGHT = 0
@@ -7,12 +8,15 @@ class Direction:
 
 class Snake:
 
-    def __init__(self, color, head_pos) -> None:
-        self.color = color
+    def __init__(self) -> None:
+        self.color = (53, 117, 58)
         self.direction = Direction.DOWN
         self.length = 3
-        self.body_pos = [head_pos, [head_pos[0],
-                                    head_pos[1]-1], [head_pos[0], head_pos[1]-2]]
+        self.body_pos = [25,10]
+
+        for i in range(settings.STARTING_SNAKE_SIZE-1):
+            self._grow_in_one_unit()
+
 
     def _grow_in_one_unit(self):
         # Makes the snake one cell longer. Will be called when a snake eats a fruit for example
