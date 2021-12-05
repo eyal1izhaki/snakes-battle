@@ -1,4 +1,6 @@
+from random import randint
 import settings
+import copy
 
 class Direction:
     RIGHT = 0
@@ -11,8 +13,13 @@ class Snake:
     def __init__(self) -> None:
         self.color = (53, 117, 58)
         self.direction = Direction.DOWN
-        self.length = 3
-        self.body_pos = [25,10]
+        self.length = 1
+        self.body_pos = [
+            [
+                randint(settings.BORDER_THICKNESS, settings.BOARD_SIZE[0]-settings.BORDER_THICKNESS-1),
+                randint(settings.BORDER_THICKNESS, settings.BOARD_SIZE[1]-settings.BORDER_THICKNESS-1)
+            ]
+        ]
 
         for i in range(settings.STARTING_SNAKE_SIZE-1):
             self._grow_in_one_unit()
@@ -45,6 +52,9 @@ class Snake:
         for i in reversed(range(1, self.length)):
             self.body_pos[i][0] = self.body_pos[i-1][0]
             self.body_pos[i][1] = self.body_pos[i-1][1]
+
+    def get_body_position(self):
+        return copy.deepcopy(self.body_pos)
 
     def change_direction(self, direction: int):
         # Changes the direcation of the snake.

@@ -21,8 +21,11 @@ board = Board()
 
 
 snake_a = AISnake(board.border_cells)
-
+snake_b = AISnake(board.border_cells)
 board.add_snake(snake_a)
+board.add_snake(snake_b)
+
+board.add_fruit(Fruit((23,54,23)))
 
 while True:
 
@@ -51,11 +54,13 @@ while True:
                     board.add_fruit(Fruit((232, 17, 35)))
 
 
-    # The AI Snake Should make a decision in what direction to go.
+    # The AI Snake Should make a decision in which direction to go.
     snake_a.change_direction(board.get_board_state())
+    snake_b.change_direction(board.get_board_state())
 
     snake_a.move_one_cell()
-
+    snake_b.move_one_cell()
+    
     rules.apply_rules(board)
 
     graphics.update_screen(surface, board)

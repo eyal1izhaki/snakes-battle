@@ -6,6 +6,7 @@ import random
 import sys
 import time
 import settings
+from snakes_battle.fruit import Fruit
 
 def apply_rules(board):
     for snake in board.snakes:
@@ -15,6 +16,8 @@ def apply_rules(board):
             if snake.body_pos[0] == fruit.pos: # if head of snake in the same position of the fruit
                 snake.eat(fruit)
                 board.fruit_eaten(fruit)
+
+                board.add_fruit(Fruit((23,54,23)))
 
 
         # Rule: Snake hitted a border
