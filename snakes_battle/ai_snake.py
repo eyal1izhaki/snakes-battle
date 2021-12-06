@@ -9,13 +9,12 @@ class AISnake(Snake):
 
     def change_direction(self, board_state):
         # .... #
+        # borad_state = {
+        #   "snakes": [snake1, snake2, ...],            "snakes" contains a list of Snake objects.
+        #   "fruits": [fruit1, fruit2, fruit3, ....]    "fruits" contains a list of Fruit objects.
+        #
 
-        # 'board_state' will contain a dict in this format:
-        # {
-        #     "snakes": [[x1,y1],[x2,y2]...[...]] 'snakes' key contains a list of all cells that are filled with snakes.
-        #     "fruits": [[fruit1_x, fruit1_y], [fruit2_x, fruit2_y] ... ] 'fruits' key contains a list of all cells that are files with fruits. One fruit fills one cell.
-        # }
-
+        
         # You need to make a decision based on the board state.
         fruits = board_state["fruits"]
         pos = super().get_body_position()
