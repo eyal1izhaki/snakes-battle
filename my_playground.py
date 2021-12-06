@@ -25,7 +25,7 @@ snake_b = AISnake(board.border_cells)
 board.add_snake(snake_a)
 board.add_snake(snake_b)
 
-board.add_fruit(Fruit((23,54,23)))
+board.add_fruit(Fruit(rules.get_new_fruit_position(board)))
 
 while True:
 
@@ -38,20 +38,20 @@ while True:
 
         if event.type == pygame.KEYDOWN:
 
-                # if event.key == pygame.K_LEFT:
-                #     snake_a.change_direction(Direction.LEFT)
-                
-                # elif event.key == pygame.K_RIGHT:
-                #     snake_a.change_direction(Direction.RIGHT)
+            # if event.key == pygame.K_LEFT:
+            #     snake_a.change_direction(Direction.LEFT)
+            
+            # elif event.key == pygame.K_RIGHT:
+            #     snake_a.change_direction(Direction.RIGHT)
 
-                # elif event.key == pygame.K_UP:
-                #     snake_a.change_direction(Direction.UP)
+            # elif event.key == pygame.K_UP:
+            #     snake_a.change_direction(Direction.UP)
 
-                # elif event.key == pygame.K_DOWN:
-                #     snake_a.change_direction(Direction.DOWN)
+            # elif event.key == pygame.K_DOWN:
+            #     snake_a.change_direction(Direction.DOWN)
 
-                if event.key == pygame.K_a:
-                    board.add_fruit(Fruit((232, 17, 35)))
+            if event.key == pygame.K_a:
+                board.add_fruit(Fruit(rules.get_new_fruit_position(board)))
 
 
     # The AI Snake Should make a decision in which direction to go.
