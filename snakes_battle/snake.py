@@ -1,4 +1,4 @@
-from random import randint, sample
+from random import randint, choice
 import settings
 import copy
 import math
@@ -11,15 +11,16 @@ class Direction:
 
 class Snake:
     all_snakes_start_position = []
-    all_snakes_colors = []
+    all_available_colors = settings.SNAKES_COLORS
 
     def __init__(self) -> None:
-        # Picking a random color
-        self.color = sample(range(0, 256), 3) # Starting with a random color
-        while (self.color in Snake.all_snakes_colors): # Making sure the color is unique
-            self.color = sample(range(0, 256), 3)
-        Snake.all_snakes_colors.append(self.color) # Putting the new color in the array so others would not pick it
 
+        # Picking a random color
+        self.color = choice(self.all_available_colors)
+
+        # Removing the picked color so other snakes won't be in this color.
+        self.all_available_colors.remove(self.color)
+        
         self.direction = randint(0,3) # Only 4 directions - will pick one of them
         self.length = 1
 
