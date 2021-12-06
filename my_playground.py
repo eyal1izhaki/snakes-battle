@@ -14,29 +14,18 @@ from snakes_battle import graphics,rules
 
 import settings
 
-# Initialization for pygame
 pygame.init()
 
-# Creating the surface that we going to print and draw on.
 surface = graphics.create_surface()
-
-# Creating the board object. board will hold all the snakes and fruit objects. 
 board = Board()
 
 
-# Creating snakes from the AISnake class. In the competition, players will need to implement their own AISnake class.
-snake_a = AISnake(board.get_border_cells())
-snake_b = AISnake(board.get_border_cells())
-
-# Adding the snakes to the board
+snake_a = AISnake(board.border_cells)
+snake_b = AISnake(board.border_cells)
 board.add_snake(snake_a)
-# board.add_snake(snake_b)
+board.add_snake(snake_b)
 
-# Creating and adding initial fruits on the board.
-fruit_a = Fruit(rules.get_new_fruit_position(board))
-
-board.add_fruit(fruit_a)
-
+board.add_fruit(Fruit((23,54,23)))
 
 while True:
 
@@ -47,28 +36,30 @@ while True:
             pygame.quit()
             sys.exit()
 
-            # if event.key == pygame.K_LEFT:
-            #     snake_a.change_direction(Direction.LEFT)
-            
-            # elif event.key == pygame.K_RIGHT:
-            #     snake_a.change_direction(Direction.RIGHT)
+        if event.type == pygame.KEYDOWN:
 
-            # elif event.key == pygame.K_UP:
-            #     snake_a.change_direction(Direction.UP)
+                # if event.key == pygame.K_LEFT:
+                #     snake_a.change_direction(Direction.LEFT)
+                
+                # elif event.key == pygame.K_RIGHT:
+                #     snake_a.change_direction(Direction.RIGHT)
 
-            # elif event.key == pygame.K_DOWN:
-            #     snake_a.change_direction(Direction.DOWN)
+                # elif event.key == pygame.K_UP:
+                #     snake_a.change_direction(Direction.UP)
 
+                # elif event.key == pygame.K_DOWN:
+                #     snake_a.change_direction(Direction.DOWN)
 
-            if event.key == pygame.K_a:
-                board.add_fruit(Fruit((232, 17, 35)))
+                if event.key == pygame.K_a:
+                    board.add_fruit(Fruit((232, 17, 35)))
+
 
     # The AI Snake Should make a decision in which direction to go.
     snake_a.change_direction(board.get_board_state())
-    # snake_b.change_direction(board.get_board_state())
+    snake_b.change_direction(board.get_board_state())
 
     snake_a.move_one_cell()
-    # snake_b.move_one_cell()
+    snake_b.move_one_cell()
     
     rules.apply_rules(board)
 
