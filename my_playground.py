@@ -47,6 +47,21 @@ while True:
             pygame.quit()
             sys.exit()
 
+        # if event.key == pygame.K_LEFT:
+        #     snake_a.change_direction(Direction.LEFT)
+        
+        # elif event.key == pygame.K_RIGHT:
+        #     snake_a.change_direction(Direction.RIGHT)
+
+        # elif event.key == pygame.K_UP:
+        #     snake_a.change_direction(Direction.UP)
+
+        # elif event.key == pygame.K_DOWN:
+        #     snake_a.change_direction(Direction.DOWN)
+
+
+        if event.key == pygame.K_a:
+            board.add_fruit(Fruit((232, 17, 35)))
 
     # The AI Snake Should make a decision in which direction to go.
     snake_a.change_direction(board.get_board_state())
