@@ -96,7 +96,6 @@ class Snake:
         # updates the position of the rest of the snake's body. The position of the head changes in the continuse_movement method.
 
         for i in reversed(range(1, self.length)):
-            print (self.body_pos)
             self.body_pos[i][0] = self.body_pos[i-1][0]
             self.body_pos[i][1] = self.body_pos[i-1][1]
 
