@@ -42,12 +42,13 @@ class Board:
         self.snakes.append(snake)
 
     def add_fruit(self, fruit):
-
-        fruit.pos = rules.get_new_fruit_position(self)     
         self.fruits.append(fruit)
 
     def fruit_eaten(self, fruit):
         self.fruits.remove(fruit)
+
+    def get_border_cells(self):
+        return copy.deepcopy(self.border_cells)
 
     def get_board_state(self):
         return {
