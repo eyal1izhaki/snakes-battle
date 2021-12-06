@@ -1,6 +1,7 @@
 from random import randint, sample
 import settings
 import copy
+import math
 
 class Direction:
     RIGHT = 0
@@ -19,13 +20,20 @@ class Snake:
             self.color = sample(range(0, 256), 3)
         Snake.all_snakes_colors.append(self.color) # Putting the new color in the array so others would not pick it
 
-        self.direction = Direction.DOWN
+        self.direction = randint(0,4) # Only 4 directions - will pick one of them
         self.length = 1
 
-        # Generating random and unique position to the head of the snake
+        # Generating random and unique position to the head of the snake, that will not collide with other snake's tail
+        generate_position = True
         random_head_position = self.generate_random_position()
-        while (random_head_position in Snake.all_snakes_start_position):
+        while (generate_position == True):
             random_head_position = self.generate_random_position()
+            too_close = False
+            for position in Snake.all_snakes_start_position:
+                if (math.dist(position, random_head_position) < settings.STARTING_SNAKE_SIZE):
+                    too_close = True
+                    break
+            generate_position = too_close
         self.body_pos = [ random_head_position ]
 
         for i in range(settings.STARTING_SNAKE_SIZE-1):
@@ -66,6 +74,7 @@ class Snake:
         # updates the position of the rest of the snake's body. The position of the head changes in the continuse_movement method.
 
         for i in reversed(range(1, self.length)):
+            print (self.body_pos)
             self.body_pos[i][0] = self.body_pos[i-1][0]
             self.body_pos[i][1] = self.body_pos[i-1][1]
 
