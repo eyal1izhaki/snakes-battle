@@ -14,10 +14,12 @@ def apply_rules(board):
         # Rule: Snake eat a fruit
         for fruit in board.fruits:
             if snake.body_pos[0] == fruit.pos: # if head of snake in the same position of the fruit
+
                 snake.eat(fruit)
+
                 board.fruit_eaten(fruit)
 
-                board.add_fruit(Fruit((23,54,23)))
+                board.add_fruit(Fruit(get_new_fruit_position(board)))
 
 
         # Rule: Snake hitted a border
