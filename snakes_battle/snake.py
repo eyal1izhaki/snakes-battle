@@ -20,7 +20,7 @@ class Snake:
             self.color = sample(range(0, 256), 3)
         Snake.all_snakes_colors.append(self.color) # Putting the new color in the array so others would not pick it
 
-        self.direction = randint(0,4) # Only 4 directions - will pick one of them
+        self.direction = randint(0,3) # Only 4 directions - will pick one of them
         self.length = 1
 
         # Generating random and unique position to the head of the snake, that will not collide with other snake's tail
@@ -30,7 +30,7 @@ class Snake:
             random_head_position = self.generate_random_position()
             too_close = False
             for position in Snake.all_snakes_start_position:
-                if (math.dist(position, random_head_position) < settings.STARTING_SNAKE_SIZE):
+                if (math.dist(position, random_head_position) < settings.STARTING_SNAKE_LENGTH):
                     too_close = True
                     break
             generate_position = too_close
