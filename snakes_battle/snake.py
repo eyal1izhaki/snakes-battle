@@ -1,4 +1,4 @@
-from random import randint
+from random import randint, sample
 import settings
 import copy
 
@@ -9,21 +9,37 @@ class Direction:
     DOWN = 3
 
 class Snake:
+    all_snakes_start_position = []
+    all_snakes_colors = []
 
     def __init__(self) -> None:
-        self.color = (53, 117, 58)
+        # Picking a random color
+        self.color = sample(range(0, 256), 3) # Starting with a random color
+        while (self.color in Snake.all_snakes_colors): # Making sure the color is unique
+            self.color = sample(range(0, 256), 3)
+        Snake.all_snakes_colors.append(self.color) # Putting the new color in the array so others would not pick it
+
         self.direction = Direction.DOWN
         self.length = 1
-        self.body_pos = [
-            [
-                randint(settings.BORDER_THICKNESS, settings.BOARD_SIZE[0]-settings.BORDER_THICKNESS-1),
-                randint(settings.BORDER_THICKNESS, settings.BOARD_SIZE[1]-settings.BORDER_THICKNESS-1)
-            ]
-        ]
+
+        # Generating random and unique position to the head of the snake
+        random_head_position = self.generate_random_position()
+        while (random_head_position in Snake.all_snakes_start_position):
+            random_head_position = self.generate_random_position()
+        self.body_pos = [ random_head_position ]
 
         for i in range(settings.STARTING_SNAKE_SIZE-1):
             self._grow_in_one_unit()
+        
+        # Making sure the snake's positions will not be generated again
+        for position in self.body_pos:
+            Snake.all_snakes_start_position.append(position)
 
+    def generate_random_position(self):
+        return [
+                randint(settings.BORDER_THICKNESS, settings.BOARD_SIZE[0]-settings.BORDER_THICKNESS-1),
+                randint(settings.BORDER_THICKNESS, settings.BOARD_SIZE[1]-settings.BORDER_THICKNESS-1)
+            ]
 
     def _grow_in_one_unit(self):
         # Makes the snake one cell longer. Will be called when a snake eats a fruit for example
