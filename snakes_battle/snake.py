@@ -21,7 +21,7 @@ class Snake:
             ]
         ]
 
-        for i in range(settings.STARTING_SNAKE_SIZE-1):
+        for i in range(settings.STARTING_SNAKE_LENGTH-1):
             self._grow_in_one_unit()
 
 

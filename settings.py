@@ -14,5 +14,5 @@ BORDER_THICKNESS = 2 # Number of cells
 # Delay between screen update to another. Snakes move one cell every screen update. 0.07 looks good
 DELAY_BETWEEN_SCREEN_UPDATES = 0.02 # second
 
-STARTING_SNAKE_SIZE = 3
+STARTING_SNAKE_LENGTH = 3
 
