@@ -49,7 +49,7 @@ def _draw_snake(snake, surface):
                 pygame.draw.polygon(surface, snake.color, _get_cell_coordinates(square))
 
 def _draw_fruit(fruit,surface):
-    pygame.draw.polygon(surface, fruit.color, _get_cell_coordinates(fruit.pos))
+    pygame.draw.polygon(surface, fruit.kind["color"], _get_cell_coordinates(fruit.pos))
 
 def _draw_borders(surface):
 

@@ -112,9 +112,9 @@ class Snake:
         elif self.direction == Direction.RIGHT:
             self.body_pos[0][0] += 1
 
-
-    def eat(self, fruit):
-        # The snake eats a fruit, it grows as the fruit value.
-
-        for i in range(fruit.value):
-            self._grow_in_one_unit()
+    def shrink(self, shrinking_amount):
+        self.length -= min(self.length, shrinking_amount)
+        if (self.length == 0):
+            return
+        
+        self.body_pos = self.body_pos[:self.length] # Removing nodes from the snake

@@ -6,20 +6,24 @@ import random
 import sys
 import time
 import settings
-from snakes_battle.fruit import Fruit
+from snakes_battle.fruits.StrawberryFruit import StrawberryFruit
+from snakes_battle.fruits.Bomb import Bomb
 
 def apply_rules(board):
     for snake in board.snakes:
 
-        # Rule: Snake eat a fruit
+        # Rule: Snake eat a fruit + let a fruit have a turn
         for fruit in board.fruits:
+            fruit.make_turn(board)
+
             if snake.body_pos[0] == fruit.pos: # if head of snake in the same position of the fruit
 
-                snake.eat(fruit)
+                fruit.eaten(snake)
 
                 board.fruit_eaten(fruit)
 
-                board.add_fruit(Fruit(get_new_fruit_position(board)))
+                print ('fruit eaten!', random.random()) # TODO: Remove when finished debugging.
+                board.add_fruit(StrawberryFruit(get_new_fruit_position(board)))
 
 
         # Rule: Snake hitted a border
@@ -45,6 +49,10 @@ def apply_rules(board):
 
             elif snake.body_pos[0] in _snake.body_pos: # snake hitted other snakes
                 snake_lost(snake)
+        
+        # Rule - generate a bomb randomlly.
+        if (random.random() < Bomb.BOMB_CREATION_PROBABILITY):
+            board.add_fruit(Bomb(get_new_fruit_position(board)))
 
 def snake_lost(snake):
     time.sleep(5)

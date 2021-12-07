@@ -8,7 +8,7 @@ from time import sleep
 
 
 from snakes_battle.board import Board
-from snakes_battle.fruit import Fruit
+from snakes_battle.fruits.StrawberryFruit import StrawberryFruit
 from snakes_battle.ai_snake import AISnake
 from snakes_battle import graphics,rules
 
@@ -23,12 +23,12 @@ board = Board()
 snake_a = AISnake(board.border_cells)
 snake_b = AISnake(board.border_cells)
 
-snakes_array = [snake_a, snake_b]
+snakes_array = [snake_a]
 
 for snake in snakes_array:
     board.add_snake(snake)
 
-board.add_fruit(Fruit(rules.get_new_fruit_position(board)))
+board.add_fruit(StrawberryFruit(rules.get_new_fruit_position(board)))
 
 while True:
 
@@ -40,21 +40,8 @@ while True:
             sys.exit()
 
         if event.type == pygame.KEYDOWN:
-
-            # if event.key == pygame.K_LEFT:
-            #     snake_a.change_direction(Direction.LEFT)
-            
-            # elif event.key == pygame.K_RIGHT:
-            #     snake_a.change_direction(Direction.RIGHT)
-
-            # elif event.key == pygame.K_UP:
-            #     snake_a.change_direction(Direction.UP)
-
-            # elif event.key == pygame.K_DOWN:
-            #     snake_a.change_direction(Direction.DOWN)
-
             if event.key == pygame.K_a:
-                board.add_fruit(Fruit(rules.get_new_fruit_position(board)))
+                board.add_fruit(StrawberryFruit(rules.get_new_fruit_position(board)))
 
 
     # The AI Snake Should make a decision in which direction to go.
