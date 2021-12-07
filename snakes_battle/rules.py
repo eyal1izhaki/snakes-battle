@@ -17,13 +17,12 @@ def apply_rules(board):
             fruit.make_turn(board)
 
             if snake.body_pos[0] == fruit.pos: # if head of snake in the same position of the fruit
-
                 fruit.eaten(snake)
 
                 board.fruit_eaten(fruit)
 
-                print ('fruit eaten!', random.random()) # TODO: Remove when finished debugging.
-                board.add_fruit(StrawberryFruit(get_new_fruit_position(board)))
+                if (not isinstance(fruit, Bomb)):
+                    board.add_fruit(StrawberryFruit(get_new_fruit_position(board)))
 
 
         # Rule: Snake hitted a border
@@ -55,7 +54,7 @@ def apply_rules(board):
             board.add_fruit(Bomb(get_new_fruit_position(board)))
 
 def snake_lost(snake):
-    time.sleep(5)
+    time.sleep(2)
     sys.exit(0)
 
 
