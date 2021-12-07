@@ -7,7 +7,11 @@ import sys
 import time
 import settings
 from snakes_battle.fruits.StrawberryFruit import StrawberryFruit
+from snakes_battle.fruits.DragonFruit import DragonFruit
 from snakes_battle.fruits.Bomb import Bomb
+
+harmfulFruits = (Bomb, ) # List of fruits that should not create new fruits to the board
+benefitialFruits = (StrawberryFruit, DragonFruit)
 
 def apply_rules(board):
     for snake in board.snakes:
@@ -21,8 +25,9 @@ def apply_rules(board):
 
                 board.fruit_eaten(fruit)
 
-                if (not isinstance(fruit, Bomb)):
-                    board.add_fruit(StrawberryFruit(get_new_fruit_position(board)))
+                if (not isinstance(fruit, harmfulFruits)):
+                    new_fruit_type = random.choice(benefitialFruits)
+                    board.add_fruit(new_fruit_type(get_new_fruit_position(board)))
 
 
         # Rule: Snake hitted a border
