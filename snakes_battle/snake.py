@@ -140,6 +140,7 @@ class Snake:
     def shrink(self, shrinking_amount):
         self.length -= min(self.length, shrinking_amount)
         if (self.length == 0):
+            self.body_pos = []
             return
         
         self.body_pos = self.body_pos[:self.length] # Removing nodes from the snake

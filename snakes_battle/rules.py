@@ -14,21 +14,24 @@ harmfulFruits = (Bomb, ) # List of fruits that should not create new fruits to t
 benefitialFruits = (StrawberryFruit, DragonFruit)
 
 def apply_rules(board):
+    for fruit in board.fruits:
+        fruit.make_turn(board)
+
     for snake in board.snakes:
-
-        # Rule: Snake eat a fruit + let a fruit have a turn
+        # Rule: Snake eat a fruit
         for fruit in board.fruits:
-            fruit.make_turn(board)
-
             if snake.body_pos[0] == fruit.pos: # if head of snake in the same position of the fruit
                 fruit.eaten(snake)
 
                 board.fruit_eaten(fruit)
 
+                # Rule - Snake must have a length of 1 at least (can be lower if the snake was hit by a bomb and it's length was reduced too much)
+                if (snake.length == 0):
+                    snake_lost(snake)
+
                 if (not isinstance(fruit, harmfulFruits)):
                     new_fruit_type = random.choice(benefitialFruits)
                     board.add_fruit(new_fruit_type(get_new_fruit_position(board)))
-
 
         # Rule: Snake hitted a border
         if snake.body_pos[0][0] == settings.BORDER_THICKNESS-1: # Hitted left border
@@ -42,7 +45,6 @@ def apply_rules(board):
 
         if snake.body_pos[0][1] == settings.BOARD_SIZE[1] - settings.BORDER_THICKNESS: # Hitted bottom border
             snake_lost(snake)
-
 
         # Rule: Snake hitted itself or other snakes
         for _snake in board.snakes:
