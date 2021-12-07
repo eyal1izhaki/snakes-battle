@@ -10,7 +10,7 @@ class FruitKind:
         "name": "DRAGON_FRUIT",
         "color": (90, 90, 90),
         "image": "",
-        "score": 3
+        "score": 2
         }
     BOMB = {
         "name": "BOMB",
