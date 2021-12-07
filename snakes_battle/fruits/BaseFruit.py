@@ -3,19 +3,19 @@ class FruitKind:
     STRAWBERRY = {
         "name": "STRAWBERRY",
         "color": (222, 84, 72),
-        "image": "",
+        "image": "snakes_battle\\fruits\\images\\strawberry.png",
         "score": 1
         }
     DRAGON_FRUIT = {
         "name": "DRAGON_FRUIT",
         "color": (90, 90, 90),
-        "image": "",
+        "image": "snakes_battle\\fruits\\images\\dragonfruit.jpg",
         "score": 2
         }
     BOMB = {
         "name": "BOMB",
         "color": (20, 20, 20),
-        "image": "",
+        "image": "snakes_battle\\fruits\\images\\bomb.jpg",
         "score":  -2
         }
     EMPTY = { # A fruit type that does nothing. Just the default one before overriding.

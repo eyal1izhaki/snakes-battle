@@ -2,7 +2,7 @@ from snakes_battle.fruits.BaseFruit import BaseFruit, FruitKind
 
 class Bomb(BaseFruit):
     BOMB_CREATION_PROBABILITY = 1 / 100 # Will create a bomb roughly every 20 frames.
-    BOMB_LIFESPAN = 50 # How many frames will the bomb be on the board
+    BOMB_LIFESPAN = 100 # How many frames will the bomb be on the board
 
     def __init__(self, position) -> None:
         super().__init__(position)
