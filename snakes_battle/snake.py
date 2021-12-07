@@ -1,6 +1,7 @@
-from random import randint
+from random import randint, choice
 import settings
 import copy
+import math
 
 class Direction:
     RIGHT = 0
@@ -9,21 +10,45 @@ class Direction:
     DOWN = 3
 
 class Snake:
+    all_snakes_start_position = []
+    all_available_colors = settings.SNAKES_COLORS
 
     def __init__(self) -> None:
-        self.color = (53, 117, 58)
-        self.direction = Direction.DOWN
+
+        # Picking a random color
+        self.color = choice(self.all_available_colors)
+
+        # Removing the picked color so other snakes won't be in this color.
+        self.all_available_colors.remove(self.color)
+        
+        self.direction = randint(0,3) # Only 4 directions - will pick one of them
         self.length = 1
-        self.body_pos = [
-            [
-                randint(settings.BORDER_THICKNESS, settings.BOARD_SIZE[0]-settings.BORDER_THICKNESS-1),
-                randint(settings.BORDER_THICKNESS, settings.BOARD_SIZE[1]-settings.BORDER_THICKNESS-1)
-            ]
-        ]
+
+        # Generating random and unique position to the head of the snake, that will not collide with other snake's tail
+        generate_position = True
+        random_head_position = self.generate_random_position()
+        while (generate_position == True):
+            random_head_position = self.generate_random_position()
+            too_close = False
+            for position in Snake.all_snakes_start_position:
+                if (math.dist(position, random_head_position) < settings.STARTING_SNAKE_LENGTH):
+                    too_close = True
+                    break
+            generate_position = too_close
+        self.body_pos = [ random_head_position ]
 
         for i in range(settings.STARTING_SNAKE_LENGTH-1):
             self._grow_in_one_unit()
+        
+        # Making sure the snake's positions will not be generated again
+        for position in self.body_pos:
+            Snake.all_snakes_start_position.append(position)
 
+    def generate_random_position(self):
+        return [
+                randint(settings.BORDER_THICKNESS, settings.BOARD_SIZE[0]-settings.BORDER_THICKNESS-1),
+                randint(settings.BORDER_THICKNESS, settings.BOARD_SIZE[1]-settings.BORDER_THICKNESS-1)
+            ]
 
     def _grow_in_one_unit(self):
         # Makes the snake one cell longer. Will be called when a snake eats a fruit for example
