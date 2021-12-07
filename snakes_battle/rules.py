@@ -6,21 +6,32 @@ import random
 import sys
 import time
 import settings
-from snakes_battle.fruit import Fruit
+from snakes_battle.fruits.StrawberryFruit import StrawberryFruit
+from snakes_battle.fruits.DragonFruit import DragonFruit
+from snakes_battle.fruits.Bomb import Bomb
+
+harmfulFruits = (Bomb, ) # List of fruits that should not create new fruits to the board
+benefitialFruits = (StrawberryFruit, DragonFruit)
 
 def apply_rules(board):
-    for snake in board.snakes:
+    for fruit in board.fruits:
+        fruit.make_turn(board)
 
+    for snake in board.snakes:
         # Rule: Snake eat a fruit
         for fruit in board.fruits:
             if snake.body_pos[0] == fruit.pos: # if head of snake in the same position of the fruit
-
-                snake.eat(fruit)
+                fruit.eaten(snake)
 
                 board.fruit_eaten(fruit)
 
-                board.add_fruit(Fruit(get_new_fruit_position(board)))
+                # Rule - Snake must have a length of 1 at least (can be lower if the snake was hit by a bomb and it's length was reduced too much)
+                if (snake.length == 0):
+                    snake_lost(snake)
 
+                if (not isinstance(fruit, harmfulFruits)):
+                    new_fruit_type = random.choice(benefitialFruits)
+                    board.add_fruit(new_fruit_type(get_new_fruit_position(board)))
 
         # Rule: Snake hitted a border
         if snake.body_pos[0][0] == settings.BORDER_THICKNESS-1: # Hitted left border
@@ -35,7 +46,6 @@ def apply_rules(board):
         if snake.body_pos[0][1] == settings.BOARD_SIZE[1] - settings.BORDER_THICKNESS: # Hitted bottom border
             snake_lost(snake)
 
-
         # Rule: Snake hitted itself or other snakes
         for _snake in board.snakes:
 
@@ -45,9 +55,13 @@ def apply_rules(board):
 
             elif snake.body_pos[0] in _snake.body_pos: # snake hitted other snakes
                 snake_lost(snake)
+        
+        # Rule - generate a bomb randomlly.
+        if (random.random() < Bomb.BOMB_CREATION_PROBABILITY):
+            board.add_fruit(Bomb(get_new_fruit_position(board)))
 
 def snake_lost(snake):
-    time.sleep(5)
+    time.sleep(2)
     sys.exit(0)
 
 

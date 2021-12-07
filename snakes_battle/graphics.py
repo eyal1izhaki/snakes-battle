@@ -1,4 +1,5 @@
 import pygame
+import os
 import settings
 from snakes_battle.board import Board
 
@@ -49,7 +50,7 @@ def _draw_snake(snake, surface):
                 pygame.draw.polygon(surface, snake.color, _get_cell_coordinates(square))
 
 def _draw_fruit(fruit,surface):
-    pygame.draw.polygon(surface, fruit.color, _get_cell_coordinates(fruit.pos))
+    surface.blit(pygame.image.load(os.path.join(fruit.kind["image"])), _get_cell_coordinates(fruit.pos)[0])
 
 def _draw_borders(surface):
 
