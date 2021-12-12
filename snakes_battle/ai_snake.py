@@ -20,18 +20,30 @@ class AISnake(Snake):
         pos = super().get_body_position()
 
         if pos[0][0] > fruits[0].pos[0]:
-            super().change_direction(Direction.LEFT)
+            if (self.direction == Direction.RIGHT):
+                super().change_direction(Direction.UP)
+            else:
+                super().change_direction(Direction.LEFT)
         
         if pos[0][0] < fruits[0].pos[0]:
-            super().change_direction(Direction.RIGHT)
+            if (self.direction == Direction.LEFT):
+                super().change_direction(Direction.UP)
+            else:
+                super().change_direction(Direction.RIGHT)
         
         if pos[0][0] == fruits[0].pos[0]:
 
             if pos[0][1] < fruits[0].pos[1]:
-                super().change_direction(Direction.DOWN)
+                if (self.direction == Direction.UP):
+                    super().change_direction(Direction.RIGHT)
+                else:
+                    super().change_direction(Direction.DOWN)
 
             if pos[0][1] > fruits[0].pos[1]:
-                super().change_direction(Direction.UP)
+                if (self.direction == Direction.DOWN):
+                    super().change_direction(Direction.RIGHT)
+                else:
+                    super().change_direction(Direction.UP)
 
 
         
