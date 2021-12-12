@@ -49,7 +49,7 @@ while True:
         snake.change_direction(board.get_board_state())
         snake.move_one_cell()
     
-    rules.apply_rules(board)
-
     graphics.update_screen(surface, board)
+
+    rules.apply_rules(board)
     
