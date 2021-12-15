@@ -31,3 +31,5 @@ SCOREBOARD_TITLE_TEXT_SEPERATION = 3 # In units of CELL_SIZE
 SCOREBOARD_TITLE_SCORE_SEPERATION = 4 # In units of CELL_SIZE
 
 DEAD_SNAKE_IMAGE_PATH = "snakes_battle\\fruits\\images\\dead_icon.png"
+
+GAME_TIME_LENGTH = 60

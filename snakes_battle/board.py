@@ -9,6 +9,7 @@ class Board:
     def __init__(self) -> None:
         
         self.snakes = []
+        self.lost_snakes = []
         self.fruits = []
         self.empty_cells = [] # Current empty cells. You have to call _update_empty_cells function every time before accessing this variable.
         self.all_cells_pos = [] # All potentially empty cells.
