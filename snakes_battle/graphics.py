@@ -1,4 +1,3 @@
-from math import log
 import pygame
 import os
 import settings
@@ -18,7 +17,7 @@ bottom_border_coordinates = []
 
 dead_snake_image = None
 
-def update_border_coordinates():
+def intiailize_game_constants():
     global left_border_coordinates, right_border_coordinates, upper_border_coordinates, bottom_border_coordinates, \
             dead_snake_image, title_font, subtitle_font, score_font, SCOREBOARD_STARTING_POSITION
 
@@ -102,12 +101,7 @@ def _draw_background_lines(surface):
         pygame.draw.line(surface, settings.BACKGROUND_LINES_COLOR, start_pos, end_pos)
 
 def create_surface():
-    x_size = settings.BOARD_SIZE[0]*settings.CELL_SIZE
-    y_size = settings.BOARD_SIZE[1]*settings.CELL_SIZE
-
-    # surface = pygame.display.set_mode((x_size, y_size))
     surface = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
-
     return surface
 
 def _draw_scoreboard(board, surface):
@@ -135,7 +129,7 @@ def update_screen(surface, board :Board):
     if (init == True):
         init = False
         settings.CELL_SIZE = int(pygame.display.get_window_size()[0] / 100)
-        update_border_coordinates()
+        intiailize_game_constants()
 
     _draw_borders(surface)
     _draw_background_lines(surface)
