@@ -1,3 +1,4 @@
+from math import log
 import pygame
 import os
 import settings
@@ -5,30 +6,30 @@ from snakes_battle.board import Board
 
 left_border_coordinates = [
     (0,0),
-    (settings.BORDER_THICKNESS*settings.CELL_SIZE,0),
-    (settings.BORDER_THICKNESS*settings.CELL_SIZE, settings.BOARD_SIZE[1]*settings.CELL_SIZE),
-    (0, settings.BOARD_SIZE[1]*settings.CELL_SIZE)
+    (settings.BORDER_THICKNESS*0.5*settings.CELL_SIZE,0),
+    (settings.BORDER_THICKNESS*0.5*settings.CELL_SIZE, (settings.BOARD_SIZE[1] + settings.BORDER_THICKNESS*0.5)*settings.CELL_SIZE-settings.BOARD_HEIGHT/3),
+    (0, (settings.BOARD_SIZE[1] + settings.BORDER_THICKNESS*0.5)*settings.CELL_SIZE-settings.BOARD_HEIGHT/3)
     ]
 
 right_border_coordinates = [
-    ((settings.BOARD_SIZE[0] - settings.BORDER_THICKNESS) * settings.CELL_SIZE, 0),
-    (settings.BOARD_SIZE[0]* settings.CELL_SIZE, 0),
-    (settings.BOARD_SIZE[0]* settings.CELL_SIZE, settings.BOARD_SIZE[1]* settings.CELL_SIZE),
-    ((settings.BOARD_SIZE[0] - settings.BORDER_THICKNESS) * settings.CELL_SIZE, settings.BOARD_SIZE[1]* settings.CELL_SIZE)
+    ((settings.BOARD_SIZE[0] - settings.BORDER_THICKNESS*0.5) * settings.CELL_SIZE-settings.BOARD_WIDTH/3, 0),
+    (settings.BOARD_SIZE[0]* settings.CELL_SIZE-settings.BOARD_WIDTH/3, 0),
+    (settings.BOARD_SIZE[0]* settings.CELL_SIZE-settings.BOARD_WIDTH/3, (settings.BOARD_SIZE[1] + settings.BORDER_THICKNESS*0.5) * settings.CELL_SIZE-settings.BOARD_HEIGHT/3),
+    ((settings.BOARD_SIZE[0] - settings.BORDER_THICKNESS*0.5) * settings.CELL_SIZE-settings.BOARD_WIDTH/3, (settings.BOARD_SIZE[1] + settings.BORDER_THICKNESS*0.5) * settings.CELL_SIZE-settings.BOARD_HEIGHT/3)
     ]
 
 upper_border_coordinates = [
     (0,0),
-    (settings.BOARD_SIZE[0]*settings.CELL_SIZE, 0),
-    (settings.BOARD_SIZE[0]*settings.CELL_SIZE, settings.BORDER_THICKNESS*settings.CELL_SIZE),
-    (0, settings.BORDER_THICKNESS*settings.CELL_SIZE)
+    (settings.BOARD_SIZE[0]*settings.CELL_SIZE-settings.BOARD_WIDTH/3, 0),
+    (settings.BOARD_SIZE[0]*settings.CELL_SIZE-settings.BOARD_WIDTH/3, settings.BORDER_THICKNESS*0.5*settings.CELL_SIZE),
+    (0, settings.BORDER_THICKNESS*0.5*settings.CELL_SIZE)
     ]
 
 bottom_border_coordinates = [
-    (0, (settings.BOARD_SIZE[1]-settings.BORDER_THICKNESS)*settings.CELL_SIZE),
-    (settings.BOARD_SIZE[0]*settings.CELL_SIZE, (settings.BOARD_SIZE[1]-settings.BORDER_THICKNESS)*settings.CELL_SIZE),
-    (settings.BOARD_SIZE[0]*settings.CELL_SIZE, settings.BOARD_SIZE[1]*settings.CELL_SIZE),
-    (0, settings.BOARD_SIZE[1]*settings.CELL_SIZE)
+    (0, (settings.BOARD_SIZE[1]+settings.BORDER_THICKNESS*0.5)*settings.CELL_SIZE-settings.BOARD_HEIGHT/3),
+    (settings.BOARD_SIZE[0]*settings.CELL_SIZE-settings.BOARD_WIDTH/3, (settings.BOARD_SIZE[1]+settings.BORDER_THICKNESS*0.5)*settings.CELL_SIZE-settings.BOARD_HEIGHT/3),
+    (settings.BOARD_SIZE[0]*settings.CELL_SIZE-settings.BOARD_WIDTH/3, settings.BOARD_SIZE[1]*settings.CELL_SIZE-settings.BOARD_HEIGHT/3),
+    (0, settings.BOARD_SIZE[1]*settings.CELL_SIZE-settings.BOARD_HEIGHT/3)
 ]
 
 
@@ -53,7 +54,6 @@ def _draw_fruit(fruit,surface):
     surface.blit(pygame.image.load(os.path.join(fruit.kind["image"])), _get_cell_coordinates(fruit.pos)[0])
 
 def _draw_borders(surface):
-
     pygame.draw.polygon(surface, settings.BORDER_COLOR,left_border_coordinates)
     pygame.draw.polygon(surface, settings.BORDER_COLOR,right_border_coordinates)
     pygame.draw.polygon(surface, settings.BORDER_COLOR,upper_border_coordinates)
@@ -62,14 +62,14 @@ def _draw_borders(surface):
 def _draw_background_lines(surface):
 
     for column in range(settings.BOARD_SIZE[0]+1):
-        start_pos = (column*settings.CELL_SIZE, 0)
-        end_pos = (column*settings.CELL_SIZE, settings.BOARD_SIZE[1]*settings.CELL_SIZE)
+        start_pos = ((column + settings.BORDER_THICKNESS)*settings.CELL_SIZE, settings.BORDER_THICKNESS * settings.CELL_SIZE)
+        end_pos = ((column + settings.BORDER_THICKNESS)*settings.CELL_SIZE, (settings.BOARD_SIZE[1] + settings.BORDER_THICKNESS)*settings.CELL_SIZE)
 
         pygame.draw.line(surface, settings.BACKGROUND_LINES_COLOR, start_pos, end_pos)
 
     for row in range(settings.BOARD_SIZE[1]+1):
-        start_pos = (0, row*settings.CELL_SIZE)
-        end_pos = (settings.BOARD_SIZE[0]*settings.CELL_SIZE, row*settings.CELL_SIZE)
+        start_pos = (settings.BORDER_THICKNESS * settings.CELL_SIZE, (row + settings.BORDER_THICKNESS)*settings.CELL_SIZE)
+        end_pos = ((settings.BOARD_SIZE[0] + settings.BORDER_THICKNESS)*settings.CELL_SIZE, (row + settings.BORDER_THICKNESS)*settings.CELL_SIZE)
 
         pygame.draw.line(surface, settings.BACKGROUND_LINES_COLOR, start_pos, end_pos)
 
@@ -77,7 +77,8 @@ def create_surface():
     x_size = settings.BOARD_SIZE[0]*settings.CELL_SIZE
     y_size = settings.BOARD_SIZE[1]*settings.CELL_SIZE
 
-    surface = pygame.display.set_mode((x_size, y_size))
+    # surface = pygame.display.set_mode((x_size, y_size))
+    surface = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
 
     return surface
 
@@ -85,10 +86,12 @@ def update_screen(surface, board :Board):
     # Cleaning the board
     surface.fill(settings.BACKGROUND_COLOR)
 
+    settings.CELL_SIZE=pygame.display.get_window_size()[0] / 100
+
+    _draw_borders(surface)
     _draw_background_lines(surface)
     # Drawing snakes and fruits
 
-    _draw_borders(surface)
 
     for snake in board.snakes:
         _draw_snake(snake, surface)
