@@ -21,8 +21,8 @@ surface = graphics.create_surface()
 board = Board()
 
 
-snake_a = AISnake(board.border_cells)
-snake_b = AISnake(board.border_cells)
+snake_a = AISnake(board.border_cells, name = "Yagel")
+snake_b = AISnake(board.border_cells, name = "David")
 
 snakes_array = [snake_a, snake_b]
 
@@ -32,7 +32,7 @@ for snake in snakes_array:
 board.add_fruit(StrawberryFruit(rules.get_new_fruit_position(board)))
 time_pass=time.time()
 
-while (time.time() - time_pass <= 60 and len(board.snakes) > 0):
+while (time.time() - time_pass <= settings.GAME_TIME_LENGTH and len(board.snakes) > 0):
     sleep(settings.DELAY_BETWEEN_SCREEN_UPDATES)
 
     for event in pygame.event.get():

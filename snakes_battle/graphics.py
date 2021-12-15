@@ -110,15 +110,14 @@ def _draw_scoreboard(board, surface):
     surface.blit(score_title_surface, SCOREBOARD_STARTING_POSITION)
     surface.blit(score_subtitle_surface, (SCOREBOARD_STARTING_POSITION[0], SCOREBOARD_STARTING_POSITION[1] + 60))
 
-    for i in range(len(board.snakes)):
-        snake = board.snakes[i]
+    all_snakes = board.snakes + board.lost_snakes
+    for i in range(len(all_snakes)):
+        snake = all_snakes[i]
         score_position = (SCOREBOARD_STARTING_POSITION[0], SCOREBOARD_STARTING_POSITION[1] + (i + 2) * settings.CELL_SIZE * settings.SCOREBOARD_TITLE_SCORE_SEPERATION)
         score_text_surface = score_font.render(f"{snake.name}: {snake.length}", False, (0, 0, 0))
         surface.blit(score_text_surface, score_position)
-
-        if (snake.is_dead):
+        if (snake in board.lost_snakes):
             surface.blit(dead_snake_image, score_position)
-
 
 def update_screen(surface, board :Board):
     global init
