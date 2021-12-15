@@ -2,7 +2,6 @@
 #  I test the code here so the run.py file stays clean. #
 #########################################################
 
-from math import trunc
 import pygame
 import sys
 from time import sleep
