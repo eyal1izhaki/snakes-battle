@@ -6,6 +6,8 @@ from snakes_battle.board import Board
 
 init = True
 
+title_font, subtitle_font, score_font, SCOREBOARD_STARTING_POSITION = None, None, None, (0, 0)
+
 left_border_coordinates = []
 
 right_border_coordinates = []
@@ -14,8 +16,11 @@ upper_border_coordinates = []
 
 bottom_border_coordinates = []
 
+dead_snake_image = None
+
 def update_border_coordinates():
-    global left_border_coordinates, right_border_coordinates, upper_border_coordinates, bottom_border_coordinates
+    global left_border_coordinates, right_border_coordinates, upper_border_coordinates, bottom_border_coordinates, \
+            dead_snake_image, title_font, subtitle_font, score_font, SCOREBOARD_STARTING_POSITION
 
     left_border_coordinates = [
         (0,0),
@@ -44,6 +49,16 @@ def update_border_coordinates():
         ((settings.BOARD_SIZE[0] + settings.BORDER_THICKNESS * 2) * settings.CELL_SIZE, (settings.BOARD_SIZE[1] + settings.BORDER_THICKNESS * 2) * settings.CELL_SIZE),
         (0, (settings.BOARD_SIZE[1] + settings.BORDER_THICKNESS * 2) * settings.CELL_SIZE)
     ]
+
+    title_font = pygame.font.SysFont('Arial Black', settings.SCOREBOARD_TITLE_FONT_SIZE)
+    subtitle_font = pygame.font.SysFont('Arial Black', 10)
+    score_font = pygame.font.SysFont('Arial Black', settings.SCOREBOARD_TEXT_FONT_SIZE)
+
+    SCOREBOARD_STARTING_POSITION = ((settings.BOARD_SIZE[0] + settings.BORDER_THICKNESS * (2 + settings.SCOREBOARD_TITLE_TEXT_SEPERATION)) * settings.CELL_SIZE,
+                                     settings.SCOREBOARD_TITLE_TEXT_SEPERATION * settings.CELL_SIZE)
+    
+    dead_snake_image = pygame.image.load(os.path.join(settings.DEAD_SNAKE_IMAGE_PATH))
+    dead_snake_image = pygame.transform.scale(dead_snake_image, (40, 40))
 
 
 def _get_cell_coordinates(cell_pos):
@@ -76,13 +91,13 @@ def _draw_background_lines(surface):
 
     for column in range(settings.BOARD_SIZE[0] + 1):
         start_pos = ((column + settings.BORDER_THICKNESS)*settings.CELL_SIZE, settings.BORDER_THICKNESS * settings.CELL_SIZE)
-        end_pos = ((column + settings.BORDER_THICKNESS)*settings.CELL_SIZE, (settings.BOARD_SIZE[1] + settings.BORDER_THICKNESS)*settings.CELL_SIZE)
+        end_pos = ((column + settings.BORDER_THICKNESS)*settings.CELL_SIZE, (settings.BOARD_SIZE[1] + settings.BORDER_THICKNESS) * settings.CELL_SIZE)
 
         pygame.draw.line(surface, settings.BACKGROUND_LINES_COLOR, start_pos, end_pos)
 
     for row in range(settings.BOARD_SIZE[1] + 1):
         start_pos = (settings.BORDER_THICKNESS * settings.CELL_SIZE, (row + settings.BORDER_THICKNESS)*settings.CELL_SIZE)
-        end_pos = ((settings.BOARD_SIZE[0] + settings.BORDER_THICKNESS) * settings.CELL_SIZE, (row + settings.BORDER_THICKNESS)*settings.CELL_SIZE)
+        end_pos = ((settings.BOARD_SIZE[0] + settings.BORDER_THICKNESS) * settings.CELL_SIZE, (row + settings.BORDER_THICKNESS) * settings.CELL_SIZE)
 
         pygame.draw.line(surface, settings.BACKGROUND_LINES_COLOR, start_pos, end_pos)
 
@@ -95,6 +110,22 @@ def create_surface():
 
     return surface
 
+def _draw_scoreboard(board, surface):
+    score_title_surface = title_font.render("Scoreboard:", False, (0, 0, 0))
+    score_subtitle_surface = subtitle_font.render("aka the best game made by the best team alpha's scoreboard:", False, (0, 0, 0))
+    surface.blit(score_title_surface, SCOREBOARD_STARTING_POSITION)
+    surface.blit(score_subtitle_surface, (SCOREBOARD_STARTING_POSITION[0], SCOREBOARD_STARTING_POSITION[1] + 60))
+
+    for i in range(len(board.snakes)):
+        snake = board.snakes[i]
+        score_position = (SCOREBOARD_STARTING_POSITION[0], SCOREBOARD_STARTING_POSITION[1] + (i + 2) * settings.CELL_SIZE * settings.SCOREBOARD_TITLE_SCORE_SEPERATION)
+        score_text_surface = score_font.render(f"{snake.name}: {snake.length}", False, (0, 0, 0))
+        surface.blit(score_text_surface, score_position)
+
+        if (snake.is_dead):
+            surface.blit(dead_snake_image, score_position)
+
+
 def update_screen(surface, board :Board):
     global init
 
@@ -103,19 +134,21 @@ def update_screen(surface, board :Board):
 
     if (init == True):
         init = False
-        settings.CELL_SIZE=int(pygame.display.get_window_size()[0] / 100)
+        settings.CELL_SIZE = int(pygame.display.get_window_size()[0] / 100)
         update_border_coordinates()
 
     _draw_borders(surface)
     _draw_background_lines(surface)
     # Drawing snakes and fruits
 
-
     for snake in board.snakes:
         _draw_snake(snake, surface)
     
     for fruit in board.fruits:
         _draw_fruit(fruit, surface)
+    
+    # Draw the scoreboard
+    _draw_scoreboard(board, surface)
 
     # Displaying draws
     pygame.display.flip()

@@ -16,6 +16,8 @@ class Snake:
     def __init__(self) -> None:
 
         # Picking a random color
+        self.name = "Eyal"
+        self.is_dead = True
         self.color = choice(self.all_available_colors)
 
         # Removing the picked color so other snakes won't be in this color.
