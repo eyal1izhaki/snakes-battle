@@ -23,7 +23,7 @@ board = Board()
 snake_a = AISnake(board.border_cells)
 snake_b = AISnake(board.border_cells)
 
-snakes_array = [snake_a]
+snakes_array = [snake_a, snake_b]
 
 for snake in snakes_array:
     board.add_snake(snake)
