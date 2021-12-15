@@ -4,7 +4,6 @@
 
 import pygame
 import sys
-from time import sleep
 import time
 
 from snakes_battle.board import Board
@@ -32,7 +31,7 @@ board.add_fruit(StrawberryFruit(rules.get_new_fruit_position(board)))
 time_pass=time.time()
 
 while (time.time() - time_pass <= settings.GAME_TIME_LENGTH and len(board.snakes) > 0):
-    sleep(settings.DELAY_BETWEEN_SCREEN_UPDATES)
+    time.sleep(settings.DELAY_BETWEEN_SCREEN_UPDATES)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
