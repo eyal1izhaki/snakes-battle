@@ -73,6 +73,8 @@ class GameGraphics:
 
         cell_size = int(board_height_pixels/board_height)
 
+        board_height = int(board_height_pixels/cell_size)
+
         board_width = int(board_height*ratio)
 
         return cell_size, board_height, board_width
@@ -105,15 +107,15 @@ class GameGraphics:
 
     def _draw_background_lines(self):
 
-        for column in range(self.board_size[0] - 1):
+        for column in range(self.board_size[0] - settings.BORDER_THICKNESS * 2 + 1):
             start_pos = ((column + settings.BORDER_THICKNESS)*self.cell_size-1, settings.BORDER_THICKNESS * self.cell_size-1)
-            end_pos = ((column + settings.BORDER_THICKNESS)*self.cell_size-1, (self.board_size[1] - 1)* self.cell_size-1)
+            end_pos = ((column + settings.BORDER_THICKNESS)*self.cell_size-1, (self.board_size[1] - settings.BORDER_THICKNESS) * self.cell_size-1)
 
             pygame.draw.line(self.surface, settings.BACKGROUND_LINES_COLOR, start_pos, end_pos)
 
-        for row in range(self.board_size[1] - 1):
-            start_pos = (settings.BORDER_THICKNESS * self.cell_size-1, (row + settings.BORDER_THICKNESS)*self.cell_size-1)
-            end_pos = ((self.board_size[0] - 1)* self.cell_size-1, (row + settings.BORDER_THICKNESS) * self.cell_size-1)
+        for row in range(self.board_size[1] - settings.BORDER_THICKNESS * 2 + 1):
+            start_pos = (settings.BORDER_THICKNESS * self.cell_size - 1, (row + settings.BORDER_THICKNESS)*self.cell_size-1)
+            end_pos = ((self.board_size[0] - settings.BORDER_THICKNESS)* self.cell_size-1, (row + settings.BORDER_THICKNESS) * self.cell_size-1)
 
             pygame.draw.line(self.surface, settings.BACKGROUND_LINES_COLOR, start_pos, end_pos)
 
@@ -128,8 +130,7 @@ class GameGraphics:
         self.surface.blit(score_subtitle_surface, (self.SCOREBOARD_STARTING_POSITION[0], self.SCOREBOARD_STARTING_POSITION[1] + 60))
 
         all_snakes = board.snakes + board.lost_snakes
-        for i in range(len(all_snakes)):
-            snake = all_snakes[i]
+        for i, snake in enumerate(all_snakes):
             score_position = (self.SCOREBOARD_STARTING_POSITION[0], self.SCOREBOARD_STARTING_POSITION[1] + (i + 2) * self.cell_size * settings.SCOREBOARD_TITLE_SCORE_SEPERATION)
             score_text_surface = self.score_font.render(f"{snake.name}: {snake.length}", False, (0, 0, 0))
             self.surface.blit(score_text_surface, score_position)
