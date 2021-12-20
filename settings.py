@@ -4,7 +4,7 @@
 
 
 # Board
-NUMBER_OF_CELLS = 7000 # The number of cells in the board area. The actual number of cells will be close to this number.
+NUMBER_OF_CELLS = 6000 # The number of cells in the board area. The actual number of cells will be close to this number.
 
 BACKGROUND_COLOR = (255, 255, 255) # rgb
 
@@ -27,7 +27,8 @@ SCOREBOARD_TITLE_SCORE_SEPERATION = 4 # In units of CELL_SIZE
 
 # Snakes And Fruits
 SNAKES_COLORS = [(106, 153, 73), (39, 39, 39), (54, 50, 33), (35, 166, 255), (147, 127, 15), (8, 32, 185), (28, 154, 57), (0, 122, 204)]
-DEAD_SNAKE_IMAGE_PATH = "snakes_battle\\images\\fruits\\dead_icon.png"
+DEAD_SNAKE_IMAGE_PATH = "snakes_battle\\images\\dead_icon.png"
+
 
 
 # General

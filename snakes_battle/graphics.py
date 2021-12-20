@@ -54,7 +54,7 @@ class GameGraphics:
         self.score_font = pygame.font.SysFont('Arial Black', settings.SCOREBOARD_TEXT_FONT_SIZE)
 
     
-        self.SCOREBOARD_STARTING_POSITION = ((self.board_size[0] + settings.BORDER_THICKNESS * (2 + settings.SCOREBOARD_TITLE_TEXT_SEPERATION)) * self.cell_size,
+        self.SCOREBOARD_STARTING_POSITION = ((self.board_size[0] + settings.SCOREBOARD_TITLE_TEXT_SEPERATION) * self.cell_size,
                                         settings.SCOREBOARD_TITLE_TEXT_SEPERATION * self.cell_size)
         
         self.dead_snake_image = pygame.image.load(os.path.join(settings.DEAD_SNAKE_IMAGE_PATH))
