@@ -1,11 +1,5 @@
 
-# NOT THE REAL VALUE OF CELL_SIZE! IS DEFINED AGAIN RELATIVE TO THE SCREEN (could not do that here because the screen is not initialized)
-# For the real value look at the graphics file
-CELL_SIZE = 20 # px
-
-BOARD_WIDTH = 75
-BOARD_HEIGHT = 55
-BOARD_SIZE = (BOARD_WIDTH,BOARD_HEIGHT) # number of cells, not pixels. Size includes borders
+NUMBER_OF_CELLS = 5000
 
 BACKGROUND_COLOR = (255, 255, 255) # rgb
 
