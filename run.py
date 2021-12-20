@@ -7,7 +7,6 @@ import settings
 
 
 def main():
-    pygame.init()
 
     board = Board()
 
