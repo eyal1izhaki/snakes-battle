@@ -6,32 +6,25 @@ import random
 import math
 import settings
 from snakes_battle.board import Board
-from snakes_battle.fruits.StrawberryFruit import StrawberryFruit
-from snakes_battle.fruits.DragonFruit import DragonFruit
-from snakes_battle.fruits.Bomb import Bomb
+from snakes_battle.fruit import Fruit, FruitKind
 
-harmfulFruits = (Bomb, ) # List of fruits that should not create new fruits to the board
-beneficialFruits = (StrawberryFruit, DragonFruit)
-
-def apply_rules(board):
-    for fruit in board.fruits:
-        fruit.make_turn(board)
+def apply_logic(board):
 
     for snake in board.snakes:
         # Rule: Snake eat a fruit
         for fruit in board.fruits:
             if snake.body_pos[0] == fruit.pos: # if head of snake in the same position of the fruit
-                fruit.eaten(snake)
 
+                snake.eat(fruit)
                 board.fruit_eaten(fruit)
 
                 # Rule - Snake must have a length of 1 at least (can be lower if the snake was hit by a bomb and it's length was reduced too much)
                 if (snake.length == 0):
-                    snake_lost(snake,board)
+                    snake_lost(snake, board)
 
-                if (not isinstance(fruit, harmfulFruits)):
-                    new_fruit_type = random.choice(beneficialFruits)
-                    board.add_fruit(new_fruit_type(get_new_fruit_position(board)))
+                if fruit.score > 0:
+                    new_fruit = Fruit(random.choice(FruitKind.beneficial_fruits), get_new_fruit_position(board))
+                    board.add_fruit(new_fruit)
 
         # Rule: Snake hitted a border
         if snake.body_pos[0][0] == settings.BORDER_THICKNESS-1: # Hitted left border
@@ -57,8 +50,9 @@ def apply_rules(board):
                 snake_lost(snake,board)
         
         # Rule - generate a bomb randomly.
-        if (random.random() < Bomb.BOMB_CREATION_PROBABILITY):
-            board.add_fruit(Bomb(get_new_fruit_position(board)))
+        if (random.random() < settings.BOMB_CREATION_PROBABILITY):
+            new_bomb = Fruit(FruitKind.BOMB, get_new_fruit_position(board))
+            board.add_fruit(new_bomb)
 
 def snake_lost(snake,board):
     board.lost_snakes.append(snake)
@@ -67,7 +61,7 @@ def snake_lost(snake,board):
 def get_new_fruit_position(board):
     # Returns an empty cell so a fruit can be placed there
     
-    board._update_empty_cells()
+    board.update_empty_cells()
     return list(random.choice(board.empty_cells))
 
 def get_unique_snake_head_position(board: Board):

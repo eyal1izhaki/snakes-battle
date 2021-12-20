@@ -25,7 +25,7 @@ class Board:
             for y in range(settings.BORDER_THICKNESS, self.board_size[1]-settings.BORDER_THICKNESS-1):
                 self.all_cells_pos.append((x,y))
 
-    def _update_empty_cells(self):
+    def update_empty_cells(self):
         self.empty_cells = self.all_cells_pos.copy()
         for snake in self.snakes:
             for cell_pos in snake.body_pos:
