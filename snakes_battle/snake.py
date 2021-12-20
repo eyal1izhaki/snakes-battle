@@ -21,48 +21,49 @@ class Snake:
         self.body_pos = None
 
 
-    def _grow_in_one_unit(self):
-        # Makes the snake one cell longer. Will be called when a snake eats a fruit for example
+    def grow(self, growth_amount):
+        # Makes the snake <growth_amount> cells longer. Will be called when a snake eats a fruit for example
 
-        # Gets the tail position
-        tail_x, tail_y = self.body_pos[-1]
+        for _ in range(growth_amount):
+            # Gets the tail position
+            tail_x, tail_y = self.body_pos[-1]
 
-        if self.length > 1:
+            if self.length > 1:
 
-            tail_neighbor_x, tail_neighbor_y = self.body_pos[-2]
+                tail_neighbor_x, tail_neighbor_y = self.body_pos[-2]
 
-            # Adding the new cell above the tail cell.
-            if  tail_y < tail_neighbor_y:
-                self.body_pos.append([tail_x, tail_y-1])
+                # Adding the new cell above the tail cell.
+                if  tail_y < tail_neighbor_y:
+                    self.body_pos.append([tail_x, tail_y-1])
 
-            # Adding the new cell under the tail cell.
-            elif tail_y > tail_neighbor_y:
-                self.body_pos.append([tail_x, tail_y+1])
+                # Adding the new cell under the tail cell.
+                elif tail_y > tail_neighbor_y:
+                    self.body_pos.append([tail_x, tail_y+1])
 
-            # Adding the new cell right to the tail cell
-            elif tail_x > tail_neighbor_x:
-                self.body_pos.append([tail_x+1, tail_y])
+                # Adding the new cell right to the tail cell
+                elif tail_x > tail_neighbor_x:
+                    self.body_pos.append([tail_x+1, tail_y])
 
-            # Adding the new cell left to the tail cell
-            elif tail_x < tail_neighbor_x:
-                self.body_pos.append([tail_x-1, tail_y])
+                # Adding the new cell left to the tail cell
+                elif tail_x < tail_neighbor_x:
+                    self.body_pos.append([tail_x-1, tail_y])
 
-        # In case the length of the snake is 1.  This pieace of code runs only once - when the snake is created.
-        else:
-            if self.direction == Direction.DOWN:
-                self.body_pos.append([tail_x, tail_y-1])
+            # In case the length of the snake is 1.  This pieace of code runs only once - when the snake is created.
+            else:
+                if self.direction == Direction.DOWN:
+                    self.body_pos.append([tail_x, tail_y-1])
 
-            elif self.direction == Direction.UP:
-                self.body_pos.append([tail_x, tail_y+1])
+                elif self.direction == Direction.UP:
+                    self.body_pos.append([tail_x, tail_y+1])
 
-            elif self.direction == Direction.LEFT:
-                self.body_pos.append([tail_x+1, tail_y])
+                elif self.direction == Direction.LEFT:
+                    self.body_pos.append([tail_x+1, tail_y])
 
-            elif self.direction == Direction.RIGHT:
-                self.body_pos.append([tail_x-1, tail_y])
+                elif self.direction == Direction.RIGHT:
+                    self.body_pos.append([tail_x-1, tail_y])
 
 
-        self.length += 1
+            self.length += 1
 
     def _update_body_pos(self):
         # updates the position of the rest of the snake's body. The position of the head changes in the continuse_movement method.
@@ -115,3 +116,9 @@ class Snake:
             return
         
         self.body_pos = self.body_pos[:self.length] # Removing nodes from the snake
+
+    def eat(self, fruit):
+        if fruit.score > 0:
+            self.grow(fruit.score)
+        elif fruit.score < 0:
+            self.shrink(-fruit.score)
