@@ -6,6 +6,7 @@ from snakes_battle.board import Board
 import math
 
 from snakes_battle.fruit import Fruit, FruitKind
+from snakes_battle.snake import Direction
 
 
 
@@ -60,6 +61,7 @@ class GameGraphics:
             image = self._load_and_scale_image(image_path)
             self.images[name] = image
 
+        self.images["HEAD"] = self._load_and_scale_image("snakes_battle\\images\\snake_head.png", fit_width=True, fit_height=False)
 
         self.title_font = pygame.font.SysFont('Arial Black', settings.SCOREBOARD_TITLE_FONT_SIZE)
         self.subtitle_font = pygame.font.SysFont('Arial Black', 10)
@@ -105,8 +107,38 @@ class GameGraphics:
         return [top_left, bottom_left, bottom_right, top_right]
 
     def _draw_snake(self, snake):
+        head = True
         for square in snake.body_pos:
-            pygame.draw.polygon(self.surface, snake.color, self._get_cell_coordinates(square))
+            if head:
+                head = False
+
+                image = self.images["HEAD"]
+    
+                if snake.direction == Direction.UP:
+                    image = pygame.transform.rotate(image, 180)
+                    head_x_y = self._get_cell_coordinates(square)[1]
+                    head_x_y = (head_x_y[0], head_x_y[1] - image.get_height() + 2)
+
+                elif snake.direction == Direction.LEFT:
+                    image = pygame.transform.rotate(image, 270)
+                    head_x_y = self._get_cell_coordinates(square)[3]
+                    head_x_y = (head_x_y[0] - image.get_width() + 2, head_x_y[1])
+
+
+                elif snake.direction == Direction.RIGHT:
+                    image = pygame.transform.rotate(image, 90)
+                    head_x_y = self._get_cell_coordinates(square)[0]
+                    head_x_y = (head_x_y[0] - 2, head_x_y[1])
+                
+                else:
+                    head_x_y = self._get_cell_coordinates(square)[0]
+                    head_x_y = (head_x_y[0], head_x_y[1] - 2)
+
+                
+                self.surface.blit(image, head_x_y)
+
+            else:
+                pygame.draw.polygon(self.surface, snake.color, self._get_cell_coordinates(square))
 
     def _draw_fruit(self, fruit, draw_background=True):
         
@@ -159,18 +191,32 @@ class GameGraphics:
             if (snake in board.lost_snakes):
                 self.surface.blit(self.dead_snake_image, score_position)
 
-    def _load_and_scale_image(self, image_path):
+    def _load_and_scale_image(self, image_path, fit_width=True, fit_height=True):
+        # Loads the image and scales it to fit the cell width, height or both will keeping the image proportion.
+
         image = pygame.image.load(image_path)
 
         ratio_width_height = image.get_width()/image.get_height()
 
-        if ratio_width_height > 1:
+        if fit_width and fit_height:
+            if ratio_width_height > 1:
+                scale_width = self.cell_size
+                scale_height= scale_width/ratio_width_height
+            else:
+                scale_height = self.cell_size
+                scale_width = scale_height*ratio_width_height
+
+        elif fit_width and not fit_height:
             scale_width = self.cell_size
-            scale_height= scale_width/ratio_width_height
-        else:
+            scale_height = scale_width/ratio_width_height
+
+        elif fit_height and not fit_width:
             scale_height = self.cell_size
             scale_width = scale_height*ratio_width_height
-
+        
+        else:
+            return image
+        
         return pygame.transform.smoothscale(image, (scale_width, scale_height))
 
     def get_unique_snake_color(self):
