@@ -4,7 +4,7 @@
 
 
 # Board
-NUMBER_OF_CELLS = 6000 # The number of cells in the board area. The actual number of cells will be close to this number.
+NUMBER_OF_CELLS = 1000 # The number of cells in the board area. The actual number of cells will be close to this number.
 
 BACKGROUND_COLOR = (255, 255, 255) # rgb
 

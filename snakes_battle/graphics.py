@@ -1,10 +1,13 @@
 from random import choice
 import pygame
 import os
-
 import settings
 from snakes_battle.board import Board
 import math
+
+from snakes_battle.fruit import Fruit, FruitKind
+
+
 
 
 class GameGraphics:
@@ -49,6 +52,15 @@ class GameGraphics:
             ]
         }
 
+        self.images = {}
+
+        for kind in FruitKind.fruits:
+            name = kind["name"]
+            image_path = kind["image"]
+            image = self._load_and_scale_image(image_path)
+            self.images[name] = image
+
+
         self.title_font = pygame.font.SysFont('Arial Black', settings.SCOREBOARD_TITLE_FONT_SIZE)
         self.subtitle_font = pygame.font.SysFont('Arial Black', 10)
         self.score_font = pygame.font.SysFont('Arial Black', settings.SCOREBOARD_TEXT_FONT_SIZE)
@@ -61,7 +73,7 @@ class GameGraphics:
         self.dead_snake_image = pygame.transform.scale(self.dead_snake_image, (40, 40))
 
         self.token_snakes_colors = []
-        
+
     def _get_cell_and_board_size(self):
         screen_size = self.surface.get_size()
         ratio = screen_size[0]/screen_size[1]*0.7
@@ -79,7 +91,7 @@ class GameGraphics:
 
         return cell_size, board_height, board_width
 
-    def _get_cell_coordinates(self, cell_pos):
+    def _get_cell_coordinates(self, cell_pos, margin=0):
 
         top_left = (cell_pos[0]*self.cell_size,
                     cell_pos[1]*self.cell_size)
@@ -97,7 +109,7 @@ class GameGraphics:
             pygame.draw.polygon(self.surface, snake.color, self._get_cell_coordinates(square))
 
     def _draw_fruit(self, fruit):
-        self.surface.blit(pygame.image.load(os.path.join(fruit.kind["image"])), self._get_cell_coordinates(fruit.pos)[0])
+        self.surface.blit(self.images[fruit.kind["name"]], self._get_cell_coordinates(fruit.pos)[0])
 
     def _draw_borders(self):
         pygame.draw.polygon(self.surface, settings.BORDER_COLOR,self.borders["left"])
@@ -136,6 +148,20 @@ class GameGraphics:
             self.surface.blit(score_text_surface, score_position)
             if (snake in board.lost_snakes):
                 self.surface.blit(self.dead_snake_image, score_position)
+
+    def _load_and_scale_image(self, image_path):
+        image = pygame.image.load(image_path)
+
+        ratio_width_height = image.get_width()/image.get_height()
+
+        if ratio_width_height > 1:
+            scale_width = self.cell_size
+            scale_height= scale_width/ratio_width_height
+        else:
+            scale_height = self.cell_size
+            scale_width = scale_height*ratio_width_height
+
+        return pygame.transform.smoothscale(image, (scale_width, scale_height))
 
     def get_unique_snake_color(self):
         not_a_unique_color = True
