@@ -4,15 +4,15 @@
 
 
 # Board
-NUMBER_OF_CELLS = 6000 # The number of cells in the board area. The actual number of cells will be close to this number.
+NUMBER_OF_CELLS = 1500 # The number of cells in the board area. The actual number of cells will be close to this number.
 
 BACKGROUND_COLOR = (255, 255, 255) # rgb
 
-BACKGROUND_LINES_COLOR = (218, 218, 218)
+BACKGROUND_LINES_COLOR = (218, 209, 209)
 
 BORDER_COLOR = (49, 39, 18)
 
-BORDER_THICKNESS = 2 # Number of cells
+BORDER_THICKNESS = 1 # Number of cells
 
 
 # Score Board
