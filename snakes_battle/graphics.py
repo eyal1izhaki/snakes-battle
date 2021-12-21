@@ -91,16 +91,16 @@ class GameGraphics:
 
         return cell_size, board_height, board_width
 
-    def _get_cell_coordinates(self, cell_pos, margin=0):
+    def _get_cell_coordinates(self, cell_pos):
 
-        top_left = (cell_pos[0]*self.cell_size,
-                    cell_pos[1]*self.cell_size)
+        top_left = (cell_pos[0]*self.cell_size-1,
+                    cell_pos[1]*self.cell_size-1)
         top_right = (cell_pos[0]*self.cell_size +
-                        self.cell_size, cell_pos[1]*self.cell_size)
-        bottom_left = (cell_pos[0]*self.cell_size,
-                        cell_pos[1]*self.cell_size+self.cell_size)
-        bottom_right = (cell_pos[0]*self.cell_size+self.cell_size,
-                        cell_pos[1]*self.cell_size+self.cell_size)
+                        self.cell_size-1, cell_pos[1]*self.cell_size-1)
+        bottom_left = (cell_pos[0]*self.cell_size-1,
+                        cell_pos[1]*self.cell_size+self.cell_size-1)
+        bottom_right = (cell_pos[0]*self.cell_size+self.cell_size-1,
+                        cell_pos[1]*self.cell_size+self.cell_size-1)
 
         return [top_left, bottom_left, bottom_right, top_right]
 
@@ -108,7 +108,17 @@ class GameGraphics:
         for square in snake.body_pos:
             pygame.draw.polygon(self.surface, snake.color, self._get_cell_coordinates(square))
 
-    def _draw_fruit(self, fruit):
+    def _draw_fruit(self, fruit, draw_background=True):
+        
+        if draw_background:
+            top_left = self._get_cell_coordinates((fruit.pos[0]-1,fruit.pos[1]-1))[0]
+
+            fruit_background = pygame.Surface((self.cell_size*3,self.cell_size*3))
+            fruit_background.set_alpha(40)
+            fruit_background.fill(fruit.kind["color"])    
+
+            self.surface.blit(fruit_background, top_left)
+
         self.surface.blit(self.images[fruit.kind["name"]], self._get_cell_coordinates(fruit.pos)[0])
 
     def _draw_borders(self):
@@ -177,16 +187,22 @@ class GameGraphics:
         # Cleaning the board
         self.surface.fill(settings.BACKGROUND_COLOR)
 
-        self._draw_borders()
+        
         self._draw_background_lines()
-        # Drawing snakes and fruits
 
-        for snake in board.snakes:
-            self._draw_snake(snake)
+        # Drawing snakes and fruits
         
         for fruit in board.fruits:
-            self._draw_fruit(fruit)
-        
+            self._draw_fruit(fruit, True)
+                
+        for snake in board.snakes:
+            self._draw_snake(snake)
+
+
+        self._draw_borders()
+
+
+     
         # Draw the scoreboard
         self._draw_scoreboard(board)
 
