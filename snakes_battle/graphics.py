@@ -72,7 +72,7 @@ class GameGraphics:
         self.dead_snake_image = pygame.image.load(os.path.join(settings.DEAD_SNAKE_IMAGE_PATH))
         self.dead_snake_image = pygame.transform.scale(self.dead_snake_image, (40, 40))
 
-        self.token_snakes_colors = []
+        self.snakes_colors_in_use = []
 
     def _get_cell_and_board_size(self):
         screen_size = self.surface.get_size()
@@ -177,8 +177,8 @@ class GameGraphics:
         not_a_unique_color = True
         while not_a_unique_color:
             color = choice(settings.SNAKES_COLORS)
-            not_a_unique_color = color in self.token_snakes_colors
-            self.token_snakes_colors.append(color)
+            not_a_unique_color = color in self.snakes_colors_in_use
+            self.snakes_colors_in_use.append(color)
         
         return color
 
