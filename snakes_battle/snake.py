@@ -1,6 +1,7 @@
-from random import randint, choice
-import settings
+from random import randint
 import copy
+
+from snakes_battle.fruit import FruitKind
 
 class Direction:
     RIGHT = 0
@@ -12,13 +13,17 @@ class Snake:
 
     def __init__(self, color, name) -> None:
 
-        # Picking a random color
         self.name = name
         self.color = color
         
         self.direction = randint(0,3) # Only 4 directions - will pick one of them
         self.length = 1
         self.body_pos = None
+
+        # All the special fruits that active in this snake.
+        self.super_power = {
+            "SHIELD": False
+        }
 
 
     def grow(self, growth_amount):
@@ -118,7 +123,16 @@ class Snake:
         self.body_pos = self.body_pos[:self.length] # Removing nodes from the snake
 
     def eat(self, fruit):
-        if fruit.score > 0:
-            self.grow(fruit.score)
-        elif fruit.score < 0:
-            self.shrink(-fruit.score)
+        if fruit.kind in FruitKind.beneficial_fruits:
+            self.grow(fruit.kind["score"])
+
+        elif fruit.kind in FruitKind.harmful_fruits:
+            if self.super_power["SHIELD"]:
+                self.super_power["SHIELD"] = False
+                return
+                
+            self.shrink(-fruit.kind["score"])
+        
+        elif fruit.kind in FruitKind.special_fruits:
+            if fruit.kind == FruitKind.SHIELD:
+                self.super_power["SHIELD"] = True

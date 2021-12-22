@@ -44,12 +44,8 @@ DELAY_BETWEEN_SCREEN_UPDATES = 0.04 # Delay between screen update to another. Sn
 ######################################
 
 
-STARTING_SNAKE_LENGTH = 3
+STARTING_SNAKE_LENGTH = 15
 
-GAME_TIME_LENGTH = 60
-
-BOMB_CREATION_PROBABILITY = 1 / 100 # Will create a bomb roughly every 20 frames.
-
-BOMB_LIFESPAN = 100 # How many frames will the bomb be on the board
+GAME_TIME_LENGTH = 10000
 
 ######################################

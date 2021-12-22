@@ -17,7 +17,7 @@ def apply_logic(board):
                 snake.eat(fruit)
                 board.fruit_eaten(fruit)
 
-                if fruit.score > 0:
+                if fruit.kind in FruitKind.beneficial_fruits:
                     new_fruit = Fruit(random.choice(FruitKind.beneficial_fruits), get_new_fruit_position(board))
                     board.add_fruit(new_fruit)
 
@@ -50,18 +50,35 @@ def apply_logic(board):
         for _snake in board.snakes:
 
             if snake == _snake: # snake hitted itself.
-                if snake.body_pos[0] in _snake.body_pos[1:]:
-                    snake_lost(snake,board)
-                    break
+
+                headless = _snake.body_pos[1:] # Snake body position without the head
+
+                for i in range(len(headless)):
+                    if snake.body_pos[0] == headless[i]:
+                        if snake.super_power["SHIELD"]: # If snake is shielded then it won't shrink
+                            snake.super_power["SHIELD"] = False
+                        else:
+                            snake.shrink(len(headless) - i) # Snake is not shielded so it will be shrinked. Snake cuts itself.
+                            break
 
             elif snake.body_pos[0] in _snake.body_pos: # snake hitted other snakes
-                snake_lost(snake,board)
-                break
+
+                if snake.super_power["SHIELD"]: # Snake can hit other snakes without lose if it shielded
+                        snake.super_power["SHIELD"] = False
+
+                else: # Snake not shielded so it loses.
+                    snake_lost(snake,board)
+                    break
         
     # Rule - generate a bomb randomly.
-    if (random.random() < settings.BOMB_CREATION_PROBABILITY):
+    if (random.random() < FruitKind.BOMB["creation_probability"]):
         new_bomb = Fruit(FruitKind.BOMB, get_new_fruit_position(board))
         board.add_fruit(new_bomb)
+    
+    # Rule - generate a special fruit randomly.
+    if random.random() < FruitKind.SHIELD["creation_probability"]:
+        new_special_fruit = Fruit(random.choice(FruitKind.special_fruits), get_new_fruit_position(board))
+        board.add_fruit(new_special_fruit)
 
 def snake_lost(snake,board):
     board.lost_snakes.append(snake)
