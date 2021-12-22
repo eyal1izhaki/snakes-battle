@@ -6,6 +6,7 @@ from snakes_battle.board import Board
 import math
 
 from snakes_battle.fruit import Fruit, FruitKind
+from snakes_battle.snake import Direction
 
 
 
@@ -60,6 +61,9 @@ class GameGraphics:
             image = self._load_and_scale_image(image_path)
             self.images[name] = image
 
+        # Loads all snakes heads
+        for color in settings.SNAKES_COLORS:
+            self.images[f"HEAD_{str(color)}"] = self._load_and_scale_image(f"snakes_battle\\images\\snake_heads\snake_head{str(color)}.png", fit_width=True, fit_height=False)
 
         self.title_font = pygame.font.SysFont('Arial Black', settings.SCOREBOARD_TITLE_FONT_SIZE)
         self.subtitle_font = pygame.font.SysFont('Arial Black', 10)
@@ -104,9 +108,127 @@ class GameGraphics:
 
         return [top_left, bottom_left, bottom_right, top_right]
 
-    def _draw_snake(self, snake):
-        for square in snake.body_pos:
-            pygame.draw.polygon(self.surface, snake.color, self._get_cell_coordinates(square))
+    def _draw_snake(self, snake, margin=4):
+
+        snake_head_offset_to_body = 2
+        head_image = self.images[f"HEAD_{str(snake.color)}"]
+
+
+        # Creating the turn block surface. We will rotate it as needed.
+        snake_turn_block = pygame.Surface((self.cell_size + 1, self.cell_size + 1))
+        snake_turn_block.set_colorkey((0,0,0))
+        x1 = (margin, margin)
+        x2 = (self.cell_size, margin)
+        x3 = (self.cell_size, self.cell_size - margin)
+        x4 = (self.cell_size - margin, self.cell_size - margin)
+        x5 = (self.cell_size - margin ,self.cell_size)
+        x6 = (margin, self.cell_size)
+
+        # The turn block is in a position of: form up direction turn right.
+        pygame.draw.polygon(snake_turn_block, snake.color, [x1,x2,x3,x4,x5,x6])
+
+        # Drawing the head and the rest of the snakes body.
+        head=True
+        for i in range(len(snake.body_pos)):
+
+            if head:    
+                head = False
+    
+                if snake.direction == Direction.UP:
+                    head_image = pygame.transform.rotate(head_image, 180)
+                    head_x_y = self._get_cell_coordinates(snake.body_pos[i])[1]
+                    head_x_y = (head_x_y[0], head_x_y[1] - head_image.get_height() + snake_head_offset_to_body)
+
+                elif snake.direction == Direction.LEFT:
+                    head_image = pygame.transform.rotate(head_image, 270)
+                    head_x_y = self._get_cell_coordinates(snake.body_pos[i])[3]
+                    head_x_y = (head_x_y[0] - head_image.get_width() + snake_head_offset_to_body, head_x_y[1])
+
+                elif snake.direction == Direction.RIGHT:
+                    head_image = pygame.transform.rotate(head_image, 90)
+                    head_x_y = self._get_cell_coordinates(snake.body_pos[i])[0]
+                    head_x_y = (head_x_y[0] - snake_head_offset_to_body, head_x_y[1])
+                
+                else:
+                    head_x_y = self._get_cell_coordinates(snake.body_pos[i])[0]
+                    head_x_y = (head_x_y[0], head_x_y[1] - snake_head_offset_to_body)
+
+                self.surface.blit(head_image, head_x_y)
+
+
+            # Drawing the rest of the body.
+            else:
+
+                coordinates = self._get_cell_coordinates(snake.body_pos[i])
+
+                # Checking if this block in the snake body is a turn block.
+                if i < len(snake.body_pos) - 1 and snake.body_pos[i-1][1] != snake.body_pos[i+1][1] and snake.body_pos[i-1][0] != snake.body_pos[i+1][0]:
+
+                    turn_block_top_left = coordinates[0]
+                    # Up and left or right.
+                    if snake.body_pos[i+1][1] > snake.body_pos[i][1]:
+                        # Left
+                        if snake.body_pos[i][0] > snake.body_pos[i-1][0]:
+                            self.surface.blit(pygame.transform.rotate(snake_turn_block, -90), turn_block_top_left)
+                        
+                        # Right
+                        else:
+                            self.surface.blit(snake_turn_block, turn_block_top_left)
+                    
+                    # Down and left ot right.
+                    elif snake.body_pos[i+1][1] < snake.body_pos[i][1]:
+                        # Left
+                        if snake.body_pos[i][0] > snake.body_pos[i-1][0]:
+                            self.surface.blit(pygame.transform.rotate(snake_turn_block, 180), turn_block_top_left)
+                        # Right
+                        else:
+                            self.surface.blit(pygame.transform.rotate(snake_turn_block, 90), turn_block_top_left)
+                        
+                    # Right and up or down.
+                    elif snake.body_pos[i][0] < snake.body_pos[i+1][0]:
+                        # Up
+                        if snake.body_pos[i][1] > snake.body_pos[i-1][1]:
+                            self.surface.blit(pygame.transform.rotate(snake_turn_block, 90), turn_block_top_left)
+                        # Down
+                        else:
+                            self.surface.blit(snake_turn_block, turn_block_top_left)
+
+                    # Left and up or down
+                    elif snake.body_pos[i][0] > snake.body_pos[i+1][0]:
+                        # Up
+                        if snake.body_pos[i][1] > snake.body_pos[i-1][1]:
+                            self.surface.blit(pygame.transform.rotate(snake_turn_block, 180), turn_block_top_left)
+                        # Down
+                        else:
+                            self.surface.blit(pygame.transform.rotate(snake_turn_block, -90), turn_block_top_left)
+
+                # Square is horizontal (The block is in right or left direction).
+                elif  snake.body_pos[i][1] == snake.body_pos[i-1][1]:
+
+                    top_left, bottom_left, bottom_right, top_right = coordinates
+                    top_left = (top_left[0], top_left[1] + margin)
+                    top_right = (top_right[0], top_right[1] + margin)
+                    bottom_left = (bottom_left[0],bottom_left[1] - margin)
+                    bottom_right = (bottom_right[0], bottom_right[1] - margin)
+
+                                        
+                    coordinates = [top_left, bottom_left, bottom_right, top_right]
+
+                    pygame.draw.polygon(self.surface, snake.color, coordinates)
+
+                # Square is vertical (The block is in up or down direction).
+                elif snake.body_pos[i][0] == snake.body_pos[i-1][0]:
+                    top_left, bottom_left, bottom_right, top_right =  coordinates
+                    top_left = (top_left[0] + margin, top_left[1])
+                    top_right = (top_right[0] - margin, top_right[1])
+                    bottom_left = (bottom_left[0] + margin, bottom_left[1])
+                    bottom_right = (bottom_right[0] - margin, bottom_right[1])
+
+                    coordinates = [top_left, bottom_left, bottom_right, top_right]
+
+                    pygame.draw.polygon(self.surface, snake.color, coordinates)
+
+                
 
     def _draw_fruit(self, fruit, draw_background=True):
         
@@ -159,18 +281,32 @@ class GameGraphics:
             if (snake in board.lost_snakes):
                 self.surface.blit(self.dead_snake_image, score_position)
 
-    def _load_and_scale_image(self, image_path):
+    def _load_and_scale_image(self, image_path, fit_width=True, fit_height=True):
+        # Loads the image and scales it to fit the cell width, height or both will keeping the image proportion.
+
         image = pygame.image.load(image_path)
 
         ratio_width_height = image.get_width()/image.get_height()
 
-        if ratio_width_height > 1:
+        if fit_width and fit_height:
+            if ratio_width_height > 1:
+                scale_width = self.cell_size
+                scale_height= scale_width/ratio_width_height
+            else:
+                scale_height = self.cell_size
+                scale_width = scale_height*ratio_width_height
+
+        elif fit_width and not fit_height:
             scale_width = self.cell_size
-            scale_height= scale_width/ratio_width_height
-        else:
+            scale_height = scale_width/ratio_width_height
+
+        elif fit_height and not fit_width:
             scale_height = self.cell_size
             scale_width = scale_height*ratio_width_height
-
+        
+        else:
+            return image
+        
         return pygame.transform.smoothscale(image, (scale_width, scale_height))
 
     def get_unique_snake_color(self):
