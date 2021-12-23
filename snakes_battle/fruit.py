@@ -4,6 +4,7 @@ class FruitKind:
         "color": (255, 62, 97),
         "image": "snakes_battle\\images\\fruits\\strawberry.png",
         "score": 1,
+        "lifespan": -1
         }
 
     DRAGON_FRUIT = {
@@ -11,6 +12,7 @@ class FruitKind:
         "color": (145, 67, 114),
         "image": "snakes_battle\\images\\fruits\\dragonfruit.png",
         "score": 2,
+        "lifespan": -1
     }
     BOMB = {
         "name": "BOMB",
@@ -18,14 +20,14 @@ class FruitKind:
         "image": "snakes_battle\\images\\fruits\\bomb.png",
         "score": -2,
         "creation_probability": 1/100, # Will create a bomb roughly every 20 frames.
-        "lifespan": 100, # How many frames will the bomb be on the board
+        "lifespan": 80, # How many frames will the bomb be on the board
     }
     SHIELD = {
         "name": "SHIELD",
         "color": (236, 20, 34),
         "image": "snakes_battle\\images\\fruits\\shield.png",
         "creation_probability": 1/500, # Will create a bomb roughly every 20 frames.
-        "lifespan": 70, # How many frames will the bomb be on the board
+        "lifespan": 30, # How many frames will the bomb be on the board
     }
     
     beneficial_fruits = [STRAWBERRY, DRAGON_FRUIT]
@@ -38,3 +40,4 @@ class Fruit:
     def __init__(self, fruitKind, position) -> None:
         self.kind = fruitKind
         self.pos = position
+        self.lifespan = fruitKind["lifespan"]

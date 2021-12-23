@@ -11,7 +11,8 @@ from snakes_battle.fruit import Fruit, FruitKind
 def apply_logic(board):
 
     for snake in board.snakes:
-        # Rule: Snake eat a fruit
+
+        # Rule: Snake eats a fruit
         for fruit in board.fruits:
             if snake.body_pos[0] == fruit.pos: # if head of snake in the same position of the fruit
                 snake.eat(fruit)
@@ -79,6 +80,15 @@ def apply_logic(board):
     if random.random() < FruitKind.SHIELD["creation_probability"]:
         new_special_fruit = Fruit(random.choice(FruitKind.special_fruits), get_new_fruit_position(board))
         board.add_fruit(new_special_fruit)
+
+    # Rule - subtract lifespan in 1. when lifespan is zero, remove the fruit from board.
+    if fruit.lifespan > 0:
+        fruit.lifespan -= 1
+    
+    if fruit.lifespan == 0:
+        board.fruit_eaten(fruit)
+
+
 
 def snake_lost(snake,board):
     board.lost_snakes.append(snake)
