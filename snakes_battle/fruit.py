@@ -24,14 +24,22 @@ class FruitKind:
     }
     SHIELD = {
         "name": "SHIELD",
-        "color": (236, 20, 34),
+        "color": (68, 79, 231),
         "image": "snakes_battle\\images\\fruits\\shield.png",
         "creation_probability": 1/500, # Will create a bomb roughly every 20 frames.
         "lifespan": 30, # How many frames will the bomb be on the board
     }
     
+    SKULL = {
+        "name": "SKULL",
+        "color": (38, 38, 38),
+        "image": "snakes_battle\\images\\fruits\\skull.png",
+        "creation_probability": 1/600, # Will create a bomb roughly every 20 frames.
+        "lifespan": 15, # How many frames will the bomb be on the board
+    }
+
     beneficial_fruits = [STRAWBERRY, DRAGON_FRUIT]
-    harmful_fruits = [BOMB]
+    harmful_fruits = [BOMB, SKULL]
     special_fruits = [SHIELD]
     fruits = beneficial_fruits + harmful_fruits + special_fruits
 

@@ -81,6 +81,10 @@ def apply_logic(board):
         new_special_fruit = Fruit(random.choice(FruitKind.special_fruits), get_new_fruit_position(board))
         board.add_fruit(new_special_fruit)
 
+    if random.random() < FruitKind.SKULL["creation_probability"]:
+        new_skull = Fruit(FruitKind.SKULL, get_new_fruit_position(board))
+        board.add_fruit(new_skull)
+
     # Rule - subtract lifespan in 1. when lifespan is zero, remove the fruit from board.
     if fruit.lifespan > 0:
         fruit.lifespan -= 1

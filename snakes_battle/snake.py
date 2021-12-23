@@ -130,8 +130,11 @@ class Snake:
             if self.super_power["SHIELD"]:
                 self.super_power["SHIELD"] = False
                 return
-                
-            self.shrink(-fruit.kind["score"])
+            
+            if fruit.kind == FruitKind.BOMB:
+                self.shrink(-fruit.kind["score"])
+            elif fruit.kind == FruitKind.SKULL:
+                self.shrink(self.length)
         
         elif fruit.kind in FruitKind.special_fruits:
             if fruit.kind == FruitKind.SHIELD:
