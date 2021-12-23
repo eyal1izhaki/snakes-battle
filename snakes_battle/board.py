@@ -13,6 +13,8 @@ class Board:
         self.empty_cells = [] # Current empty cells. You have to call _update_empty_cells function every time before accessing this variable.
         self.all_cells_pos = [] # All potentially empty cells.
         self.border_cells = []
+
+        self.is_there_a_king = False
         
         # Initilazing the 'border_cells' list.
         for x in range( self.board_size[0]):

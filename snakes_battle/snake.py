@@ -22,7 +22,9 @@ class Snake:
 
         # All the special fruits that active in this snake.
         self.super_power = {
-            "SHIELD": False
+            "SHIELD": False,
+            "KING": False,
+            "KNIFE": False
         }
 
 
@@ -139,3 +141,7 @@ class Snake:
         elif fruit.kind in FruitKind.special_fruits:
             if fruit.kind == FruitKind.SHIELD:
                 self.super_power["SHIELD"] = True
+            elif fruit.kind == FruitKind.KING:
+                self.super_power["KING"] = True
+            elif fruit.kind == FruitKind.KNIFE:
+                self.super_power["KNIFE"] = True

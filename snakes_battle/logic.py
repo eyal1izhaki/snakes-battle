@@ -12,9 +12,22 @@ def apply_logic(board):
 
     for snake in board.snakes:
 
-        # Rule: Snake eats a fruit
         for fruit in board.fruits:
+                        
+            # Rule - subtract 1 lifespan. when lifespan is zero, remove the fruit from board.
+            if fruit.lifespan > 0:
+                fruit.lifespan -= 1
+            
+            if fruit.lifespan == 0:
+                board.fruit_eaten(fruit)
+                continue
+            
+            # Rule: Snake eats a fruit
             if snake.body_pos[0] == fruit.pos: # if head of snake in the same position of the fruit
+
+                if fruit.kind == FruitKind.KING:
+                    board.is_there_a_king = True
+
                 snake.eat(fruit)
                 board.fruit_eaten(fruit)
 
@@ -23,12 +36,6 @@ def apply_logic(board):
                     board.add_fruit(new_fruit)
 
                 break
-
-
-        # Rule - Snake must have a length of 1 at least (can be lower if the snake was hit by a bomb and it's length was reduced too much)
-        if (snake.length == 0):
-            snake_lost(snake, board)
-            continue
 
         # Rule: Snake hitted a border
         if snake.body_pos[0][0] == settings.BORDER_THICKNESS-1: # Hitted left border
@@ -62,14 +69,29 @@ def apply_logic(board):
                             snake.shrink(len(headless) - i) # Snake is not shielded so it will be shrinked. Snake cuts itself.
                             break
 
-            elif snake.body_pos[0] in _snake.body_pos: # snake hitted other snakes
+            else: # snake hitted other snakes
 
-                if snake.super_power["SHIELD"]: # Snake can hit other snakes without lose if it shielded
-                        snake.super_power["SHIELD"] = False
+                for i in range(len(_snake.body_pos) - 1):
 
-                else: # Snake not shielded so it loses.
-                    snake_lost(snake,board)
-                    break
+                    if snake.body_pos[0] == _snake.body_pos[i]:
+
+                        if snake.super_power["KNIFE"]:
+                            snake.super_power["KNIFE"] = False
+                            _snake.shrink(len(_snake.body_pos) - i)
+                            break
+
+                        elif snake.super_power["SHIELD"]: # Snake can hit other snakes without lose if it shielded
+                                snake.super_power["SHIELD"] = False
+                        
+                        else: # Snake not shielded so it loses.
+                            snake_lost(snake,board)
+                            break
+            
+
+        # Rule - Snake must have a length of 1 at least (can be lower if the snake was hit by a bomb and it's length was reduced too much)
+        if (snake.length == 0):
+            snake_lost(snake, board)
+            continue
         
     # Rule - generate a bomb randomly.
     if (random.random() < FruitKind.BOMB["creation_probability"]):
@@ -84,13 +106,14 @@ def apply_logic(board):
     if random.random() < FruitKind.SKULL["creation_probability"]:
         new_skull = Fruit(FruitKind.SKULL, get_new_fruit_position(board))
         board.add_fruit(new_skull)
-
-    # Rule - subtract lifespan in 1. when lifespan is zero, remove the fruit from board.
-    if fruit.lifespan > 0:
-        fruit.lifespan -= 1
     
-    if fruit.lifespan == 0:
-        board.fruit_eaten(fruit)
+    if not board.is_there_a_king and random.random() < FruitKind.KING["creation_probability"]:
+        new_king = Fruit(FruitKind.KING, get_new_fruit_position(board))
+        board.add_fruit(new_king)
+
+    if random.random() < FruitKind.KNIFE["creation_probability"]:
+        new_king = Fruit(FruitKind.KNIFE, get_new_fruit_position(board))
+        board.add_fruit(new_king)
 
 
 
