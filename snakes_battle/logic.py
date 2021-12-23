@@ -36,6 +36,11 @@ def apply_logic(board):
                     board.add_fruit(new_fruit)
 
                 break
+        
+        # Rule - Snake must have a length of 1 at least (can be lower if the snake was hit by a bomb and it's length was reduced too much)
+        if (snake.length == 0):
+            snake_lost(snake, board)
+            continue
 
         # Rule: Snake hitted a border
         if snake.body_pos[0][0] == settings.BORDER_THICKNESS-1: # Hitted left border
@@ -87,11 +92,6 @@ def apply_logic(board):
                             snake_lost(snake,board)
                             break
             
-
-        # Rule - Snake must have a length of 1 at least (can be lower if the snake was hit by a bomb and it's length was reduced too much)
-        if (snake.length == 0):
-            snake_lost(snake, board)
-            continue
         
     # Rule - generate a bomb randomly.
     if (random.random() < FruitKind.BOMB["creation_probability"]):
@@ -118,6 +118,9 @@ def apply_logic(board):
 
 
 def snake_lost(snake,board):
+    if snake.super_power["KING"]:
+        board.is_there_a_king = False
+        
     board.lost_snakes.append(snake)
     board.snakes.remove(snake)
 
