@@ -18,7 +18,7 @@ Fruits:
 1. 'Shield' fruit protects the snake from getting hurt when eating a bomb. Snake with a shield can cross itself without cutting it body. Snake with a shield won't get hurt by Skull fruit. The shield protects the snake only once. 
 2. 'Skull' kills the snake the eat it unless the snake is shielded.
 3. 'King' It just looks cool. We can add a special power for a snake that is a king. Only one king in a game.
-4. 'knife' gives the snake the power to cut other snakes. This power limited for one snake only.
+4. 'knife' gives the snake the power to cut other snakes. This power is limited for cutting only one snake.
 
 
 
