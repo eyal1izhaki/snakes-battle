@@ -1,4 +1,8 @@
 class FruitKind:
+
+    # creation_probability: The probability that the fruit will be created on the board every frame.
+    # lifespan: How many frames will the bomb be on the board
+
     STRAWBERRY = {
         "name": "STRAWBERRY",
         "color": (255, 62, 97),
@@ -19,42 +23,43 @@ class FruitKind:
         "color": (114, 114, 114),
         "image": "snakes_battle\\images\\fruits\\bomb.png",
         "score": -2,
-        "creation_probability": 1/100, # Will create a bomb roughly every 20 frames.
-        "lifespan": 80, # How many frames will the bomb be on the board
+        "creation_probability": 1/100,
+        "lifespan": 80,
     }
     SHIELD = {
         "name": "SHIELD",
         "color": (68, 79, 231),
         "image": "snakes_battle\\images\\fruits\\shield.png",
-        "creation_probability": 1/500, # Will create a bomb roughly every 20 frames.
-        "lifespan": 30, # How many frames will the bomb be on the board
+        "creation_probability": 1/500,
+        "lifespan": 30,
     }
     
     SKULL = {
         "name": "SKULL",
         "color": (38, 38, 38),
         "image": "snakes_battle\\images\\fruits\\skull.png",
-        "creation_probability": 1/600, # Will create a bomb roughly every 20 frames.
-        "lifespan": 15, # How many frames will the bomb be on the board
+        "creation_probability": 1/600,
+        "lifespan": 15,
     }
     KING = {
         "name": "KING",
         "color": (254, 212, 2),
         "image": "snakes_battle\\images\\fruits\\king.png",
-        "creation_probability": 1/600, # Will create a bomb roughly every 20 frames.
-        "lifespan": 30, # How many frames will the bomb be on the board
+        "creation_probability": 1/600,
+        "lifespan": 30,
     }
     KNIFE = {
         "name": "KNIFE",
         "color": (255, 107, 107),
         "image": "snakes_battle\\images\\fruits\\knife.png",
-        "creation_probability": 1/600, # Will create a bomb roughly every 20 frames.
-        "lifespan": 30, # How many frames will the bomb be on the board
+        "creation_probability": 1/600,
+        "lifespan": 30, 
     }
 
     beneficial_fruits = [STRAWBERRY, DRAGON_FRUIT]
     harmful_fruits = [BOMB, SKULL]
     special_fruits = [SHIELD, KING, KNIFE]
+    randomly_created = [BOMB, SKULL, SHIELD, KING, KNIFE]
     fruits = beneficial_fruits + harmful_fruits + special_fruits
 
 

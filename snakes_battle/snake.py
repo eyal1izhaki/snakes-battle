@@ -1,8 +1,6 @@
 from random import randint
 import copy
 
-from snakes_battle.fruit import FruitKind
-
 class Direction:
     RIGHT = 0
     LEFT = 1
@@ -20,13 +18,10 @@ class Snake:
         self.length = 1
         self.body_pos = None
 
-        # All the special fruits that active in this snake.
-        self.super_power = {
-            "SHIELD": False,
-            "KING": False,
-            "KNIFE": False
-        }
-
+        # All the special fruits that can be active in this snake.
+        self.shield = False
+        self.king = False
+        self.knife = False
 
     def grow(self, growth_amount):
         # Makes the snake <growth_amount> cells longer. Will be called when a snake eats a fruit for example
@@ -123,25 +118,3 @@ class Snake:
             return
         
         self.body_pos = self.body_pos[:self.length] # Removing nodes from the snake
-
-    def eat(self, fruit):
-        if fruit.kind in FruitKind.beneficial_fruits:
-            self.grow(fruit.kind["score"])
-
-        elif fruit.kind in FruitKind.harmful_fruits:
-            if self.super_power["SHIELD"]:
-                self.super_power["SHIELD"] = False
-                return
-            
-            if fruit.kind == FruitKind.BOMB:
-                self.shrink(-fruit.kind["score"])
-            elif fruit.kind == FruitKind.SKULL:
-                self.shrink(self.length)
-        
-        elif fruit.kind in FruitKind.special_fruits:
-            if fruit.kind == FruitKind.SHIELD:
-                self.super_power["SHIELD"] = True
-            elif fruit.kind == FruitKind.KING:
-                self.super_power["KING"] = True
-            elif fruit.kind == FruitKind.KNIFE:
-                self.super_power["KNIFE"] = True

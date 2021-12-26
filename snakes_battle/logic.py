@@ -28,7 +28,7 @@ def apply_logic(board):
                 if fruit.kind == FruitKind.KING:
                     board.is_there_a_king = True
 
-                snake.eat(fruit)
+                snake_eats(snake, fruit)
                 board.fruit_eaten(fruit)
 
                 if fruit.kind in FruitKind.beneficial_fruits:
@@ -68,10 +68,13 @@ def apply_logic(board):
 
                 for i in range(len(headless)):
                     if snake.body_pos[0] == headless[i]:
-                        if snake.super_power["SHIELD"]: # If snake is shielded then it won't shrink
-                            snake.super_power["SHIELD"] = False
+                        if snake.shield: # If snake is shielded then it won't shrink
+                            snake.shield = False
                         else:
-                            snake.shrink(len(headless) - i) # Snake is not shielded so it will be shrinked. Snake cuts itself.
+                            # Snake is not shielded so it will be shrinked. Snake cuts itself.
+                            # snake.shrink(len(headless) - i)
+                            
+                            snake_lost(snake, board)
                             break
 
             else: # snake hitted other snakes
@@ -80,45 +83,53 @@ def apply_logic(board):
 
                     if snake.body_pos[0] == _snake.body_pos[i]:
 
-                        if snake.super_power["KNIFE"]:
-                            snake.super_power["KNIFE"] = False
+                        if snake.knife:
+                            snake.knife = False
                             _snake.shrink(len(_snake.body_pos) - i)
                             break
 
-                        elif snake.super_power["SHIELD"]: # Snake can hit other snakes without lose if it shielded
-                                snake.super_power["SHIELD"] = False
+                        elif snake.shield: # Snake can hit other snakes without lose if it shielded
+                                snake.shield = False
                         
                         else: # Snake not shielded so it loses.
                             snake_lost(snake,board)
                             break
-            
+
+    # Creates randomly created fruits in their creation_probability.
+    for randomly_created_fruit in FruitKind.randomly_created:
+        if random.random() < randomly_created_fruit["creation_probability"]:
+            new_fruit= Fruit(randomly_created_fruit, get_new_fruit_position(board))
+            board.add_fruit(new_fruit)
+
+
+
+def snake_eats(snake, fruit):
+    # What's happen when the snake eats a fruit.
+    
+    if fruit.kind in FruitKind.beneficial_fruits:
+        snake.grow(fruit.kind["score"])
+
+    elif fruit.kind in FruitKind.harmful_fruits:
+        if snake.shield:
+            snake.shield = False
+            return
         
-    # Rule - generate a bomb randomly.
-    if (random.random() < FruitKind.BOMB["creation_probability"]):
-        new_bomb = Fruit(FruitKind.BOMB, get_new_fruit_position(board))
-        board.add_fruit(new_bomb)
+        if fruit.kind == FruitKind.BOMB:
+            snake.shrink(-fruit.kind["score"])
+        elif fruit.kind == FruitKind.SKULL:
+            snake.shrink(snake.length)
     
-    # Rule - generate a special fruit randomly.
-    if random.random() < FruitKind.SHIELD["creation_probability"]:
-        new_special_fruit = Fruit(random.choice(FruitKind.special_fruits), get_new_fruit_position(board))
-        board.add_fruit(new_special_fruit)
-
-    if random.random() < FruitKind.SKULL["creation_probability"]:
-        new_skull = Fruit(FruitKind.SKULL, get_new_fruit_position(board))
-        board.add_fruit(new_skull)
-    
-    if not board.is_there_a_king and random.random() < FruitKind.KING["creation_probability"]:
-        new_king = Fruit(FruitKind.KING, get_new_fruit_position(board))
-        board.add_fruit(new_king)
-
-    if random.random() < FruitKind.KNIFE["creation_probability"]:
-        new_king = Fruit(FruitKind.KNIFE, get_new_fruit_position(board))
-        board.add_fruit(new_king)
-
+    elif fruit.kind in FruitKind.special_fruits:
+        if fruit.kind == FruitKind.SHIELD:
+            snake.shield = True
+        elif fruit.kind == FruitKind.KING:
+            snake.king = True
+        elif fruit.kind == FruitKind.KNIFE:
+            snake.knife = True
 
 
 def snake_lost(snake,board):
-    if snake.super_power["KING"]:
+    if snake.king:
         board.is_there_a_king = False
         
     board.lost_snakes.append(snake)
