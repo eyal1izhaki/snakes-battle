@@ -33,9 +33,8 @@ for snake in snakes_array:
     board.add_snake(snake)
 
 board.add_fruit(Fruit(FruitKind.STRAWBERRY, logic.get_new_fruit_position(board)))
-time_pass = time.time()
 
-while time.time() - time_pass <= settings.GAME_TIME_LENGTH and len(board.snakes) > 0:
+while not board.is_game_timed_out() and len(board.snakes) > 0:
     time.sleep(settings.DELAY_BETWEEN_SCREEN_UPDATES)
 
     for event in pygame.event.get():

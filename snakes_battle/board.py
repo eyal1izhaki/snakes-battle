@@ -1,6 +1,7 @@
 import settings
 import random
 import copy
+import time
 
 class Board:
     def __init__(self, board_size) -> None:
@@ -13,6 +14,7 @@ class Board:
         self.empty_cells = [] # Current empty cells. You have to call _update_empty_cells function every time before accessing this variable.
         self.all_cells_pos = [] # All potentially empty cells.
         self.border_cells = []
+        self.start_time = time.time()
         
         # Initilazing the 'border_cells' list.
         for x in range( self.board_size[0]):
@@ -55,3 +57,12 @@ class Board:
             "snakes": copy.deepcopy(self.snakes),
             "fruits": copy.deepcopy(self.fruits)
             }
+
+    def total_game_time(self):
+        return time.time() - self.start_time
+    
+    def game_time_left(self):
+        return round(settings.GAME_TIME_LENGTH - self.total_game_time(), 2)
+    
+    def is_game_timed_out(self):
+        return self.game_time_left() <= 0

@@ -270,8 +270,10 @@ class GameGraphics:
     def _draw_scoreboard(self, board):
         score_title_surface = self.title_font.render("Scoreboard:", False, (0, 0, 0))
         score_subtitle_surface = self.subtitle_font.render("aka the best game made by the best team alpha's scoreboard:", False, (0, 0, 0))
+        time_left_surface = self.score_font.render(f"Time left: {board.game_time_left()}", False, (0, 0, 0))
         self.surface.blit(score_title_surface, self.SCOREBOARD_STARTING_POSITION)
         self.surface.blit(score_subtitle_surface, (self.SCOREBOARD_STARTING_POSITION[0], self.SCOREBOARD_STARTING_POSITION[1] + 60))
+        self.surface.blit(time_left_surface, (self.SCOREBOARD_STARTING_POSITION[0], 0))
 
         all_snakes = board.snakes + board.lost_snakes
         for i, snake in enumerate(all_snakes):
