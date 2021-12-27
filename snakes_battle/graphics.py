@@ -63,7 +63,7 @@ class GameGraphics:
 
         # Loads all snakes heads
         for color in settings.SNAKES_COLORS:
-            self.images[f"HEAD_{str(color)}"] = self._load_and_scale_image(f"snakes_battle\\images\\snake_heads\snake_head{str(color)}.png", fit_width=True, fit_height=False)
+            self.images[f"HEAD_{str(color)}"] = self._load_and_scale_image(f"snakes_battle/images/snake_heads/snake_head{str(color)}.png", fit_width=True, fit_height=False)
         
 
         self.title_font = pygame.font.SysFont('Arial Black', settings.SCOREBOARD_TITLE_FONT_SIZE)
@@ -230,7 +230,7 @@ class GameGraphics:
                     pygame.draw.polygon(self.surface, snake.color, coordinates)
 
                 # Drawing the king image in the snake
-                if i == 1 and snake.super_power["KING"]:
+                if i == 1 and snake.king:
                     if snake.direction == Direction.UP:
                         rotated = pygame.transform.rotate(self.images["KING"], 180)
                     elif snake.direction == Direction.DOWN:
