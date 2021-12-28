@@ -8,9 +8,6 @@ import math
 from snakes_battle.fruit import Fruit, FruitKind
 from snakes_battle.snake import Direction
 
-
-
-
 class GameGraphics:
     def __init__(self) -> None:
 
@@ -346,3 +343,71 @@ class GameGraphics:
 
         # Displaying draws
         pygame.display.flip()
+    
+    def draw_menu(self, ai_classes_available, events):
+        screen_size = self.surface.get_size()
+
+        # Drawing the background
+        bg = pygame.image.load(os.path.join(settings.MENU_BACKGROUND_IMAGE_PATH))
+        bg = pygame.transform.scale(bg, screen_size)
+
+        self.surface.blit(bg, (0, 0))
+
+        # Drawing the title
+        score_title_surface = self.title_font.render("Alpha's Snake AI Competition!", False, (255, 255, 255))
+        self.surface.blit(score_title_surface, (screen_size[0] / 3.5, screen_size[1] / 10))
+
+        # Drawing the buttons
+        buttons_start_position = (screen_size[0] * (1 / 10 + settings.MENU_BUTTONS_SHIFT_LEFT), settings.CLASS_NAME_START_Y, 300, 100)
+        
+        random_play_button = Button(buttons_start_position[0], buttons_start_position[1], "Play", self.score_font, self.surface)
+        exit_button = Button(buttons_start_position[0] + (settings.BUTTONS_WIDTH + settings.BUTTONS_SPACING) * 1, buttons_start_position[1], "Exit", self.score_font, self.surface)
+
+        buttons_list = [random_play_button, exit_button]
+
+        for button in buttons_list:
+            button.draw()
+
+        # Checking if a button is pressed
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONUP:
+                pos = pygame.mouse.get_pos()
+                for button in buttons_list:
+                    if (button.button_rect.collidepoint(pos)):
+                        return button.text
+        
+        # Displaying the available classes to play
+        class_picker_header_text = self.score_font.render("Choose classes to play (Toggle number)", False, (255, 255, 255))
+        self.surface.blit(class_picker_header_text, (settings.CLASS_NAME_START_X, settings.CLASS_NAME_START_Y))
+        for index, class_dict in enumerate(ai_classes_available):
+            if (class_dict['should_play'] == True):
+                text_color = (0, 255, 0)
+            else:
+                text_color = (255, 0, 0)
+            
+            text_surface = self.score_font.render(str(index + 1) + "   -   " + class_dict["class"].__name__, False, text_color)
+            self.surface.blit(text_surface, (settings.CLASS_NAME_START_X, settings.CLASS_NAME_START_Y + settings.CLASS_NAME_SPACING * (index + 1)))
+
+
+        # Displaying draws
+        pygame.display.flip()
+
+
+class Button:
+    def __init__(self, x, y, text, font, surface, width = settings.BUTTONS_WIDTH, height = settings.BUTTONS_HEIGHT, color = settings.MENUS_BUTTON_COLOR):
+        self.x = x
+        self.y = y
+        self.text = text
+        self.font = font
+        self.surface = surface
+        self.width = width
+        self.height = height
+        self.color = color
+        self.text_margin_top = 40 # In px
+        self.text_margin_left = 30 # In px
+        self.button_rect = pygame.Rect(x, y, width, height)
+
+    def draw(self):
+        pygame.draw.rect(self.surface, self.color, self.button_rect)
+        text_surface = self.font.render(self.text, False, (0, 0, 0))
+        self.surface.blit(text_surface, (self.x + self.text_margin_left, self.y + self.text_margin_top))

@@ -7,7 +7,7 @@ import sys
 import time
 
 from snakes_battle.board import Board
-from snakes_battle.ai_snake import AISnake
+from snakes_battle.snakes_ai.simple_snake import SimpleSnake
 from snakes_battle import logic
 from snakes_battle.graphics import GameGraphics
 from tkinter import messagebox,Tk
@@ -17,8 +17,8 @@ from snakes_battle.fruit import FruitKind, Fruit
 graphics = GameGraphics()
 board = Board(graphics.board_size)
 
-snake_a = AISnake(board.border_cells, color=graphics.get_unique_snake_color(), name="Yagel")
-snake_b = AISnake(board.border_cells, color=graphics.get_unique_snake_color(), name="David")
+snake_a = SimpleSnake(board.border_cells, color=graphics.get_unique_snake_color(), name="Yagel")
+snake_b = SimpleSnake(board.border_cells, color=graphics.get_unique_snake_color(), name="David")
 
 
 snakes_array = [snake_a, snake_b]

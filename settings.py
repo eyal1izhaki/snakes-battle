@@ -30,7 +30,6 @@ SNAKES_COLORS = [(160, 196, 50) ,(106, 153, 73), (55, 40, 40), (120, 100, 19), (
 DEAD_SNAKE_IMAGE_PATH = "snakes_battle\\images\\dead_icon.png"
 
 
-
 # General
 DELAY_BETWEEN_SCREEN_UPDATES = 0.04 # Delay between screen update to another. Snakes move one cell every screen update. 0.07 looks good
 
@@ -53,3 +52,17 @@ BOMB_CREATION_PROBABILITY = 1 / 100 # Will create a bomb roughly every 20 frames
 BOMB_LIFESPAN = 100 # How many frames will the bomb be on the board
 
 ######################################
+
+# Main menu constants
+MENU_BACKGROUND_IMAGE_PATH = "snakes_battle\\images\\menu_bg.jpg"
+MENUS_BUTTON_COLOR = (15, 200, 220)
+BUTTONS_WIDTH = 250
+BUTTONS_HEIGHT = 125
+BUTTONS_SPACING = 80
+MENU_BUTTONS_SHIFT_LEFT = 2 / 5
+
+CLASS_NAME_SPACING = 80
+CLASS_NAME_START_X = 100
+CLASS_NAME_START_Y = 300
+
+PYGAME_START_NUMBER_PRESS_VALUE = 49

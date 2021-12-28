@@ -1,6 +1,6 @@
 from snakes_battle.snake import Snake, Direction
 
-class AISnake(Snake):
+class SimpleSnake(Snake):
     def __init__(self, borders_cells, color, name) -> None:
         super().__init__(color, name)
 
