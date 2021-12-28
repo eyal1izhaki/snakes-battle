@@ -35,7 +35,7 @@ def main():
         if (game_running == True):
             playing_classes = [x['class'] for x in ai_classes_available if x["should_play"] == True]
             if (len(playing_classes) > 0):
-                run_game(graphics, playing_classes)
+                run_game(playing_classes)
             else:
                 root = Tk()
                 root.withdraw()
@@ -84,7 +84,8 @@ def run_menus(graphics):
         elif (snake_picker == True):
             pass
 
-def run_game(graphics, playing_classes):
+def run_game(playing_classes):
+    graphics = GameGraphics(ai_classes_available)
     board = Board(graphics.board_size)
 
     snakes_array = []

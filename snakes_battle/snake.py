@@ -19,6 +19,7 @@ class Snake:
         self.direction = randint(0,3) # Only 4 directions - will pick one of them
         self.length = 1
         self.body_pos = None
+        self.version = 1.0
 
 
     def grow(self, growth_amount):

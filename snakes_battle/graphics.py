@@ -275,7 +275,7 @@ class GameGraphics:
         all_snakes = board.snakes + board.lost_snakes
         for i, snake in enumerate(all_snakes):
             score_position = (self.SCOREBOARD_STARTING_POSITION[0], self.SCOREBOARD_STARTING_POSITION[1] + (i + 2) * self.cell_size * settings.SCOREBOARD_TITLE_SCORE_SEPERATION)
-            score_text_surface = self.score_font.render(f"{snake.name}: {snake.length}", False, snake.color)
+            score_text_surface = self.score_font.render(f"{snake.name} (v{snake.version}): {snake.length}", False, snake.color)
             self.surface.blit(score_text_surface, score_position)
             if (snake in board.lost_snakes):
                 self.surface.blit(self.dead_snake_image, score_position)
