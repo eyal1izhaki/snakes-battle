@@ -9,7 +9,7 @@ from snakes_battle.fruit import Fruit, FruitKind
 from snakes_battle.snake import Direction
 
 class GameGraphics:
-    def __init__(self) -> None:
+    def __init__(self, ai_classes_available) -> None:
 
         pygame.init()
         self.surface = self._create_surface()
@@ -59,8 +59,8 @@ class GameGraphics:
             self.images[name] = image
 
         # Loads all snakes heads
-        for color in settings.SNAKES_COLORS:
-            self.images[f"HEAD_{str(color)}"] = self._load_and_scale_image(f"snakes_battle\\images\\snake_heads\snake_head{str(color)}.png", fit_width=True, fit_height=False)
+        for snake_class_dict in ai_classes_available:
+            self.images[snake_class_dict['class'].__name__] = self._load_and_scale_image(f"snakes_battle\\images\\snake_heads\{snake_class_dict['class'].__name__}.png", fit_width=True, fit_height=False)
 
         self.title_font = pygame.font.SysFont('Arial Black', settings.SCOREBOARD_TITLE_FONT_SIZE)
         self.subtitle_font = pygame.font.SysFont('Arial Black', 10)
@@ -108,7 +108,7 @@ class GameGraphics:
     def _draw_snake(self, snake, margin=4):
 
         snake_head_offset_to_body = 2
-        head_image = self.images[f"HEAD_{str(snake.color)}"]
+        head_image = self.images[snake.__class__.__name__]
 
 
         # Creating the turn block surface. We will rotate it as needed.
@@ -275,7 +275,7 @@ class GameGraphics:
         all_snakes = board.snakes + board.lost_snakes
         for i, snake in enumerate(all_snakes):
             score_position = (self.SCOREBOARD_STARTING_POSITION[0], self.SCOREBOARD_STARTING_POSITION[1] + (i + 2) * self.cell_size * settings.SCOREBOARD_TITLE_SCORE_SEPERATION)
-            score_text_surface = self.score_font.render(f"{snake.name}: {snake.length}", False, (0, 0, 0))
+            score_text_surface = self.score_font.render(f"{snake.name}: {snake.length}", False, snake.color)
             self.surface.blit(score_text_surface, score_position)
             if (snake in board.lost_snakes):
                 self.surface.blit(self.dead_snake_image, score_position)
@@ -370,6 +370,9 @@ class GameGraphics:
 
         # Checking if a button is pressed
         for event in events:
+            if event.type == pygame.KEYDOWN:
+                if (event.key == pygame.K_SPACE):
+                    return "Play"
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
                 for button in buttons_list:

@@ -9,20 +9,27 @@ import time
 from snakes_battle.board import Board
 from snakes_battle.snakes_ai.random_snake import RandomSnake
 from snakes_battle.snakes_ai.simple_snake import SimpleSnake
+from snakes_battle.snakes_ai.manual_control_snake import ManualSnake
+from snakes_battle.snakes_ai.manual_control_snake_wasd import ManualSnakeWASD
 from snakes_battle import logic
 from snakes_battle.graphics import GameGraphics
 from tkinter import messagebox,Tk
 import settings
 from snakes_battle.fruit import FruitKind, Fruit
 
-ai_classes_available = [{ "class": RandomSnake, "should_play": False }, { "class": SimpleSnake, "should_play": False }]
+ai_classes_available = [
+    { "class": RandomSnake, "should_play": False },
+    { "class": SimpleSnake, "should_play": False },
+    { "class": ManualSnake, "should_play": False },
+    { "class": ManualSnakeWASD, "should_play": False }
+    ]
 
 def main():
     should_exit = False
     game_running = False
     game_menus = True
 
-    graphics = GameGraphics()
+    graphics = GameGraphics(ai_classes_available)
 
     while (should_exit == False):
         if (game_running == True):
@@ -100,7 +107,8 @@ def run_game(graphics, playing_classes):
         time.sleep(settings.DELAY_BETWEEN_SCREEN_UPDATES)
 
         should_exit = False
-        for event in pygame.event.get():
+        events = pygame.event.get()
+        for event in events:
             if event.type == pygame.QUIT:
                 should_exit = True
 
@@ -113,7 +121,10 @@ def run_game(graphics, playing_classes):
 
         # The AI Snake Should make a decision in which direction to go.
         for snake in board.snakes:
-            snake.change_direction(board.get_board_state())
+            if (snake.__class__ in [ManualSnake, ManualSnakeWASD] ):
+                snake.change_direction(board.get_board_state(), events)
+            else:
+                snake.change_direction(board.get_board_state())
             snake.move_one_cell()
 
 
