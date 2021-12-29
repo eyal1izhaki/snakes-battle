@@ -60,7 +60,11 @@ class GameGraphics:
 
         # Loads all snakes heads
         for snake_class_dict in ai_classes_available:
-            self.images[snake_class_dict['class'].__name__] = self._load_and_scale_image(f"snakes_battle\\images\\snake_heads\{snake_class_dict['class'].__name__}.png", fit_width=True, fit_height=False)
+            self.images[snake_class_dict['class'].__name__] = self._load_and_scale_image(f"snakes_battle/images/snake_heads/{snake_class_dict['class'].__name__}.png", fit_width=True, fit_height=False)
+
+        # for color in settings.SNAKES_COLORS:
+        #     self.images[f"HEAD_{str(color)}"] = self._load_and_scale_image(f"snakes_battle/images/snake_heads/snake_head{str(color)}.png", fit_width=True, fit_height=False)
+        
 
         self.title_font = pygame.font.SysFont('Arial Black', settings.SCOREBOARD_TITLE_FONT_SIZE)
         self.subtitle_font = pygame.font.SysFont('Arial Black', 10)
@@ -224,6 +228,19 @@ class GameGraphics:
                     coordinates = [top_left, bottom_left, bottom_right, top_right]
 
                     pygame.draw.polygon(self.surface, snake.color, coordinates)
+
+                # Drawing the king image in the snake
+                if i == 1 and snake.king:
+                    if snake.direction == Direction.UP:
+                        rotated = pygame.transform.rotate(self.images["KING"], 180)
+                    elif snake.direction == Direction.DOWN:
+                        rotated = pygame.transform.rotate(self.images["KING"], 0) 
+                    elif snake.direction == Direction.RIGHT:
+                        rotated = pygame.transform.rotate(self.images["KING"], 90) 
+                    else:
+                        rotated = pygame.transform.rotate(self.images["KING"], -90)
+
+                    self.surface.blit(rotated, (coordinates[0][0] - margin, coordinates[0][1] - margin))
 
                 
 

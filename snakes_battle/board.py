@@ -15,6 +15,8 @@ class Board:
         self.all_cells_pos = [] # All potentially empty cells.
         self.border_cells = []
         self.start_time = time.time()
+
+        self.is_there_a_king = False
         
         # Initilazing the 'border_cells' list.
         for x in range( self.board_size[0]):
