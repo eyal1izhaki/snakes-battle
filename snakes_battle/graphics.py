@@ -8,11 +8,8 @@ import math
 from snakes_battle.fruit import Fruit, FruitKind
 from snakes_battle.snake import Direction
 
-
-
-
 class GameGraphics:
-    def __init__(self) -> None:
+    def __init__(self, ai_classes_available) -> None:
 
         pygame.init()
         self.surface = self._create_surface()
@@ -62,8 +59,11 @@ class GameGraphics:
             self.images[name] = image
 
         # Loads all snakes heads
-        for color in settings.SNAKES_COLORS:
-            self.images[f"HEAD_{str(color)}"] = self._load_and_scale_image(f"snakes_battle/images/snake_heads/snake_head{str(color)}.png", fit_width=True, fit_height=False)
+        for snake_class_dict in ai_classes_available:
+            self.images[snake_class_dict['class'].__name__] = self._load_and_scale_image(f"snakes_battle/images/snake_heads/{snake_class_dict['class'].__name__}.png", fit_width=True, fit_height=False)
+
+        # for color in settings.SNAKES_COLORS:
+        #     self.images[f"HEAD_{str(color)}"] = self._load_and_scale_image(f"snakes_battle/images/snake_heads/snake_head{str(color)}.png", fit_width=True, fit_height=False)
         
 
         self.title_font = pygame.font.SysFont('Arial Black', settings.SCOREBOARD_TITLE_FONT_SIZE)
@@ -112,7 +112,7 @@ class GameGraphics:
     def _draw_snake(self, snake, margin=4):
 
         snake_head_offset_to_body = 2
-        head_image = self.images[f"HEAD_{str(snake.color)}"]
+        head_image = self.images[snake.__class__.__name__]
 
 
         # Creating the turn block surface. We will rotate it as needed.
@@ -282,18 +282,38 @@ class GameGraphics:
         return surface
 
     def _draw_scoreboard(self, board):
+        # Drawing title and subtitle
         score_title_surface = self.title_font.render("Scoreboard:", False, (0, 0, 0))
         score_subtitle_surface = self.subtitle_font.render("aka the best game made by the best team alpha's scoreboard:", False, (0, 0, 0))
+        time_left_surface = self.score_font.render(f"Time left: {board.game_time_left()}", False, (0, 0, 0))
         self.surface.blit(score_title_surface, self.SCOREBOARD_STARTING_POSITION)
         self.surface.blit(score_subtitle_surface, (self.SCOREBOARD_STARTING_POSITION[0], self.SCOREBOARD_STARTING_POSITION[1] + 60))
+        self.surface.blit(time_left_surface, (self.SCOREBOARD_STARTING_POSITION[0], 0))
 
+        # Drawing all snakes' info
         all_snakes = board.snakes + board.lost_snakes
         for i, snake in enumerate(all_snakes):
+            # Drawing the snake and it's score
             score_position = (self.SCOREBOARD_STARTING_POSITION[0], self.SCOREBOARD_STARTING_POSITION[1] + (i + 2) * self.cell_size * settings.SCOREBOARD_TITLE_SCORE_SEPERATION)
-            score_text_surface = self.score_font.render(f"{snake.name}: {snake.length}", False, (0, 0, 0))
+            score_text_surface = self.score_font.render(f"{snake.name} (v{snake.version}): {snake.length}", False, snake.color)
             self.surface.blit(score_text_surface, score_position)
+
+            # If the snake is dead - add a dead image over it
             if (snake in board.lost_snakes):
                 self.surface.blit(self.dead_snake_image, score_position)
+            
+            # Drawing powerups the snake has on
+            seperator_count = 0 # How many powerups are displayed
+            if (snake.shield == True):
+                self.surface.blit(self.images["SHIELD"], [score_position[0] + (settings.SCOREBOARD_SCORE_POWERUPS_SEPERATOR + seperator_count) * self.cell_size, score_position[1]])
+                seperator_count += 1
+            if (snake.king == True):
+                self.surface.blit(self.images["KING"], [score_position[0] + (settings.SCOREBOARD_SCORE_POWERUPS_SEPERATOR + seperator_count) * self.cell_size, score_position[1]])
+                seperator_count += 1
+            if (snake.knife == True):
+                self.surface.blit(self.images["KNIFE"], [score_position[0] + (settings.SCOREBOARD_SCORE_POWERUPS_SEPERATOR + seperator_count) * self.cell_size, score_position[1]])
+                seperator_count += 1
+
 
     def _load_and_scale_image(self, image_path, fit_width=True, fit_height=True):
         # Loads the image and scales it to fit the cell width, height or both will keeping the image proportion.
@@ -358,3 +378,74 @@ class GameGraphics:
 
         # Displaying draws
         pygame.display.flip()
+    
+    def draw_menu(self, ai_classes_available, events):
+        screen_size = self.surface.get_size()
+
+        # Drawing the background
+        bg = pygame.image.load(os.path.join(settings.MENU_BACKGROUND_IMAGE_PATH))
+        bg = pygame.transform.scale(bg, screen_size)
+
+        self.surface.blit(bg, (0, 0))
+
+        # Drawing the title
+        score_title_surface = self.title_font.render("Alpha's Snake AI Competition!", False, (255, 255, 255))
+        self.surface.blit(score_title_surface, (screen_size[0] / 3.5, screen_size[1] / 10))
+
+        # Drawing the buttons
+        buttons_start_position = (screen_size[0] * (1 / 10 + settings.MENU_BUTTONS_SHIFT_LEFT), settings.CLASS_NAME_START_Y, 300, 100)
+        
+        random_play_button = Button(buttons_start_position[0], buttons_start_position[1], "Play", self.score_font, self.surface)
+        exit_button = Button(buttons_start_position[0] + (settings.BUTTONS_WIDTH + settings.BUTTONS_SPACING) * 1, buttons_start_position[1], "Exit", self.score_font, self.surface)
+
+        buttons_list = [random_play_button, exit_button]
+
+        for button in buttons_list:
+            button.draw()
+
+        # Checking if a button is pressed
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                if (event.key == pygame.K_SPACE):
+                    return "Play"
+            if event.type == pygame.MOUSEBUTTONUP:
+                pos = pygame.mouse.get_pos()
+                for button in buttons_list:
+                    if (button.button_rect.collidepoint(pos)):
+                        return button.text
+        
+        # Displaying the available classes to play
+        class_picker_header_text = self.score_font.render("Choose classes to play (Toggle number)", False, (255, 255, 255))
+        self.surface.blit(class_picker_header_text, (settings.CLASS_NAME_START_X, settings.CLASS_NAME_START_Y))
+        for index, class_dict in enumerate(ai_classes_available):
+            if (class_dict['should_play'] == True):
+                text_color = (0, 255, 0)
+            else:
+                text_color = (255, 0, 0)
+            
+            text_surface = self.score_font.render(str(index + 1) + "   -   " + class_dict["class"].__name__, False, text_color)
+            self.surface.blit(text_surface, (settings.CLASS_NAME_START_X, settings.CLASS_NAME_START_Y + settings.CLASS_NAME_SPACING * (index + 1)))
+
+
+        # Displaying draws
+        pygame.display.flip()
+
+
+class Button:
+    def __init__(self, x, y, text, font, surface, width = settings.BUTTONS_WIDTH, height = settings.BUTTONS_HEIGHT, color = settings.MENUS_BUTTON_COLOR):
+        self.x = x
+        self.y = y
+        self.text = text
+        self.font = font
+        self.surface = surface
+        self.width = width
+        self.height = height
+        self.color = color
+        self.text_margin_top = 40 # In px
+        self.text_margin_left = 30 # In px
+        self.button_rect = pygame.Rect(x, y, width, height)
+
+    def draw(self):
+        pygame.draw.rect(self.surface, self.color, self.button_rect)
+        text_surface = self.font.render(self.text, False, (0, 0, 0))
+        self.surface.blit(text_surface, (self.x + self.text_margin_left, self.y + self.text_margin_top))
