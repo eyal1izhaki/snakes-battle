@@ -85,6 +85,7 @@ def run_menus(graphics, ai_classes_available):
 def run_game(playing_classes, ai_classes_available):
     graphics = GameGraphics(ai_classes_available)
     board = Board(graphics.board_size)
+    frames_delay = settings.DELAY_BETWEEN_SCREEN_UPDATES
 
     snakes_array = []
 
@@ -103,7 +104,7 @@ def run_game(playing_classes, ai_classes_available):
     board.add_fruit(Fruit(FruitKind.STRAWBERRY, logic.get_new_fruit_position(board)))
 
     while not board.is_game_timed_out() and len(board.snakes) > 0:
-        time.sleep(settings.DELAY_BETWEEN_SCREEN_UPDATES)
+        time.sleep(frames_delay)
 
         should_exit = False
         events = pygame.event.get()
@@ -112,8 +113,10 @@ def run_game(playing_classes, ai_classes_available):
                 should_exit = True
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_a:
-                    pass
+                if event.unicode == "+":
+                    frames_delay *= 0.9
+                if event.unicode == "-":
+                    frames_delay *= 1.1
         
         if (should_exit == True):
             break
