@@ -303,13 +303,13 @@ class GameGraphics:
             # Drawing powerups the snake has on
             seperator_count = 0 # How many powerups are displayed
             if (snake.shield == True):
-                self.surface.blit(self.images["SHIELD"], [score_position[0] + settings.SCOREBOARD_SCORE_POWERUPS_SEPERATOR * self.cell_size + seperator_count * settings.SCOREBOARD_ICON_SEPERATOR, score_position[1]])
+                self.surface.blit(self.images["SHIELD"], [score_position[0] + (settings.SCOREBOARD_SCORE_POWERUPS_SEPERATOR + seperator_count) * self.cell_size, score_position[1]])
                 seperator_count += 1
             if (snake.king == True):
-                self.surface.blit(self.images["KING"], [score_position[0] + settings.SCOREBOARD_SCORE_POWERUPS_SEPERATOR * self.cell_size + seperator_count * settings.SCOREBOARD_ICON_SEPERATOR, score_position[1]])
+                self.surface.blit(self.images["KING"], [score_position[0] + (settings.SCOREBOARD_SCORE_POWERUPS_SEPERATOR + seperator_count) * self.cell_size, score_position[1]])
                 seperator_count += 1
             if (snake.knife == True):
-                self.surface.blit(self.images["KNIFE"], [score_position[0] + settings.SCOREBOARD_SCORE_POWERUPS_SEPERATOR * self.cell_size + seperator_count * settings.SCOREBOARD_ICON_SEPERATOR, score_position[1]])
+                self.surface.blit(self.images["KNIFE"], [score_position[0] + (settings.SCOREBOARD_SCORE_POWERUPS_SEPERATOR + seperator_count) * self.cell_size, score_position[1]])
                 seperator_count += 1
 
 
