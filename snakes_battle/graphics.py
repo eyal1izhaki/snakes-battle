@@ -282,18 +282,36 @@ class GameGraphics:
         return surface
 
     def _draw_scoreboard(self, board):
+        # Drawing title and subtitle
         score_title_surface = self.title_font.render("Scoreboard:", False, (0, 0, 0))
         score_subtitle_surface = self.subtitle_font.render("aka the best game made by the best team alpha's scoreboard:", False, (0, 0, 0))
         self.surface.blit(score_title_surface, self.SCOREBOARD_STARTING_POSITION)
         self.surface.blit(score_subtitle_surface, (self.SCOREBOARD_STARTING_POSITION[0], self.SCOREBOARD_STARTING_POSITION[1] + 60))
 
+        # Drawing all snakes' info
         all_snakes = board.snakes + board.lost_snakes
         for i, snake in enumerate(all_snakes):
+            # Drawing the snake and it's score
             score_position = (self.SCOREBOARD_STARTING_POSITION[0], self.SCOREBOARD_STARTING_POSITION[1] + (i + 2) * self.cell_size * settings.SCOREBOARD_TITLE_SCORE_SEPERATION)
             score_text_surface = self.score_font.render(f"{snake.name}: {snake.length}", False, (0, 0, 0))
             self.surface.blit(score_text_surface, score_position)
+
+            # If the snake is dead - add a dead image over it
             if (snake in board.lost_snakes):
                 self.surface.blit(self.dead_snake_image, score_position)
+            
+            # Drawing powerups the snake has on
+            seperator_count = 0 # How many powerups are displayed
+            if (snake.shield == True):
+                self.surface.blit(self.images["SHIELD"], [score_position[0] + settings.SCOREBOARD_SCORE_POWERUPS_SEPERATOR * self.cell_size + seperator_count * settings.SCOREBOARD_ICON_SEPERATOR, score_position[1]])
+                seperator_count += 1
+            if (snake.king == True):
+                self.surface.blit(self.images["KING"], [score_position[0] + settings.SCOREBOARD_SCORE_POWERUPS_SEPERATOR * self.cell_size + seperator_count * settings.SCOREBOARD_ICON_SEPERATOR, score_position[1]])
+                seperator_count += 1
+            if (snake.knife == True):
+                self.surface.blit(self.images["KNIFE"], [score_position[0] + settings.SCOREBOARD_SCORE_POWERUPS_SEPERATOR * self.cell_size + seperator_count * settings.SCOREBOARD_ICON_SEPERATOR, score_position[1]])
+                seperator_count += 1
+
 
     def _load_and_scale_image(self, image_path, fit_width=True, fit_height=True):
         # Loads the image and scales it to fit the cell width, height or both will keeping the image proportion.
