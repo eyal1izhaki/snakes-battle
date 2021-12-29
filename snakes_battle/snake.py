@@ -17,7 +17,7 @@ class Snake:
         self.direction = randint(0,3) # Only 4 directions - will pick one of them
         self.length = 1
         self.body_pos = None
-        self.version = 1.0
+        self.version = 0
 
         # All the special fruits that can be active in this snake.
         self.shield = False
@@ -119,3 +119,26 @@ class Snake:
             return
         
         self.body_pos = self.body_pos[:self.length] # Removing nodes from the snake
+
+
+    ########################################
+    # Only these methods are allowed to be called inside bot snakes. You can't access an attribute directly or any other method in snake class.
+    ########################################
+
+    def allowed__change_direction(self, direction: int):
+        self.change_direction(direction)
+    
+    def allowed__get_direction(self):
+        return self.direction
+    
+    def allowed__body_position(self):
+        return copy.deepcopy(self.body_pos)
+
+    def allowed__is_shield(self):
+        return self.shield
+
+    def allowed__is_king(self):
+        return self.king
+
+    def allowed__is_knife(self):
+        return self.knife

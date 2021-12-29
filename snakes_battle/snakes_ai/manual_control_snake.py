@@ -7,6 +7,7 @@ class ManualSnake(Snake):
 
         # All the cells that are fill with borders. This variable will store a list of (x, y) pairs
         self.border_cells = borders_cells
+        self.version = 1.0
     
     def change_direction(self, board_state, events):
         for event in events:
