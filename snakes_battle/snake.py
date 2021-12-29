@@ -21,8 +21,9 @@ class Snake:
 
         # All the special fruits that can be active in this snake.
         self.shield = False
-        self.king = False
         self.knife = False
+        self.king = False
+        self.king_remaining_effection = 0
 
     def grow(self, growth_amount):
         # Makes the snake <growth_amount> cells longer. Will be called when a snake eats a fruit for example

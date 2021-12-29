@@ -24,7 +24,7 @@ def apply_logic(board):
                     board.is_there_a_king = False
                     
                 continue
-            
+
             # Rule: Snake eats a fruit
             if snake.body_pos[0] == fruit.pos: # if head of snake in the same position of the fruit
 
@@ -39,7 +39,16 @@ def apply_logic(board):
                     board.add_fruit(new_fruit)
 
                 break
-        
+
+        # Rules - subtract king remaining effection by 1 every frame.
+        if snake.king:
+            snake.king_remaining_effection -=1
+
+            if snake.king_remaining_effection == 0:
+                snake.king = False
+                board.is_there_a_king = False
+            
+
         # Rule - Snake must have a length of 1 at least (can be lower if the snake was hit by a bomb and it's length was reduced too much)
         if (snake.length == 0):
             snake_lost(snake, board)
@@ -71,6 +80,10 @@ def apply_logic(board):
 
                 for i in range(len(headless)):
                     if snake.body_pos[0] == headless[i]:
+
+                        if snake.king: # King can cross itself
+                            break
+
                         if snake.shield: # If snake is shielded then it won't shrink
                             snake.shield = False
                         else:
@@ -86,7 +99,7 @@ def apply_logic(board):
 
                     if snake.body_pos[0] == _snake.body_pos[i]:
 
-                        if snake.knife:
+                        if snake.knife or snake.king:
                             snake.knife = False
                             _snake.shrink(len(_snake.body_pos) - i)
                             break
@@ -118,7 +131,7 @@ def snake_eats(snake, fruit):
         snake.grow(fruit.kind["score"])
 
     elif fruit.kind in FruitKind.harmful_fruits:
-        if snake.shield:
+        if snake.shield or snake.king:
             snake.shield = False
             return
         
@@ -130,10 +143,15 @@ def snake_eats(snake, fruit):
     elif fruit.kind in FruitKind.special_fruits:
         if fruit.kind == FruitKind.SHIELD:
             snake.shield = True
-        elif fruit.kind == FruitKind.KING:
-            snake.king = True
+
         elif fruit.kind == FruitKind.KNIFE:
             snake.knife = True
+
+        elif fruit.kind == FruitKind.KING:
+            snake.knife = False
+            snake.shield = False
+            snake.king = True
+            snake.king_remaining_effection = FruitKind.KING["effection_duration"]
 
 
 def snake_lost(snake,board):
