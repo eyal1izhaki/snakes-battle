@@ -44,8 +44,11 @@ while time.time() - time_pass <= settings.GAME_TIME_LENGTH and len(board.snakes)
             sys.exit()
 
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_a:
-                pass
+            if event.unicode == "+":
+                settings.DELAY_BETWEEN_SCREEN_UPDATES *= 0.9
+            if event.unicode == "-":
+                settings.DELAY_BETWEEN_SCREEN_UPDATES *= 1.1
+                
     # The AI Snake Should make a decision in which direction to go.
     for snake in board.snakes:
         snake.change_direction(board.get_board_state())

@@ -27,7 +27,7 @@ SCOREBOARD_TITLE_SCORE_SEPERATION = 4 # In units of CELL_SIZE
 
 # Snakes And Fruits
 SNAKES_COLORS = [(160, 196, 50) ,(106, 153, 73), (55, 40, 40), (120, 100, 19), (35, 166, 255), (225, 191, 0), (8, 32, 185), (28, 154, 57), (0, 97, 162)]
-DEAD_SNAKE_IMAGE_PATH = "snakes_battle\\images\\dead_icon.png"
+DEAD_SNAKE_IMAGE_PATH = "snakes_battle/images/dead_icon.png"
 
 
 
@@ -44,12 +44,8 @@ DELAY_BETWEEN_SCREEN_UPDATES = 0.04 # Delay between screen update to another. Sn
 ######################################
 
 
-STARTING_SNAKE_LENGTH = 3
+STARTING_SNAKE_LENGTH = 15
 
-GAME_TIME_LENGTH = 60
-
-BOMB_CREATION_PROBABILITY = 1 / 100 # Will create a bomb roughly every 20 frames.
-
-BOMB_LIFESPAN = 100 # How many frames will the bomb be on the board
+GAME_TIME_LENGTH = 10000
 
 ######################################

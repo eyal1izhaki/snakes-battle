@@ -1,5 +1,4 @@
-from random import randint, choice
-import settings
+from random import randint
 import copy
 
 class Direction:
@@ -12,7 +11,6 @@ class Snake:
 
     def __init__(self, color, name) -> None:
 
-        # Picking a random color
         self.name = name
         self.color = color
         
@@ -20,6 +18,10 @@ class Snake:
         self.length = 1
         self.body_pos = None
 
+        # All the special fruits that can be active in this snake.
+        self.shield = False
+        self.king = False
+        self.knife = False
 
     def grow(self, growth_amount):
         # Makes the snake <growth_amount> cells longer. Will be called when a snake eats a fruit for example
@@ -116,9 +118,3 @@ class Snake:
             return
         
         self.body_pos = self.body_pos[:self.length] # Removing nodes from the snake
-
-    def eat(self, fruit):
-        if fruit.score > 0:
-            self.grow(fruit.score)
-        elif fruit.score < 0:
-            self.shrink(-fruit.score)
