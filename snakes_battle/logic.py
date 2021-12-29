@@ -20,6 +20,9 @@ def apply_logic(board):
             
             if fruit.lifespan == 0:
                 board.fruit_eaten(fruit)
+                if fruit.kind == FruitKind.KING:
+                    board.is_there_a_king = False
+                    
                 continue
             
             # Rule: Snake eats a fruit
@@ -100,7 +103,9 @@ def apply_logic(board):
         if random.random() < randomly_created_fruit["creation_probability"]:
             if (randomly_created_fruit == FruitKind.KING and board.is_there_a_king):
                 continue
-            
+            else:
+                board.is_there_a_king = True
+
             new_fruit= Fruit(randomly_created_fruit, get_new_fruit_position(board))    
             board.add_fruit(new_fruit)
 
