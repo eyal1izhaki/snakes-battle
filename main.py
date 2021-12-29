@@ -17,14 +17,14 @@ from tkinter import messagebox,Tk
 import settings
 from snakes_battle.fruit import FruitKind, Fruit
 
-ai_classes_available = [
-    { "class": RandomSnake, "should_play": False },
-    { "class": SimpleSnake, "should_play": False },
-    { "class": ManualSnake, "should_play": False },
-    { "class": ManualSnakeWASD, "should_play": False }
+def main():
+    ai_classes_available = [
+        { "class": RandomSnake, "should_play": False },
+        { "class": SimpleSnake, "should_play": False },
+        { "class": ManualSnake, "should_play": False },
+        { "class": ManualSnakeWASD, "should_play": False }
     ]
 
-def main():
     should_exit = False
     game_running = False
     game_menus = True
@@ -35,7 +35,7 @@ def main():
         if (game_running == True):
             playing_classes = [x['class'] for x in ai_classes_available if x["should_play"] == True]
             if (len(playing_classes) > 0):
-                run_game(playing_classes)
+                run_game(playing_classes, ai_classes_available)
             else:
                 root = Tk()
                 root.withdraw()
@@ -45,7 +45,7 @@ def main():
             game_running = False
 
         elif (game_menus == True):
-            menus_return = run_menus(graphics)
+            menus_return = run_menus(graphics, ai_classes_available)
             if (menus_return['action'] == "Exit"):
                 pygame.quit()
                 should_exit = True
@@ -55,9 +55,7 @@ def main():
 
 
 
-def run_menus(graphics):
-    global ai_classes_available # A global just for it to be more accessible
-
+def run_menus(graphics, ai_classes_available):
     menu_running = True
 
     main_menu = True
@@ -84,7 +82,7 @@ def run_menus(graphics):
         elif (snake_picker == True):
             pass
 
-def run_game(playing_classes):
+def run_game(playing_classes, ai_classes_available):
     graphics = GameGraphics(ai_classes_available)
     board = Board(graphics.board_size)
 
