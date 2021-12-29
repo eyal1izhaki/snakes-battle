@@ -98,7 +98,10 @@ def apply_logic(board):
     # Creates randomly created fruits in their creation_probability.
     for randomly_created_fruit in FruitKind.randomly_created:
         if random.random() < randomly_created_fruit["creation_probability"]:
-            new_fruit= Fruit(randomly_created_fruit, get_new_fruit_position(board))
+            if (randomly_created_fruit == FruitKind.KING and board.is_there_a_king):
+                continue
+            
+            new_fruit= Fruit(randomly_created_fruit, get_new_fruit_position(board))    
             board.add_fruit(new_fruit)
 
 
