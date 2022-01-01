@@ -47,7 +47,8 @@ class FruitKind:
         "image": "snakes_battle/images/fruits/king.png",
         "creation_probability": 1/600,
         "lifespan": 30,
-        "effection_duration": 30
+        "effection_duration": 30,
+        "fruits_score": 1
     }
     KNIFE = {
         "name": "KNIFE",
