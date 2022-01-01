@@ -134,7 +134,7 @@ def run_game(playing_classes, ai_classes_available):
             snake.move_one_cell()
 
 
-        logic.apply_logic(board)
+        logic.apply_logic(board, events)
 
         graphics.update_screen(board)
 

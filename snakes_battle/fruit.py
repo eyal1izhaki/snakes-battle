@@ -47,13 +47,14 @@ class FruitKind:
         "image": "snakes_battle/images/fruits/king.png",
         "creation_probability": 1/600,
         "lifespan": 30,
+        "effection_duration": 30
     }
     KNIFE = {
         "name": "KNIFE",
         "color": (255, 107, 107),
         "image": "snakes_battle/images/fruits/knife.png",
         "creation_probability": 1/600,
-        "lifespan": 30, 
+        "lifespan": 30,
     }
 
     beneficial_fruits = [STRAWBERRY, DRAGON_FRUIT]
