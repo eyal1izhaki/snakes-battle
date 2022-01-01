@@ -17,7 +17,7 @@ class Snake:
         self.direction = randint(0,3) # Only 4 directions - will pick one of them
         self.length = 1
         self.body_pos = None
-        self.version = 0
+        self.allowed__version = "0.0"
 
         # All the special fruits that can be active in this snake.
         self.shield = False
@@ -140,3 +140,6 @@ class Snake:
 
     def allowed__is_knife(self):
         return self.knife
+
+    def allowed__get_king_remaining_effection(self):
+        return self.king_remaining_effection
