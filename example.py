@@ -3,8 +3,10 @@ from snakes_battle.snake import Snake, Direction
 class YourBotName(Snake):
     def __init__(self, borders_cells, color, name) -> None:
         super().__init__(color, name)
-        self.borders_cells = borders_cells
         self.init()
+        
+        self.borders_cells = borders_cells      
+        self.version = 1.0
 
 
     ##############################
