@@ -295,7 +295,7 @@ class GameGraphics:
         for i, snake in enumerate(all_snakes):
             # Drawing the snake and it's score
             score_position = (self.SCOREBOARD_STARTING_POSITION[0], self.SCOREBOARD_STARTING_POSITION[1] + (i + 2) * self.cell_size * settings.SCOREBOARD_TITLE_SCORE_SEPERATION)
-            score_text_surface = self.score_font.render(f"{snake.name} (v{snake.version}): {snake.length}", False, snake.color)
+            score_text_surface = self.score_font.render(f"{snake.name} (v{snake.allowed__version}): {snake.length}", False, snake.color)
             self.surface.blit(score_text_surface, score_position)
 
             # If the snake is dead - add a dead image over it

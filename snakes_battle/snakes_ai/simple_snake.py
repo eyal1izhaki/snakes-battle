@@ -3,11 +3,18 @@ from snakes_battle.snake import Snake, Direction
 class SimpleSnake(Snake):
     def __init__(self, borders_cells, color, name) -> None:
         super().__init__(color, name)
+        self.init(borders_cells)
 
+
+
+    def init(self, borders_cells):
+        # Your bot initializations will be here.
+        self.allowed__version = 1.0
         # All the cells that are fill with borders. This variable will store a list of (x, y) pairs
-        self.border_cells = borders_cells
+        self.allowed__border_cells = borders_cells
+
     
-    def change_direction(self, board_state):
+    def make_decision(self, board_state):
         # .... #
         # borad_state = {
         #   "snakes": [snake1, snake2, ...],            "snakes" contains a list of Snake objects.
@@ -17,39 +24,39 @@ class SimpleSnake(Snake):
         
         # You need to make a decision based on the board state.
         fruits = board_state["fruits"]
-        pos = super().get_body_position()
+        pos = super().allowed__body_position()
 
         if pos[0][0] > fruits[0].pos[0]:
             if (self.direction == Direction.RIGHT):
-                super().change_direction(Direction.UP)
+                return Direction.UP
             else:
-                super().change_direction(Direction.LEFT)
+                return Direction.LEFT
         
         if pos[0][0] < fruits[0].pos[0]:
             if (self.direction == Direction.LEFT):
-                super().change_direction(Direction.UP)
+                return Direction.UP
             else:
-                super().change_direction(Direction.RIGHT)
+                return Direction.RIGHT
         
         if pos[0][0] == fruits[0].pos[0]:
 
             if pos[0][1] < fruits[0].pos[1]:
                 if (self.direction == Direction.UP):
-                    super().change_direction(Direction.RIGHT)
+                    return Direction.RIGHT
                 else:
-                    super().change_direction(Direction.DOWN)
+                    return Direction.DOWN
 
             if pos[0][1] > fruits[0].pos[1]:
                 if (self.direction == Direction.DOWN):
-                    super().change_direction(Direction.RIGHT)
+                    return Direction.RIGHT
                 else:
-                    super().change_direction(Direction.UP)
+                    return Direction.UP
 
 
         
 
-        # super.change_direction(Direction.RIGHT)
+        # super.allowed__change_direction(Direction.RIGHT)
 
-        # super.change_direction(Direction.UP)
+        # super.allowed__change_direction(Direction.UP)
 
-        # super.change_direction(Direction.DOWN)
+        # super.allowed__change_direction(Direction.DOWN)
