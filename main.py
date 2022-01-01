@@ -124,9 +124,13 @@ def run_game(playing_classes, ai_classes_available):
         # The AI Snake Should make a decision in which direction to go.
         for snake in board.snakes:
             if (snake.__class__ in [ManualSnake, ManualSnakeWASD] ):
-                snake.make_decision(board.get_board_state(), events)
+                new_direction = snake.make_decision(board.get_board_state(), events)
             else:
-                snake.make_decision(board.get_board_state())
+                new_direction = snake.make_decision(board.get_board_state())
+
+            if new_direction in [0,1,2,3]:
+                snake.change_direction(new_direction)
+                
             snake.move_one_cell()
 
 

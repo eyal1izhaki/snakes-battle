@@ -16,4 +16,4 @@ class RandomSnake(Snake):
 
 
     def make_decision(self, board_state):
-        super().allowed__change_direction(random.randint(0,3))
+        return random.randint(0,3)

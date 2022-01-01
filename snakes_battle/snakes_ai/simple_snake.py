@@ -28,29 +28,29 @@ class SimpleSnake(Snake):
 
         if pos[0][0] > fruits[0].pos[0]:
             if (self.direction == Direction.RIGHT):
-                super().allowed__change_direction(Direction.UP)
+                return Direction.UP
             else:
-                super().allowed__change_direction(Direction.LEFT)
+                return Direction.LEFT
         
         if pos[0][0] < fruits[0].pos[0]:
             if (self.direction == Direction.LEFT):
-                super().allowed__change_direction(Direction.UP)
+                return Direction.UP
             else:
-                super().allowed__change_direction(Direction.RIGHT)
+                return Direction.RIGHT
         
         if pos[0][0] == fruits[0].pos[0]:
 
             if pos[0][1] < fruits[0].pos[1]:
                 if (self.direction == Direction.UP):
-                    super().allowed__change_direction(Direction.RIGHT)
+                    return Direction.RIGHT
                 else:
-                    super().allowed__change_direction(Direction.DOWN)
+                    return Direction.DOWN
 
             if pos[0][1] > fruits[0].pos[1]:
                 if (self.direction == Direction.DOWN):
-                    super().allowed__change_direction(Direction.RIGHT)
+                    return Direction.RIGHT
                 else:
-                    super().allowed__change_direction(Direction.UP)
+                    return Direction.UP
 
 
         

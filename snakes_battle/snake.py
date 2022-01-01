@@ -124,9 +124,6 @@ class Snake:
     ########################################
     # Only these methods are allowed to be called inside bot snakes. You can't access an attribute directly or any other method in snake class.
     ########################################
-
-    def allowed__change_direction(self, direction: int):
-        self.change_direction(direction)
     
     def allowed__get_direction(self):
         return self.direction

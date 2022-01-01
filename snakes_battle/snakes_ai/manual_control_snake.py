@@ -18,10 +18,10 @@ class ManualSnake(Snake):
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
-                    super().change_direction(Direction.LEFT)
+                    return Direction.LEFT
                 elif event.key == pygame.K_RIGHT:
-                    super().change_direction(Direction.RIGHT)
+                    return Direction.RIGHT
                 elif event.key == pygame.K_UP:
-                    super().change_direction(Direction.UP)
+                    return Direction.UP
                 elif event.key == pygame.K_DOWN:
-                    super().change_direction(Direction.DOWN)
+                    return Direction.DOWN
