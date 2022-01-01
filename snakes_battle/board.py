@@ -3,6 +3,8 @@ import random
 import copy
 import time
 
+from snakes_battle.snake import Snake
+
 class Board:
     def __init__(self, board_size) -> None:
 
@@ -55,8 +57,21 @@ class Board:
         return copy.deepcopy(self.border_cells)
 
     def get_board_state(self):
+        snakes_copy = []
+        for snake in self.snakes:
+            snake_copy = Snake(snake.color, snake.name)
+            snake_copy.body_pos = copy.deepcopy(snake.body_pos)
+            snake_copy.length = snake.length
+            snake_copy.direction = snake.direction
+            snake_copy.king = snake.king
+            snake_copy.knife = snake.knife
+            snake_copy.shield = snake.shield
+            snake_copy.king_remaining_effection = snake.king_remaining_effection
+            
+            snakes_copy.append(snake)
+
         return {
-            "snakes": copy.deepcopy(self.snakes),
+            "snakes": snakes_copy,
             "fruits": copy.deepcopy(self.fruits)
             }
 
