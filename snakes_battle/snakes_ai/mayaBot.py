@@ -19,37 +19,54 @@ class MayaWins(Snake):
         # All the cells that are fill with borders. This variable will store a list of (x, y) pairs
         self.allowed__border_cells = borders_cells
     
-    def allowed__getHead(self):
-        return super().allowed__body_position()[0]
-    
-    def allowed__calcDirectionForFruit(self, snakePosition, fruitPosition):
-        if (snakePosition[0] > fruitPosition[0]):
-            return Direction.LEFT
-        elif (snakePosition[0] < fruitPosition[0]):
-            return Direction.RIGHT
-        elif (snakePosition[1] < fruitPosition[1]):
-            return Direction.UP
-        else:
-            return Direction.DOWN
+    # decide which directin to go based on my snake position and other object position
+    def allowed__calcDirection(self, snakePosition, snakeDirection, objectPosition):
+        if (snakePosition[0] > objectPosition[0]):
+            if (snakeDirection == Direction.RIGHT):
+                return Direction.UP
+            else:
+                return Direction.LEFT
+        elif (snakePosition[0] < objectPosition[0]):
+            if (snakeDirection == Direction.LEFT):
+                return Direction.UP
+            else:
+                return Direction.RIGHT
+        elif (snakePosition[1] > objectPosition[1]):
+            if (snakeDirection == Direction.DOWN):
+                return Direction.RIGHT
+            else:
+                return Direction.UP
+        elif (snakePosition[1] < objectPosition[1]):
+            if (snakeDirection == Direction.UP):
+                return Direction.RIGHT
+            else:
+                return Direction.DOWN
+
+    # calculate the distance between my snake and other object on board
+    def allowed__calcDistance(self, snake, otherObject):
+        pass
 
 
     
     def make_decision(self, board_state):
-        # You can only call methods that starts with the word 'allowed__'. You can't change attrbiutes directly.
-
-        # super().allowed__get_direction() # This function takes no arguments and returns the direction of the snake.
-        # super().allowed__body_position() # This function takes no arguments and returns a list with all cells (x,y) that are filled with your snake.
-        # super().allowed__is_king() # returns True if your snake is king else returns False
-        # super().allowed__is_knife() # returns True if your snake has a knife else returns False.
-        # super().allowed__is_shield() # returns True if your snake is shielded else returns False.
-
         myPosition = super().allowed__body_position()
+        isKing = super().allowed__is_king()
+        isKnife = super().allowed__is_knife()
+        isSheild = super().allowed__is_shield()
+        myDirection = super().allowed__get_direction()
 
+        if isKnife:
+            for snake in board_state["snakes"]:
+
+
+        # TODO - PROIRITZE BETWEEN FRUITS
         for fruit in board_state["fruits"]:
             if fruit.kind not in FruitKind.harmful_fruits:
-                return allowed__calcDirectionForFruit(myPosition, fruit.pos) 
+                return self.allowed__calcDirection(myPosition[0], myDirection, fruit.pos)
+ 
+        
 
-        return Direction.DOWN
+
 
 
     
