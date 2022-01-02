@@ -12,6 +12,7 @@ from snakes_battle.snakes_ai.random_snake import RandomSnake
 from snakes_battle.snakes_ai.simple_snake import SimpleSnake
 from snakes_battle.snakes_ai.manual_control_snake import ManualSnake
 from snakes_battle.snakes_ai.manual_control_snake_wasd import ManualSnakeWASD
+from snakes_battle.snakes_ai.eyals_snake import Eyal
 from snakes_battle import logic
 from snakes_battle.graphics import GameGraphics
 from tkinter import messagebox,Tk
@@ -23,7 +24,8 @@ def main():
         { "class": RandomSnake, "should_play": False },
         { "class": SimpleSnake, "should_play": False },
         { "class": ManualSnake, "should_play": False },
-        { "class": ManualSnakeWASD, "should_play": False }
+        { "class": ManualSnakeWASD, "should_play": False },
+        { "class": Eyal, "should_play": False },
     ]
 
     should_exit = False
@@ -134,6 +136,8 @@ def run_game(playing_classes, ai_classes_available):
 
             except Exception as e:
                 print(e)
+                logic.snake_lost(snake, board)
+                continue
 
             if new_direction in [0,1,2,3]:
                 snake.change_direction(new_direction)
