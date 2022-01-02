@@ -134,6 +134,9 @@ def run_game(playing_classes, ai_classes_available):
 
             except Exception as e:
                 print(e)
+                logic.snake_lost(snake, board)
+                continue
+
 
             if new_direction in [0,1,2,3]:
                 snake.change_direction(new_direction)
