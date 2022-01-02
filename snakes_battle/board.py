@@ -9,7 +9,6 @@ class Board:
     def __init__(self, board_size) -> None:
 
         self.board_size = board_size
-
         self.snakes = []
         self.lost_snakes = []
         self.fruits = []

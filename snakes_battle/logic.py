@@ -156,9 +156,7 @@ def apply_logic(board,events):
             board.fruit_eaten(fruit)
             if fruit.kind == FruitKind.KING:
                 board.is_there_a_king = False
-                
-            continue
-
+    
     for snake in board.snakes:
         apply_snake_logic(board,snake)
         
@@ -182,9 +180,11 @@ def apply_logic(board,events):
     # Creates randomly created fruits in their creation_probability.
     for randomly_created_fruit in FruitKind.randomly_created:
         if random.random() < randomly_created_fruit["creation_probability"]:
-            if (randomly_created_fruit == FruitKind.KING and board.is_there_a_king):
-                continue
-            else:
+
+            if randomly_created_fruit == FruitKind.KING:
+                if board.is_there_a_king:
+                    continue
+                
                 board.is_there_a_king = True
 
             new_fruit= Fruit(randomly_created_fruit, get_new_fruit_position(board))    

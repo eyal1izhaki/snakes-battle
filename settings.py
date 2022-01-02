@@ -44,7 +44,7 @@ DELAY_BETWEEN_SCREEN_UPDATES = 0.06 # Delay between screen update to another. Sn
 ######################################
 
 
-STARTING_SNAKE_LENGTH = 15
+STARTING_SNAKE_LENGTH = 3
 
 GAME_TIME_LENGTH = 10000
 
