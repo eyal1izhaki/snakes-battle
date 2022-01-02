@@ -10,7 +10,6 @@ from snakes_battle.board import Board
 from snakes_battle.snakes_ai.simple_snake import SimpleSnake
 from snakes_battle import logic
 from snakes_battle.graphics import GameGraphics
-from tkinter import messagebox,Tk
 import settings
 from snakes_battle.fruit import FruitKind, Fruit
 
@@ -68,8 +67,5 @@ for snake in combined_snakes[1:]:
     elif snakes_win[0].length < snake.length:
         snakes_win = [snake]
 
-# I added this root object to hide the root window that io displayed when we call the messagebox info.
-root = Tk()
-root.withdraw()
-messagebox.showinfo("winner", snakes_win[0].name + " is the winner!!!")
-root.destroy()
+print (snakes_win[0].name + " is the winner!!!")
+time.sleep(2)

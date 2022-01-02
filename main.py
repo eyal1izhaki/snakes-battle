@@ -14,7 +14,6 @@ from snakes_battle.snakes_ai.manual_control_snake import ManualSnake
 from snakes_battle.snakes_ai.manual_control_snake_wasd import ManualSnakeWASD
 from snakes_battle import logic
 from snakes_battle.graphics import GameGraphics
-from tkinter import messagebox,Tk
 import settings
 from snakes_battle.fruit import FruitKind, Fruit
 
@@ -38,10 +37,7 @@ def main():
             if (len(playing_classes) > 0):
                 run_game(playing_classes, ai_classes_available)
             else:
-                root = Tk()
-                root.withdraw()
-                messagebox.showinfo("Error", "Cannot play without any snakes chosen!")
-                root.destroy()
+                print ("Error! Cannot play without any snakes chosen.")
             game_menus = True
             game_running = False
 
@@ -158,11 +154,9 @@ def run_game(playing_classes, ai_classes_available):
         elif snakes_win[0].length < snake.length:
             snakes_win = [snake]
 
-    # I added this root object to hide the root window that io displayed when we call the messagebox info.
-    root = Tk()
-    root.withdraw()
-    messagebox.showinfo(title="winner", message=snakes_win[0].name + " is the winner!!!", parent=root)
-    root.destroy()
+    # printing who won
+    print (snakes_win[0].name + " is the winner!!!")
+    time.sleep(2)
 
 if (__name__ == "__main__"):
     main()
