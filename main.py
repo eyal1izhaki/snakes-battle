@@ -13,6 +13,14 @@ from snakes_battle.snakes_ai.simple_snake import SimpleSnake
 from snakes_battle.snakes_ai.manual_control_snake import ManualSnake
 from snakes_battle.snakes_ai.manual_control_snake_wasd import ManualSnakeWASD
 from snakes_battle.snakes_ai.mayaBot import MayaWins
+from snakes_battle.snakes_ai.tomer import Tomer
+from snakes_battle.snakes_ai.Yagel import Yagel
+from snakes_battle.snakes_ai.Jonas import Jonas
+from snakes_battle.snakes_ai.gavriel import Gavriel
+from snakes_battle.snakes_ai.tehila_bot import Tehila
+from snakes_battle.snakes_ai.shlomo809 import shlomo809
+from snakes_battle.snakes_ai.talma_dragon import TalmaDragon
+from snakes_battle.snakes_ai.Saymon import Saymon
 from snakes_battle import logic
 from snakes_battle.graphics import GameGraphics
 import settings
@@ -24,7 +32,15 @@ def main():
         { "class": SimpleSnake, "should_play": False },
         { "class": ManualSnake, "should_play": False },
         { "class": ManualSnakeWASD, "should_play": False },
-        { "class": MayaWins, "should_play": False },
+        # { "class": MayaWins, "should_play": False },
+        # { "class": Tomer, "should_play": False },
+        # { "class": Yagel, "should_play": False },
+        # { "class": Jonas, "should_play": False },
+        # { "class": Gavriel, "should_play": False },
+        # { "class": Tehila, "should_play": False },
+        { "class": Saymon, "should_play": False },
+        { "class": shlomo809, "should_play": False },
+        { "class": TalmaDragon, "should_play": False },
     ]
 
     should_exit = False
