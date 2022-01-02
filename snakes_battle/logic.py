@@ -89,7 +89,9 @@ def apply_snake_logic(board, snake):
 
                     if snake.knife or snake.king:
                         snake.knife = False
-                        _snake.shrink(len(_snake.body_pos) - i)
+
+                        if not _snake.shield:
+                            _snake.shrink(len(_snake.body_pos) - i)
                         break
 
                     elif snake.shield: # Snake can hit other snakes without lose if it shielded
