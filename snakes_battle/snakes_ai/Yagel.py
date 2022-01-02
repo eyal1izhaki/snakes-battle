@@ -24,52 +24,66 @@ class Yagel(Snake):
     def make_decision(self, board_state):
         # You can only call methods that starts with the word 'allowed__'. You can't change attrbiutes directly.
         fruits = board_state["fruits"]
+        snakes = board_state["snakes"]
         pos = super().allowed__body_position()
 
         bombs = []
-        bombs = [x for x in fruits if x.kind in FruitKind.harmful_fruits]
+        bombs = [x.pos for x in fruits if x.kind in FruitKind.harmful_fruits]
         fruits = [x for x in fruits if not x.kind in FruitKind.harmful_fruits]
-        
+        snakes_pos = [x.body_pos for x in snakes]
+
         fruits = allowed__bubbleSort(fruits,pos[0])
         
         if len(fruits) != 0:
-            if pos[0][0] > fruits[0].pos[0]:
+            x = pos[0][0]
+            y = pos[0][1]
+            if x > fruits[0].pos[0]:
                 if (self.direction == Direction.RIGHT):
-                    if [pos[0][0],pos[0][1]+1] not in super().allowed__body_position():
-                        return Direction.UP
+                    if ([x,y-1] not in super().allowed__body_position() and [x,y-1] not in bombs and [x,y-1] not in self.allowed__border_cells and [x,y-1] not in snakes_pos):
+                            return Direction.UP
                     else:
-                        return allowed__check_ifhithimself(pos[0][0],pos[0][1],"UP","RIGHT",super().allowed__body_position())
-                else:
+                        return allowed__check_ifhithimself(x,y,"UP","RIGHT",super().allowed__body_position(),bombs,snakes_pos)
+                elif ([x-1,y] not in super().allowed__body_position() and [x-1,y] not in bombs and [x-1,y] not in self.allowed__border_cells and [x-1,y] not in snakes_pos):
                     return Direction.LEFT
-        
-            if pos[0][0] < fruits[0].pos[0]:
-                if (self.direction == Direction.LEFT):
-                    if [pos[0][0],pos[0][1]+1] not in super().allowed__body_position():
-                        return Direction.UP
-                    else:
-                        return allowed__check_ifhithimself(pos[0][0],pos[0][1],"UP","LEFT",super().allowed__body_position())
                 else:
-                    return Direction.RIGHT
-        
-            if pos[0][0] == fruits[0].pos[0]:
+                    return allowed__check_ifhithimself(x,y,"LEFT","LEFT",super().allowed__body_position(),bombs,snakes_pos)
 
-                if pos[0][1] < fruits[0].pos[1]:
-                    if (self.direction == Direction.UP):
-                        if [pos[0][0]+1,pos[0][1]] not in super().allowed__body_position():
-                            return Direction.RIGHT
-                        else:
-                            return allowed__check_ifhithimself([pos[0][0],pos[0][1]],"RIGHT")
-                    else:
-                        return Direction.DOWN
 
-                if pos[0][1] > fruits[0].pos[1]:
-                    if (self.direction == Direction.DOWN):
-                        if [pos[0][0]+1,pos[0][1]] not in super().allowed__body_position():
-                            return Direction.RIGHT
-                        else:
-                            return allowed__check_ifhithimself([pos[0][0],pos[0][1]],"RIGHT")
-                    else:
+            if x < fruits[0].pos[0]:
+                if (self.direction == Direction.LEFT):
+                    if ([x,y-1] not in super().allowed__body_position() and [x,y-1] not in bombs and [x,y-1] not in self.allowed__border_cells and [x,y-1] not in snakes_pos):
                         return Direction.UP
+                    else:
+                        return allowed__check_ifhithimself(x,y,"UP","LEFT",super().allowed__body_position(),bombs,snakes_pos)
+                elif ([x+1,y] not in super().allowed__body_position() and [x+1,y] not in bombs and [x+1,y] not in self.allowed__border_cells and [x+1,y] not in snakes_pos):
+                    return Direction.RIGHT
+                else:
+                    return allowed__check_ifhithimself(x,y,"RIGHT","RIGHT",super().allowed__body_position(),bombs,snakes_pos)
+
+
+            if x == fruits[0].pos[0]:
+
+                if y < fruits[0].pos[1]:
+                    if (self.direction == Direction.UP):
+                        if ([x+1,y] not in super().allowed__body_position() and [x+1,y] not in bombs and [x+1,y] not in self.allowed__border_cells and [x+1,y] not in snakes_pos):
+                            return Direction.RIGHT
+                        else:
+                            return allowed__check_ifhithimself(x,y,"RIGHT","UP",super().allowed__body_position(),bombs,snakes_pos)
+                    elif ([x,y+1] not in super().allowed__body_position() and [x,y+1] not in bombs and [x,y+1] not in self.allowed__border_cells and [x,y+1] not in snakes_pos):
+                        return Direction.DOWN
+                    else:
+                        return allowed__check_ifhithimself(x,y,"DOWN","DOWN",super().allowed__body_position(),bombs,snakes_pos)
+
+                if y > fruits[0].pos[1]:
+                    if (self.direction == Direction.DOWN):
+                        if ([x+1,y] not in super().allowed__body_position() and [x+1,y] not in bombs and [x+1,y] not in self.allowed__border_cells and [x+1,y] not in snakes_pos):
+                            return Direction.RIGHT
+                        else:
+                            return allowed__check_ifhithimself(x,y,"RIGHT","DOWN",super().allowed__body_position(),bombs,snakes_pos)
+                    elif ([x,y-1] not in super().allowed__body_position() and [x,y-1] not in bombs and [x,y-1] not in self.allowed__border_cells and [x,y-1] not in snakes_pos):
+                        return Direction.UP
+                    else:
+                        return allowed__check_ifhithimself(x,y,"UP","UP",super().allowed__body_position(),bombs,snakes_pos)
 
         super().allowed__get_direction() # This function takes no arguments and returns the direction of the snake.
         super().allowed__body_position() # This function takes no arguments and returns a list with all cells (x,y) that are filled with your snake.
@@ -95,46 +109,50 @@ def allowed__check_distance(fruit,head):
     distance = math.pow(head[0]-fruit.pos[0],2) + math.pow(head[1]-fruit.pos[1],2)
     return distance
 
-def allowed__check_ifhithimself(x,y,nextStep,headSide,allSnake):
+def allowed__check_ifhithimself(x,y,nextStep,headSide,allSnake,bomb,snakes_pos):
     if nextStep == "UP" and headSide == "RIGHT":
-        if [x,y-1] not in allSnake:
+        if [x,y+1] not in allSnake and [x,y+1] not in bomb and [x,y+1] not in snakes_pos:
             return Direction.DOWN
-        elif [x+1,y] not in allSnake:
-            return Direction.RIGHT
+        elif [x+1,y] not in allSnake and [x+1,y] not in bomb and [x+1,y] not in snakes_pos:
+            return Direction.RIGHT   
     elif nextStep == "UP" and headSide == "LEFT":
-        if [x,y-1] not in allSnake:
+        if [x,y+1] not in allSnake and [x,y+1] not in bomb and [x,y+1] not in snakes_pos:
             return Direction.DOWN
-        if [x-1,y] not in allSnake:
+        elif [x-1,y] not in allSnake and [x-1,y] not in bomb and [x-1,y] not in snakes_pos:
             return Direction.LEFT
 
-    elif nextStep == "DOWN" and headSide == "RIGHT":
-        if [x+1,y] not in allSnake:
+    elif nextStep == "DOWN" and headSide == "DOWN":
+        if [x+1,y] not in allSnake and [x+1,y] not in bomb and [x+1,y] not in snakes_pos:
             return Direction.RIGHT
-        if [x,y+1] not in allSnake:
-            return Direction.UP
-    elif nextStep == "DOWN" and headSide == "LEFT":
-        if [x-1,y] not in allSnake:
+        elif [x-1,y] not in allSnake and [x-1,y] not in bomb and [x-1,y] not in snakes_pos:
             return Direction.LEFT
-        if [x,y+1] not in allSnake:
+    elif nextStep == "LEFT" and headSide == "LEFT":
+        if [x,y-1] not in allSnake and [x,y-1] not in bomb and [x,y-1] not in snakes_pos:
             return Direction.UP
+        elif [x,y+1] not in allSnake and [x,y+1] not in bomb and [x,y+1] not in snakes_pos:
+            return Direction.DOWN
 
-    # elif nextStep == "RIGHT" and headSide == "DOWN":
-    #     if [x,y+1] not in allSnake:
-    #         return Direction.UP
 
-    # elif nextStep == "RIGHT" and headSide == "UP":
-    #     if [x-1,y] not in allSnake:
-    #         return Direction.LEFT
-    #     if [x,y+1] not in allSnake:
-    #         return Direction.UP
+    elif nextStep == "RIGHT" and headSide == "DOWN":
+        if [x,y+1] not in allSnake and [x,y+1] not in bomb and [x,y+1] not in snakes_pos:
+            return Direction.DOWN
+        elif [x-1,y] not in allSnake and [x-1,y] not in bomb and [x-1,y] not in snakes_pos:
+            return Direction.LEFT
+
+    elif nextStep == "RIGHT" and headSide == "UP":
+        if [x-1,y] not in allSnake and [x-1,y] not in bomb and [x-1,y] not in snakes_pos:
+            return Direction.LEFT
+        elif [x,y-1] not in allSnake and [x,y-1] not in bomb and [x,y-1] not in snakes_pos:
+            return Direction.UP
     
-    # elif nextStep == "LEFT" and headSide == "DOWN":
-    #     if [x+1,y] not in allSnake:
-    #         return Direction.RIGHT
-    #     if [x,y+1] not in allSnake:
-    #         return Direction.UP
-    # elif nextStep == "LEFT" and headSide == "UP":
-    #     if [x-1,y] not in allSnake:
-    #         return Direction.LEFT
-    #     if [x,y+1] not in allSnake:
-    #         return Direction.UP
+    elif nextStep == "UP" and headSide == "UP":
+        if [x+1,y] not in allSnake and [x+1,y] not in bomb and [x+1,y] not in snakes_pos:
+            return Direction.RIGHT
+        elif [x-1,y] not in allSnake and [x-1,y] not in bomb and [x-1,y] not in snakes_pos:
+            return Direction.LEFT
+
+    elif nextStep == "RIGHT" and headSide == "RIGHT":
+        if [x,y-1] not in allSnake and [x,y-1] not in bomb and [x,y-1] not in snakes_pos:
+            return Direction.UP
+        elif [x,y+1] not in allSnake and [x,y+1] not in bomb and [x,y+1] not in snakes_pos:
+            return Direction.DOWN

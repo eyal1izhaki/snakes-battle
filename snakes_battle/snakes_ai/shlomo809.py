@@ -29,11 +29,12 @@ class shlomo809(Snake):
         super().allowed__is_king() # returns True if your snake is king else returns False
         super().allowed__is_knife() # returns True if your snake has a knife else returns False.
         super().allowed__is_shield() # returns True if your snake is shielded else returns False.
-
+        max_dis=999
         for fruit in board_state["fruits"]:
             if fruit.kind in FruitKind.harmful_fruits :
                 continue
-            max_dis=999
+            
+            
             my_pos = super().allowed__body_position()
             my_head=my_pos[0]
             new_dest_x= my_head[0] - fruit.pos[0]
@@ -43,6 +44,7 @@ class shlomo809(Snake):
             
             
             if (new_dest <max_dis):
+                
                 best_dest_x=new_dest_x
                 best_dest_y = new_dest_y
                 new_dest = max_dis
@@ -50,6 +52,7 @@ class shlomo809(Snake):
                 f_y=fruit.pos[1]
             
         direct=self.allowed_nearest_fruit(best_dest_x,best_dest_y)
+        is_bad=self.check_for_bad(my_head,board_state,direct)
         if direct==0:
             return Direction.RIGHT
         if direct ==1:
@@ -66,6 +69,7 @@ class shlomo809(Snake):
         if x_pos != 0 and x_pos < 0:
             
             if super().allowed__get_direction()==1:
+                
                 return 2
             return 0
         if x_pos != 0 and x_pos > 0:
@@ -83,4 +87,20 @@ class shlomo809(Snake):
             if super().allowed__get_direction()==2:
                 return 0
             return 3
-    
+
+
+    def check_for_bad(self,head,state,original_direct):
+        
+        
+        new_head_x =head[0]+1
+        new_head_y = head[1]+1
+        
+        
+        for snake_bad in state["snakes"]:
+            
+            if new_head_x in snake_bad.allowed__body_position():
+                return 2
+            if new_head_y in   snake_bad.allowed__body_position():
+                return 0
+
+        return original_direct

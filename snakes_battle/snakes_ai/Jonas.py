@@ -1,4 +1,5 @@
 from math import sqrt
+from random import triangular
 from snakes_battle.fruit import FruitKind, Fruit
 from snakes_battle.snake import Snake, Direction
 from pprint import pprint
@@ -17,6 +18,8 @@ class Jonas(Snake):
     def init(self, borders_cells):
         # Your bot initializations will be here.
         self.allowed__version = 1.0
+        self.isWinnerForTheMoment = False
+        print(self.name)
 
         # All the cells that are fill with borders. This variable will store a list of (x, y) pairs
         self.allowed__border_cells = borders_cells
@@ -35,9 +38,17 @@ class Jonas(Snake):
         interestingFruits = getInterestingFruits(board_state["fruits"])
         bestFruit_length = get_closestFruit(body_pos[0], interestingFruits)
         nexDir =  getDirToGoToGivenPosition(head, direction, bestFruit_length.pos)
+        if(self.king or self.knife):
+            if(len(board_state["snakes"])>1):
+                target = getOpenentNeck(board_state["snakes"], self.name)
+                nexDir = getDirToGoToGivenPosition(head, direction, target)
         nextPos = calcNextPos(head, nexDir)
         notGoodFruits = getNotGoodFruits(board_state["fruits"])
-        # print(head, nextPos)
+        allOtherSnakes = getAllOtherSnakes(board_state["snakes"], self.name)
+        # self.isWinnerForTheMoment = updateIfIAmTheWinner(board_state["snakes"], self.name, self.length)
+        # isInSafeMode = len(board_state["snakes"])==1 and self.isWinnerForTheMoment
+        # if(isInSafeMode):
+            # print("didfonsdfnoinio")
         changeDir = nexDir
         # while(nextPos in body_pos or nextPos in notGoodFruits or nextPos in self.allowed__border_cells):
         #     changeDir = (nexDir+1)%4
@@ -45,6 +56,8 @@ class Jonas(Snake):
         #         (changeDir+1)%4
         #     nextPos = calcNextPos(head, changeDir)
         # return changeDir
+        # if(isInSafeMode):
+            # return Direction.DOWN
         if(nextPos in body_pos):
             print("I WILL DIE FROM SNAKE")
             changeDir = (nexDir+1)%4
@@ -62,6 +75,19 @@ class Jonas(Snake):
             changeDir = (nexDir+1)%4
             if(changeDir==direction or changeDir==getopositeDir(direction)):
                 return (changeDir+1)%4
+        
+        if(nextPos in self.allowed__border_cells):
+            print("I WILL DIE FROM WALL")
+            changeDir = (nexDir+1)%4
+            if(changeDir==direction or changeDir==getopositeDir(direction)):
+                return (changeDir+1)%4
+        
+        if(nextPos in allOtherSnakes):
+            print("I WILL DIE FROM OTHER SNAKE")
+            changeDir = (nexDir+1)%4
+            if(changeDir==direction or changeDir==getopositeDir(direction)):
+                return (changeDir+1)%4
+        print("turning ", nexDir)
         return nexDir
 
 
@@ -73,7 +99,25 @@ class Jonas(Snake):
         #     if fruit.kind == FruitKind.DRAGON_FRUIT:
         #         # self.do_something()
         #         print("jon")
-    
+def getOpenentNeck(snakes, name):
+    for snake in snakes:
+        if(snake.name != name):
+            return snake.body_pos[1]
+def updateIfIAmTheWinner(snakes, name, myScore):
+    maxScore = 0
+    for snake in snakes:
+            if(maxScore< snake.length):
+                maxScore = snake.length
+    return myScore==maxScore
+def getAllOtherSnakes(snakes, slefName):
+    allSnakes = []
+    for snake in snakes:
+        if(snake.name != slefName):
+            print(snake.name)
+            allSnakes = allSnakes + snake.body_pos
+    print(allSnakes)
+    return allSnakes
+            # allSnakes = allSnakes + snake.allowed__body_position()
 def getopositeDir(direction):
     if(direction == Direction.RIGHT):
         return Direction.LEFT
@@ -120,6 +164,9 @@ def get_closestFruit(MyPosition, fruits):
     bestFruitPosition : any
     for fruit in fruits:
         currentDist = calculateDistance(MyPosition, fruit.pos)
+        if(fruit.kind == FruitKind.KING):
+            if(fruit.lifespan>currentDist):
+                return fruit
         print(currentDist, fruit.kind["name"])
         if(currentDist<min_dist):
             min_dist = currentDist

@@ -12,37 +12,43 @@ class Gavriel(Snake):
         self.allowed__version = 0.0
         # All the cells that are fill with borders. This variable will store a list of (x, y) pairs
         self.allowed__border_cells = borders_cells
-  
+
+    def good_fruits(self,fruits,board_state):
+        fruits = board_state["fruits"]
+        for fruit in fruits: 
+            if fruit.kind in FruitKind.harmful_fruits :
+                i = 1
+                if fruit.kind in FruitKind.harmful_fruits :
+                    i=2
+                    if fruit.kind in FruitKind.harmful_fruits :
+                       i=1
+            else:
+                i = 0
+            return i 
+    
     def make_decision(self, board_state):
 
-        # dont get bed fruits.
         fruits = board_state["fruits"]
-        for fruit in board_state["fruits"]:
-            print("fruit",fruit.kind)
-            if fruit.kind in FruitKind.harmful_fruits :
-              continue
+        # print("fruits",fruits)
+        # print("fruits",fruit)
 
-        if fruits[0]==FruitKind.harmful_fruits:
-            #go to the next fruits, and cheack it .eat for a good fruit ,dont eat for a bad fruit.
-            fruits[1]
-            
-            #dont eat your self fuction.
-
+        action = self.good_fruits(fruits,board_state)
+        # print ("action",action)
         pos = super().allowed__body_position()
-
-        if pos[0][0] > fruits[0].pos[0]:
+        
+        if pos[0][0] > fruits[0+ action].pos[0]:
             if (self.direction == Direction.RIGHT):
                 return Direction.UP
             else:
                 return Direction.LEFT
         
-        if pos[0][0] < fruits[0].pos[0]:
+        if pos[0][0] < fruits[0+action].pos[0]:
             if (self.direction == Direction.LEFT):
                 return Direction.UP
             else:
                 return Direction.RIGHT
         
-        if pos[0][0] == fruits[0].pos[0]:
+        if pos[0][0] == fruits[0+action].pos[0]:
 
             if pos[0][1] < fruits[0].pos[1]:
                 if (self.direction == Direction.UP):
@@ -55,8 +61,3 @@ class Gavriel(Snake):
                     return Direction.RIGHT
                 else:
                     return Direction.UP
-
-        # super.allowed__change_direction(Direction.RIGHT)
-        # super.allowed__change_direction(Direction.UP)
-        # super.allowed__change_direction(Direction.DOWN)
-
