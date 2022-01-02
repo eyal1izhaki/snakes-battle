@@ -131,6 +131,9 @@ class Snake:
     
     def allowed__body_position(self):
         return copy.deepcopy(self.body_pos)
+    
+    def allowed__get_length(self):
+        return self.length
 
     def allowed__is_shield(self):
         return self.shield
