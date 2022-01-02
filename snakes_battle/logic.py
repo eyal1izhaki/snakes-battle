@@ -87,22 +87,62 @@ def apply_snake_logic(board, snake):
 
                 if snake.body_pos[0] == _snake.body_pos[i]:
 
-                    if snake.knife or snake.king:
-                        snake.knife = False
+                    if snake.body_pos[0] == _snake.body_pos[0]: # When a snake hits other snake head to head.
 
-                        if _snake.shield:
-                            _snake.shield = False
+                        if snake.knife or snake.king:
+                            snake.knife = False
+                            
+                            if _snake.shield:
+                                _snake.shield = False
+                                break
+
+                            _snake.shrink(len(_snake.body_pos) - i)
+
+                            if _snake.knife or _snake.king:
+                                _snake.knife = False
+
+                                if snake.shield:
+                                    snake.shield = False
+                                    break
+                                
+                                snake.shrink(snake.length-1)
                             break
 
-                        _snake.shrink(len(_snake.body_pos) - i)
-                        break
-
-                    elif snake.shield: # Snake can hit other snakes without lose if it shielded
+                        elif snake.shield:
                             snake.shield = False
-                    
-                    else: # Snake not shielded so it loses.
-                        snake_lost(snake,board)
-                        break
+
+                            if _snake.shield:
+                                _snake.shield = False
+                                break
+
+                            snake_lost(_snake)
+                            break
+
+
+                        else:
+                            if not _snake.shield:
+                                snake_lost(_snake)
+                                
+                            snake_lost(snake)
+
+                    else: # Snake hitted other snake but not in it head.
+                        if snake.knife or snake.king:
+                            snake.knife = False
+
+                            if _snake.shield:
+                                _snake.shield = False
+                                break
+
+                            _snake.shrink(len(_snake.body_pos) - i)
+                            break
+
+                        elif snake.shield: # Snake can hit other snakes without lose if it shielded
+                            snake.shield = False
+                            break
+                        
+                        else: # Snake not shielded so it loses.
+                            snake_lost(snake,board)
+                            break
 
 def apply_logic(board,events):
 
