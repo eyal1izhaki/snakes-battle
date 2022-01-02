@@ -48,11 +48,8 @@ class MayaWins(Snake):
         return (abs(snakePosition[0] - otherObjectPosition[0]) + abs(snakePosition[1] - otherObjectPosition[1]))
     
     def allowed__findClosestObjectPosition(self, snakePosition, objects):
-        print(objects)
         minDistance = self.allowed__calcDistance(snakePosition, objects[0].pos)
-        print(minDistance)
         closestObjectPosition = objects[0].pos
-        print(closestObjectPosition)
         for item in objects:
             currentDistance = self.allowed__calcDistance(snakePosition, item.pos)
             if currentDistance < minDistance:
