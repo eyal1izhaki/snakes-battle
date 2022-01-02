@@ -341,7 +341,7 @@ class GameGraphics:
         else:
             return image
         
-        return pygame.transform.smoothscale(image, (int(scale_width), int(scale_height0))
+        return pygame.transform.smoothscale(image, (int(scale_width), int(scale_height)))
 
     def get_unique_snake_color(self):
         not_a_unique_color = True
