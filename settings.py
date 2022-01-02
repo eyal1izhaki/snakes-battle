@@ -48,6 +48,8 @@ STARTING_SNAKE_LENGTH = 15
 
 GAME_TIME_LENGTH = 10000
 
+NUMBER_OF_BENEFICIAL_FRUITS_ON_BOARD = 2
+
 ######################################
 
 # Main menu constants

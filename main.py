@@ -2,6 +2,7 @@
 #  I test the code here so the run.py file stays clean. #
 #########################################################
 
+from random import choice, random
 import pygame
 import sys
 import time
@@ -100,8 +101,8 @@ def run_game(playing_classes, ai_classes_available):
         snake.grow(settings.STARTING_SNAKE_LENGTH - 1)
 
         board.add_snake(snake)
-
-    board.add_fruit(Fruit(FruitKind.STRAWBERRY, logic.get_new_fruit_position(board)))
+    for i in range(settings.NUMBER_OF_BENEFICIAL_FRUITS_ON_BOARD):
+        board.add_fruit(Fruit(choice(FruitKind.beneficial_fruits), logic.get_new_fruit_position(board)))
 
     while not board.is_game_timed_out() and len(board.snakes) > 0:
         time.sleep(frames_delay)
