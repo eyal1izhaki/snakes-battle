@@ -47,15 +47,27 @@ class MayaWins(Snake):
     def allowed__calcDistance(self, snakePosition, otherObjectPosition):
         return (abs(snakePosition[0] - otherObjectPosition[0]) + abs(snakePosition[1] - otherObjectPosition[1]))
     
-    def allowed__findClosestObjectPosition(self, snakePosition, objects):
-        minDistance = self.allowed__calcDistance(snakePosition, objects[0].pos)
-        closestObjectPosition = objects[0].pos
-        for item in objects:
-            currentDistance = self.allowed__calcDistance(snakePosition, item.pos)
+    # find the closest fruit to my snake
+    def allowed__findClosestFruitPosition(self, snakePosition, fruits):
+        minDistance = self.allowed__calcDistance(snakePosition, fruits[0].pos)
+        closestFruitPoisiton = fruits[0].pos
+        for f in fruits:
+            currentDistance = self.allowed__calcDistance(snakePosition, f.pos)
             if currentDistance < minDistance:
                 minDistance = currentDistance
-                closestObjectPosition = item.pos
-        return closestObjectPosition
+                closestFruitPoisiton = f.pos
+        return closestFruitPoisiton
+    
+    # find the closest snakes to my snake
+    def allowed__findClosestSnakePosition(self, snakePosition, snakes):
+        minDistance = self.allowed__calcDistance(snakePosition, snakes[0].body_pos[0])
+        closestSnake = snakes[0]
+        for s in snakes:
+            currentDistance = self.allowed__calcDistance(snakePosition, s.body_pos[0])
+            if currentDistance < minDistance:
+                minDistance = currentDistance
+                closestSnake = s
+        return closestSnake
             
 
     def make_decision(self, board_state):
@@ -66,15 +78,15 @@ class MayaWins(Snake):
         isSheild = super().allowed__is_shield()
         myDirection = super().allowed__get_direction()
 
+        closestSnakePosition = self.allowed__findClosestSnakePosition(myHead, board_state["snakes"])
+
         if isKnife:
-            for snake in board_state["snakes"]:
-                pass
-
-
-        # TODO - PROIRITZE BETWEEN FRUITS
-        non_harmful_fruits = [f for f in board_state["fruits"] if f.kind not in FruitKind.harmful_fruits]
-        closestFruitPosition = self.allowed__findClosestObjectPosition(myHead, non_harmful_fruits)
-        return self.allowed__calcDirection(myHead, myDirection, closestFruitPosition)
+            return self.allowed__calcDirection(myHead, myDirection, closestSnakePosition)
+        else:
+            # TODO - PROIRITZE BETWEEN FRUITS
+            non_harmful_fruits = [f for f in board_state["fruits"] if f.kind not in FruitKind.harmful_fruits]
+            closestFruitPosition = self.allowed__findClosestFruitPosition(myHead, non_harmful_fruits)
+            return self.allowed__calcDirection(myHead, myDirection, closestFruitPosition)
 
  
         
