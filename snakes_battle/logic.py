@@ -123,10 +123,18 @@ def apply_logic(board,events):
         apply_snake_logic(board,snake)
         
         if snake.king:
-            if (snake.__class__ in [ManualSnake, ManualSnakeWASD] ):
-                snake.change_direction(board.get_board_state(), events)
-            else:
-                snake.change_direction(board.get_board_state())            
+            try:
+                if (snake.__class__ in [ManualSnake, ManualSnakeWASD] ):
+                    new_direction = snake.make_decision(board.get_board_state(), events)
+                else:
+                    new_direction = snake.make_decision(board.get_board_state())
+            
+            except Exception as e:
+                print(e)
+                
+            if new_direction in [0,1,2,3]:
+                snake.change_direction(new_direction)
+
             snake.move_one_cell()
             apply_snake_logic(board, snake)
 
