@@ -1,5 +1,6 @@
 from snakes_battle.fruit import FruitKind
 from snakes_battle.snake import Snake, Direction
+import math
 
 class MayaWins(Snake):
     def __init__(self, borders_cells, color, name) -> None:
@@ -43,13 +44,26 @@ class MayaWins(Snake):
                 return Direction.DOWN
 
     # calculate the distance between my snake and other object on board
-    def allowed__calcDistance(self, snake, otherObject):
-        pass
-
-
+    def allowed__calcDistance(self, snakePosition, otherObjectPosition):
+        return (abs(snakePosition[0] - otherObjectPosition[0]) + abs(snakePosition[1] - otherObjectPosition[1]))
     
+    def allowed__findClosestObjectPosition(self, snakePosition, objects):
+        print(objects)
+        minDistance = self.allowed__calcDistance(snakePosition, objects[0].pos)
+        print(minDistance)
+        closestObjectPosition = objects[0].pos
+        print(closestObjectPosition)
+        for item in objects:
+            currentDistance = self.allowed__calcDistance(snakePosition, item.pos)
+            if currentDistance < minDistance:
+                minDistance = currentDistance
+                closestObjectPosition = item.pos
+        return closestObjectPosition
+            
+
     def make_decision(self, board_state):
         myPosition = super().allowed__body_position()
+        myHead = myPosition[0]
         isKing = super().allowed__is_king()
         isKnife = super().allowed__is_knife()
         isSheild = super().allowed__is_shield()
@@ -57,12 +71,14 @@ class MayaWins(Snake):
 
         if isKnife:
             for snake in board_state["snakes"]:
+                pass
 
 
         # TODO - PROIRITZE BETWEEN FRUITS
-        for fruit in board_state["fruits"]:
-            if fruit.kind not in FruitKind.harmful_fruits:
-                return self.allowed__calcDirection(myPosition[0], myDirection, fruit.pos)
+        non_harmful_fruits = [f for f in board_state["fruits"] if f.kind not in FruitKind.harmful_fruits]
+        closestFruitPosition = self.allowed__findClosestObjectPosition(myHead, non_harmful_fruits)
+        return self.allowed__calcDirection(myHead, myDirection, closestFruitPosition)
+
  
         
 
