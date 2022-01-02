@@ -158,7 +158,7 @@ def run_game(playing_classes, ai_classes_available):
     # I added this root object to hide the root window that io displayed when we call the messagebox info.
     root = Tk()
     root.withdraw()
-    messagebox.showinfo("winner", snakes_win[0].name + " is the winner!!!")
+    messagebox.showinfo(title="winner", message=snakes_win[0].name + " is the winner!!!", parent=root)
     root.destroy()
 
 if (__name__ == "__main__"):
