@@ -115,15 +115,15 @@ def apply_snake_logic(board, snake):
                                 _snake.shield = False
                                 break
 
-                            snake_lost(_snake)
+                            snake_lost(_snake, board)
                             break
 
 
                         else:
                             if not _snake.shield:
-                                snake_lost(_snake)
+                                snake_lost(_snake, board)
                                 
-                            snake_lost(snake)
+                            snake_lost(snake, board)
 
                     else: # Snake hitted other snake but not in it head.
                         if snake.knife or snake.king:
