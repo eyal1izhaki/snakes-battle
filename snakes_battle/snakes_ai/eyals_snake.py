@@ -1,7 +1,120 @@
+import copy
 from random import choice
 from snakes_battle.fruit import Fruit, FruitKind
 from snakes_battle.snake import Snake, Direction
 import math
+
+class Node:
+    depending_on_a_shield = False
+    depending_on_a_knife = False
+
+    def __init__(self, direction, body_pos, parent=None) -> None:
+        self.parent = parent
+
+        self.left = None
+        self.right = None
+        self.up = None
+        self.down = None
+
+        self.direction = direction
+        self.body_pos = body_pos
+
+        self.is_king = False
+        self.king_remaining_effection = 0
+
+        self.number_of_potential_dangerous = 0
+
+
+    def create_children(self, simulate_turn_func):
+        self.left = Node(Direction.LEFT, simulate_turn_func(self.body_pos, self.direction, Direction.LEFT), self)
+        self.right = Node(Direction.RIGHT, simulate_turn_func(self.body_pos, self.direction, Direction.RIGHT), self)
+        self.up = Node(Direction.UP, simulate_turn_func(self.body_pos, self.direction, Direction.UP), self)
+        self.down = Node(Direction.DOWN, simulate_turn_func(self.body_pos, self.direction, Direction.DOWN), self)
+
+
+    def get_children(self):
+        return [self.left, self.right, self.up, self.down]
+        
+    def get_best_direction(self, harmful_fruits, all_snakes, my_snake, wanted_direction, border_cells):
+        self.number_of_potential_dangerous = self.calculate_potential_dangerous(harmful_fruits, all_snakes, my_snake, border_cells)
+        children = self.get_children()
+        sorted_children = sorted(children, key=lambda child: child.number_of_potential_dangerous)
+        
+
+        for child in sorted_children:
+            if child.direction == wanted_direction:
+                print(f"wanted({child.direction}): {child.number_of_potential_dangerous} safest({sorted_children[0].direction}): {sorted_children[0].number_of_potential_dangerous} worst({sorted_children[-1].direction}): {sorted_children[-1].number_of_potential_dangerous}")
+
+                avg_of_safe_and_worst = (sorted_children[0].number_of_potential_dangerous + sorted_children[-1].number_of_potential_dangerous)/2
+
+                if child.number_of_potential_dangerous <= avg_of_safe_and_worst * 0.9:
+                    return wanted_direction
+
+        return sorted_children[0].direction
+
+
+    def calculate_potential_dangerous(self, harmful_fruits, all_snakes, my_snake, border_cells):
+
+        if self.is_leaf():
+            if not self.is_it_a_safe_step(harmful_fruits, all_snakes, my_snake, border_cells):
+                self.number_of_potential_dangerous += 1
+
+            return self.number_of_potential_dangerous
+            
+        for child in self.get_children():
+            self.number_of_potential_dangerous += child.calculate_potential_dangerous(harmful_fruits, all_snakes, my_snake, border_cells)
+        
+        return self.number_of_potential_dangerous
+
+    def is_it_a_safe_step(self, harmful_fruits, all_snakes, my_snake, border_cells):
+
+        # for i in range(len(my_snake.allowed__body_pos)):
+        #                 if my_snake.allowed__body_pos[i][0] == self.body_pos[i][0] and my_snake.allowed__body_pos[i][1] == self.body_pos[i][1]:
+        #                     raise Exception("Not a different snake")
+
+
+        for fruit in harmful_fruits:
+            if self.body_pos[0][0] == fruit.pos[0] and self.body_pos[0][1] == fruit.pos[1]:
+                if not my_snake.allowed__is_shield():
+                    return False
+        
+        for snake in all_snakes:
+
+            if snake.name == my_snake.name: # my snake
+                for index, cell in enumerate(snake.body_pos):
+                    if index != 0 and self.body_pos[0][0] == cell[0] and self.body_pos[0][1] == cell[1]:
+                        if not self.depending_on_a_shield and not my_snake.allowed__is_shield():
+                            return False
+                        else:
+                            self.depending_on_a_shield = True
+            
+            else: # other snakes
+                for cell in snake.body_pos:
+                    if self.body_pos[0][0] == cell[0] and self.body_pos[0][1] == cell[1]:
+                        if (not self.depending_on_a_shield and not my_snake.allowed__is_shield()):
+                            return False
+                        else:
+                            self.depending_on_a_shield = True
+                            self.depending_on_a_knife = True
+
+        for cell in border_cells:
+            if self.body_pos[0][0] == cell[0] and self.body_pos[0][1] == cell[1]:
+                return False
+
+        return True
+
+    def is_leaf(self):
+        if self.left != None:
+            return False
+        if self.right != None:
+            return False
+        if self.up != None:
+            return False
+        if self.down != None:
+            return False
+        
+        return True
+
 
 class Eyal(Snake):
     def __init__(self, borders_cells, color, name) -> None:
@@ -12,10 +125,9 @@ class Eyal(Snake):
 
     def init(self, borders_cells):
         # Your bot initializations will be here.
-        self.allowed__version = "2.0"
+        self.allowed__version = "3.0"
         # All the cells that are fill with borders. This variable will store a list of (x, y) pairs
         self.allowed__border_cells = borders_cells
-
     
     def make_decision(self, board_state):
 
@@ -41,19 +153,38 @@ class Eyal(Snake):
                 self.allowed__special_fruits.append(fruit)
 
 
-        closest_fruit = self.closest_fruit(self.allowed__beneficial_fruits + self.allowed__special_fruits)
+        best_fruit = self.best_fruit(self.allowed__beneficial_fruits + self.allowed__special_fruits)
 
-        new_direction = self.get_direction_to_a_specific_fruit(closest_fruit, self.allowed__current_direction)
+        new_direction = self.get_direction_to_a_specific_fruit(best_fruit, self.allowed__current_direction)
+
+        # bad_object = self.get_bad_objects_in_next_cell(new_direction)
+
+        # if bad_object != None:
+        #     new_direction = self.make_turn(new_direction)
+
+        final_direction = self.calculate_best_step(new_direction, 3)
+
+        return final_direction
 
 
-        bad_object = self.get_bad_objects_in_next_cell(new_direction)
+    def calculate_best_step(self, wanted_direction, depth):
 
-        if bad_object != None:
-            new_direction = self.make_turn(new_direction)
+        Node.depending_on_a_shield = False
+        Node.depending_on_a_knife = False
 
+        root = Node(self.allowed__get_direction(), self.allowed__body_pos)
 
-        return new_direction
+        root.create_children(self.simulate_turn)
 
+        for child in root.get_children():
+            child.create_children(self.simulate_turn)
+            for child_of_child in child.get_children():
+                child_of_child.create_children(self.simulate_turn)
+                # for child_of_child_of_child in child_of_child.get_children():
+                #     child_of_child_of_child.create_children(self.simulate_turn)
+
+        return root.get_best_direction(self.allowed__harmful_fruits, self.allowed_all_snakes, self, wanted_direction, self.allowed__border_cells)
+            
        
     def make_turn(self, direction):
         if direction == Direction.DOWN or direction == Direction.UP:
@@ -69,7 +200,7 @@ class Eyal(Snake):
                 return Direction.UP
 
     def simulate_turn(self,body_pos, current_direction, new_direction):
-
+        new_body_pos = copy.deepcopy(body_pos)
         if new_direction == Direction.LEFT:
             if current_direction == Direction.UP or current_direction == Direction.DOWN:
                 new_direction =  Direction.LEFT
@@ -87,67 +218,41 @@ class Eyal(Snake):
                 new_direction =  Direction.DOWN
 
         for i in reversed(range(1, super().allowed__get_length())):
-            body_pos[i][0] = body_pos[i-1][0]
-            body_pos[i][1] = body_pos[i-1][1]
+            new_body_pos[i][0] = body_pos[i-1][0]
+            new_body_pos[i][1] = body_pos[i-1][1]
 
         if new_direction == Direction.DOWN:
-            body_pos[0][1] += 1
+            new_body_pos[0][1] += 1
         elif new_direction == Direction.UP:
-            body_pos[0][1] -= 1
+            new_body_pos[0][1] -= 1
         elif new_direction == Direction.LEFT:
-            body_pos[0][0] -= 1
+            new_body_pos[0][0] -= 1
         elif new_direction == Direction.RIGHT:
-            body_pos[0][0] += 1
+            new_body_pos[0][0] += 1
 
-        return body_pos
-
-    def simulate_turn_head_only(self, new_direction):
-        current_direction = self.allowed__current_direction
-
-        body_pos = self.get_body_position()
-
-        if new_direction == Direction.LEFT:
-            if current_direction == Direction.UP or current_direction == Direction.DOWN:
-                new_direction =  Direction.LEFT
-
-        elif new_direction == Direction.RIGHT:
-            if current_direction == Direction.UP or current_direction == Direction.DOWN:
-                new_direction =  Direction.RIGHT
-
-        elif new_direction == Direction.UP:
-            if current_direction == Direction.RIGHT or current_direction == Direction.LEFT:
-                new_direction =  Direction.UP
-
-        elif new_direction == Direction.DOWN:
-            if current_direction == Direction.RIGHT or current_direction == Direction.LEFT:
-                new_direction =  Direction.DOWN
-
-        if new_direction == Direction.DOWN:
-            body_pos[0][1] += 1
-        elif new_direction == Direction.UP:
-            body_pos[0][1] -= 1
-        elif new_direction == Direction.LEFT:
-            body_pos[0][0] -= 1
-        elif new_direction == Direction.RIGHT:
-            body_pos[0][0] += 1
-
-        return body_pos[0]
-
+        return new_body_pos
 
     def calculate_distance(self, a, b):
         return math.dist(a,b)
 
+    def best_fruit(self, fruits):
 
-    def closest_fruit(self, fruits):
+        second_close_fruit = fruits[1]
+        
         closest_fruit = fruits[0]
         closest = 100000
 
         for fruit in fruits:
             fruit_distance = self.calculate_distance(fruit.pos, self.allowed__body_pos[0])
             if fruit_distance < closest:
+                second_close_fruit = closest_fruit
                 closest = fruit_distance
                 closest_fruit = fruit
         
+        for cell in self.allowed__border_cells:
+            if abs(closest_fruit.pos[0] - cell[0]) + abs(closest_fruit.pos[1] - cell[1]) == 1: # Don't take that fruit
+                return second_close_fruit
+
         return closest_fruit
     
     def get_direction_to_a_specific_fruit(self, fruit, current_direction):
@@ -176,6 +281,7 @@ class Eyal(Snake):
                     return Direction.RIGHT
                 else:
                     return Direction.UP
+
 
     def get_bad_objects_in_next_cell(self, new_direction):
 

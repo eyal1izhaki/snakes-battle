@@ -32,7 +32,7 @@ DEAD_SNAKE_IMAGE_PATH = "snakes_battle/images/dead_icon.png"
 
 
 # General
-DELAY_BETWEEN_SCREEN_UPDATES = 0.06 # Delay between screen update to another. Snakes move one cell every screen update. 0.07 looks good
+DELAY_BETWEEN_SCREEN_UPDATES = 0.1 # Delay between screen update to another. Snakes move one cell every screen update. 0.07 looks good
 
 ######################################
 
@@ -44,9 +44,9 @@ DELAY_BETWEEN_SCREEN_UPDATES = 0.06 # Delay between screen update to another. Sn
 ######################################
 
 
-STARTING_SNAKE_LENGTH = 3
+STARTING_SNAKE_LENGTH = 15
 
-GAME_TIME_LENGTH = 60
+GAME_TIME_LENGTH = 6000
 
 NUMBER_OF_BENEFICIAL_FRUITS_ON_BOARD = 2
 
