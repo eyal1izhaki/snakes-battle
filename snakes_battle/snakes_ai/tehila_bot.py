@@ -150,9 +150,7 @@ class Tehila(Snake):
         pos = super().allowed__body_position()
         fruits = board_state["fruits"]
         snakes = board_state["snakes"]
-        
-        # fruit_to_follow = fruits[0]
- 
+         
         not_harmful_fruits = [fruit for fruit in fruits if fruit.kind not in FruitKind.harmful_fruits]
               
                 
@@ -170,21 +168,6 @@ class Tehila(Snake):
                     min_fruit_dis = fruit_dis
                     fruit_to_follow = fruit
         
-
-
-
         direction = self.allowed__change_direction(pos, fruit_to_follow, fruits, snakes, pos[0])
         direction2 = self.get_direction_after_clear_way(direction, pos, fruits, snakes,pos[0])        
-        # if self.check_if_position_in_snake(pos,direction, fruits, snakes, pos_to_check=self.get_pos_to_check(direction2,pos[0])):
-        #     print ("WIll lose")
-        # direction2 = self.get_direction_after_clear_way(direction, pos, fruits, snakes,pos[0])
         return direction2
-        
-
-            
-            
-
-
-
-            
-
