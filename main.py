@@ -34,7 +34,7 @@ def main():
         # { "class": SimpleSnake, "should_play": False },
         # { "class": ManualSnake, "should_play": False },
         # { "class": ManualSnakeWASD, "should_play": False },
-        # { "class": Falcon, "should_play": False },
+        # { "class": Falcon, "should_play": True },
         # { "class": Eyal, "should_play": True },
         { "class": MayaWins, "should_play": True },
         # { "class": Tomer, "should_play": True },
@@ -42,7 +42,7 @@ def main():
         # { "class": Jonas, "should_play": True },
         # { "class": Gavriel, "should_play": True },
         # { "class": Tehila, "should_play": True },
-        # { "class": Saymon, "should_play": False },
+        # { "class": Saymon, "should_play": True },
         # { "class": shlomo809, "should_play": True },
         # { "class": TalmaDragon, "should_play": True },
 

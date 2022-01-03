@@ -40,11 +40,10 @@ class TalmaDragon(Snake):
         #self.print_something(super().allowed__body_position())
         possible_directions = [Direction.RIGHT, Direction.LEFT, Direction.UP, Direction.DOWN]
         self.allowed__is_hit_border(possible_directions)
-        #self.print_something(possible_directions)
+        #self.print_something("after border check" + str(possible_directions))
         # Finds the fruit I wanna eat 
         target_fruit = self.allowed__find_target_fruit(board_state['fruits'], possible_directions)
         if target_fruit[FRUIT_FIELD] == None:
-            print("fucking shit")
             return possible_directions[0]
         # If safe ignores the enemy and self hit
         if (self.allowed__is_safe() != AINT_ACTIVATE):
@@ -53,7 +52,7 @@ class TalmaDragon(Snake):
         # Checks self hit 
         self.allowed__dangerous_targets_iterate \
             (super().allowed__body_position(), possible_directions)
-        #self.print_something(possible_directions)
+        #self.print_something("after self hit check" + str(possible_directions))
         # If can attack enemy not dangerous
         if (self.allowed__is_attack() != AINT_ACTIVATE):
             return self.allowed__calculates_direction(target_fruit[FRUIT_FIELD].pos, possible_directions)
@@ -71,11 +70,11 @@ class TalmaDragon(Snake):
 
     def allowed__find_target_fruit(self, fruits, possible_directions):
 
-        close_strawberry_dist:int = 100
-        close_dragon_fruit_dist:int = 100
-        close_shield_dist:int = 100
-        close_king_dist:int = 100
-        close_knife_dist:int = 100
+        close_strawberry_dist:int = 1000
+        close_dragon_fruit_dist:int = 1000
+        close_shield_dist:int = 1000
+        close_king_dist:int = 1000
+        close_knife_dist:int = 1000
 
         close_strawberry:Fruit = None
         close_dragon_fruit:Fruit = None
@@ -99,7 +98,7 @@ class TalmaDragon(Snake):
                 close_king_dist = curr_distance
             elif fruit.kind == FruitKind.KNIFE and curr_distance < close_knife_dist:
                 close_knife = fruit
-                close_king_dist = curr_distance
+                close_knife_dist = curr_distance
             elif fruit.kind == FruitKind.SKULL or fruit.kind == FruitKind.BOMB:
                 bad_direction = self.allowed__is_hit(fruit.pos)
                 if(bad_direction != AINT_ACTIVATE):
@@ -111,7 +110,7 @@ class TalmaDragon(Snake):
                     {DIRECTION_FIELD: close_king_dist, FRUIT_FIELD: close_king},\
                     {DIRECTION_FIELD: close_knife_dist, FRUIT_FIELD: close_knife}]
 
-        closest_dist = [fruit[DIRECTION_FIELD] for fruit in fruits if fruit != None]
+        closest_dist = [fruit[DIRECTION_FIELD] for fruit in fruits if fruit[FRUIT_FIELD] != None]
         closest_dist.sort()
         
         return [fruit for fruit in fruits if fruit[DIRECTION_FIELD] == closest_dist[0]][0]
@@ -121,6 +120,7 @@ class TalmaDragon(Snake):
         for pos in iter_targets:
             is_hit = self.allowed__is_hit(pos)
             if is_hit != AINT_ACTIVATE and is_hit in possible_directions:
+                #print("Removing : ", str(is_hit))
                 possible_directions.remove(is_hit)
 
 
@@ -152,47 +152,46 @@ class TalmaDragon(Snake):
         if(my_x >= target_x and my_y >= target_y):
             favorite_direction = Direction.UP if my_x == target_x else Direction.LEFT
             if favorite_direction in possible_directions:
-                #print("target up and left")
+                
                 return favorite_direction
             favorite_direction = Direction.UP if favorite_direction == Direction.LEFT else Direction.LEFT
             if favorite_direction in possible_directions:
-                #print("target up and left")
+                
                 return favorite_direction
+            #print("BAD")
             return possible_directions[0]
         
-        if(my_x >= target_x and my_y <= target_y):
+        if(my_x <= target_x and my_y >= target_y):
             favorite_direction = Direction.UP if my_x == target_x else Direction.RIGHT
             if favorite_direction in possible_directions:
-                #print("target up and right")
                 return favorite_direction
             favorite_direction = Direction.UP if favorite_direction == Direction.RIGHT else Direction.RIGHT
             if favorite_direction in possible_directions:
-                #print("target up and right")
                 return favorite_direction
+            #print("BAD")
             return possible_directions[0]
 
-        if(my_x <= target_x and my_y >= target_y):
+        if(my_x >= target_x and my_y <= target_y):
             favorite_direction = Direction.DOWN if my_x == target_x else Direction.LEFT
             if favorite_direction in possible_directions:
-                #print("target down and left")
                 return favorite_direction
             favorite_direction = Direction.DOWN if favorite_direction == Direction.LEFT else Direction.LEFT
             if favorite_direction in possible_directions:
-                #print("target down and left")
                 return favorite_direction
+            #print("BAD")
             return possible_directions[0]
         
-        if(my_x <= target_x and my_y >= target_y):
+        if(my_x <= target_x and my_y <= target_y):
             favorite_direction = Direction.DOWN if my_x == target_x else Direction.RIGHT
-            if favorite_direction in possible_directions:
-                #print("target down and right")
+            if favorite_direction in possible_directions:    
                 return favorite_direction
             favorite_direction = Direction.DOWN if favorite_direction == Direction.RIGHT else Direction.RIGHT
             if favorite_direction in possible_directions:
-                #print("target down and right")
                 return favorite_direction
+            #print("BAD")
             return possible_directions[0]
 
+        #print("How thw fuck")
         return possible_directions[0]
         
     

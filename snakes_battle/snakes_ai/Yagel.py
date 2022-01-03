@@ -34,6 +34,23 @@ class Yagel(Snake):
 
         fruits = allowed__bubbleSort(fruits,pos[0])
         
+        # print("fruits[0].pos")
+        # print(fruits[0].pos[0])
+        # print("snakes_pos")
+        # print(snakes_pos)
+        # print(board_state["snakes"][1].body_pos[0][0])
+        
+        if super().allowed__is_king() or super().allowed__is_knife():
+            if len(board_state["snakes"]) > 1:
+                for snake in board_state["snakes"]:
+                    if snake.name != self.name:
+                        print(snake.body_pos[0][0])
+                        fruits[0].pos[0] = snake.body_pos[0][0]
+                        print(snake.body_pos[0][1])
+                        fruits[0].pos[0] = snake.body_pos[0][1]
+        #     fruits[0].pos[0] = snakes_pos[0][0][0]
+        #     fruits[0].pos[1] = snakes_pos[0][0][1]
+
         if len(fruits) != 0:
             x = pos[0][0]
             y = pos[0][1]
@@ -91,9 +108,9 @@ class Yagel(Snake):
         super().allowed__is_knife() # returns True if your snake has a knife else returns False.
         super().allowed__is_shield() # returns True if your snake is shielded else returns False.
 
-        for fruit in board_state["fruits"]:
-            if fruit.kind == FruitKind.DRAGON_FRUIT:
-                do_something()
+        # for fruit in board_state["fruits"]:
+        #     if fruit.kind == FruitKind.DRAGON_FRUIT:
+        #         # do_something()
 
         return Direction.DOWN
 

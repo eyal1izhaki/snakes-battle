@@ -13,15 +13,24 @@ class Gavriel(Snake):
         # All the cells that are fill with borders. This variable will store a list of (x, y) pairs
         self.allowed__border_cells = borders_cells
 
+    def dont_eat_your(self,board_state):
+        direction =super().allowed__get_direction() # This function takes no arguments and returns the direction of the snake.
+       
+        # print("dirction:",direction)
+        # board_state["snakes"][0]
+        # print("board_state[snakes]:",board_state["snakes"][0])
+        
+
+
     def good_fruits(self,fruits,board_state):
         fruits = board_state["fruits"]
         for fruit in fruits: 
             if fruit.kind in FruitKind.harmful_fruits :
-                i = 1
+                i = 0
                 if fruit.kind in FruitKind.harmful_fruits :
-                    i=2
+                    i=1
                     if fruit.kind in FruitKind.harmful_fruits :
-                       i=1
+                       i=2
             else:
                 i = 0
             return i 
@@ -31,12 +40,15 @@ class Gavriel(Snake):
         fruits = board_state["fruits"]
         # print("fruits",fruits)
         # print("fruits",fruit)
+        # self.dont_eat_your(board_state)
+        # direction =super().allowed__get_direction() # This function takes no arguments and returns the direction of the snake.
+
 
         action = self.good_fruits(fruits,board_state)
-        # print ("action",action)
+        # print ("action",action)       
         pos = super().allowed__body_position()
         
-        if pos[0][0] > fruits[0+ action].pos[0]:
+        if pos[0][0] > fruits[0+action].pos[0]:
             if (self.direction == Direction.RIGHT):
                 return Direction.UP
             else:

@@ -1,7 +1,7 @@
 from snakes_battle.fruit import FruitKind
 from snakes_battle.snake import Snake, Direction
 import pygame
-
+max_dis=999
 class shlomo809(Snake):
     def __init__(self, borders_cells, color, name) -> None:
         super().__init__(color, name)
@@ -29,7 +29,7 @@ class shlomo809(Snake):
         super().allowed__is_king() # returns True if your snake is king else returns False
         super().allowed__is_knife() # returns True if your snake has a knife else returns False.
         super().allowed__is_shield() # returns True if your snake is shielded else returns False.
-        max_dis=999
+           
         for fruit in board_state["fruits"]:
             if fruit.kind in FruitKind.harmful_fruits :
                 continue
@@ -39,27 +39,34 @@ class shlomo809(Snake):
             my_head=my_pos[0]
             new_dest_x= my_head[0] - fruit.pos[0]
             new_dest_y= my_head[1]- fruit.pos[1]
-            new_dest = new_dest_x + new_dest_y
-            new_dest *= -1
+            temp_x = new_dest_x
+            temp_y = new_dest_y
+            if new_dest_x < 0:
+                temp_x *= -1
+
+            if new_dest_y < 0:
+                temp_y *= -1    
+            new_dest = temp_x + temp_y
             
+            if fruit.kind == FruitKind.SHIELD:
+               new_dest -=2 
             
             if (new_dest <max_dis):
                 
                 best_dest_x=new_dest_x
                 best_dest_y = new_dest_y
                 new_dest = max_dis
-                f_x=fruit.pos[0]
-                f_y=fruit.pos[1]
+                
             
         direct=self.allowed_nearest_fruit(best_dest_x,best_dest_y)
         is_bad=self.check_for_bad(my_head,board_state,direct)
-        if direct==0:
+        if is_bad==0:
             return Direction.RIGHT
-        if direct ==1:
+        if is_bad ==1:
             return Direction.LEFT    
-        if direct ==2:
+        if is_bad ==2:
             return Direction.UP   
-        if direct ==3:
+        if is_bad ==3:
             return Direction.DOWN   
 
 
@@ -92,15 +99,36 @@ class shlomo809(Snake):
     def check_for_bad(self,head,state,original_direct):
         
         
-        new_head_x =head[0]+1
-        new_head_y = head[1]+1
+        new_head_right = head[0]+1
+        new_head_dowm = head[1]+1
+        new_head_up = head[1]-1
+        new_head_left = head[0]-1
         
         
         for snake_bad in state["snakes"]:
-            
-            if new_head_x in snake_bad.allowed__body_position():
-                return 2
-            if new_head_y in   snake_bad.allowed__body_position():
-                return 0
-
-        return original_direct
+            if original_direct == 0:
+                
+                if new_head_right in snake_bad.allowed__body_position():
+                    if new_head_up in snake_bad.allowed__body_position():
+                        return 3
+                    return 2
+            if original_direct == 1:
+               
+                if  new_head_left in snake_bad.allowed__body_position():
+                    if new_head_up in snake_bad.allowed__body_position():
+                        return 3
+                    return 2        
+            if original_direct == 2:
+                
+                if  new_head_up in snake_bad.allowed__body_position():
+                    if new_head_right in snake_bad.allowed__body_position():
+                        return 1
+                    return 0
+            if original_direct == 3:
+                
+                if  new_head_dowm in snake_bad.allowed__body_position():
+                    if new_head_right in snake_bad.allowed__body_position():
+                        return 1
+                    return 0
+                   
+        return original_direct            
