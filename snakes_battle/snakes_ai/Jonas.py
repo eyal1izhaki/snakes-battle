@@ -3,7 +3,7 @@ from random import triangular
 from snakes_battle.fruit import FruitKind, Fruit
 from snakes_battle.snake import Snake, Direction
 from pprint import pprint
-
+import random
 class Jonas(Snake):
     def __init__(self, borders_cells, color, name) -> None:
         super().__init__(color, name)
@@ -19,6 +19,7 @@ class Jonas(Snake):
         # Your bot initializations will be here.
         self.allowed__version = 1.0
         self.isWinnerForTheMoment = False
+        # self.distanceToTarget = 999
         print(self.name)
 
         # All the cells that are fill with borders. This variable will store a list of (x, y) pairs
@@ -35,16 +36,33 @@ class Jonas(Snake):
         is_shield = super().allowed__is_shield() # returns True if your snake is shielded else returns False.
         print("hello")
         head = body_pos[0]
+        allowedNextPositions = get_allowedNextPositions(head, direction)
         interestingFruits = getInterestingFruits(board_state["fruits"])
         bestFruit_length = get_closestFruit(body_pos[0], interestingFruits)
         nexDir =  getDirToGoToGivenPosition(head, direction, bestFruit_length.pos)
         if(self.king or self.knife):
             if(len(board_state["snakes"])>1):
                 target = getOpenentNeck(board_state["snakes"], self.name)
-                nexDir = getDirToGoToGivenPosition(head, direction, target)
+                if(self.knife or (self.king and calculateDistance(head, target)<15)):
+                    nexDir = getDirToGoToGivenPosition(head, direction, target)
         nextPos = calcNextPos(head, nexDir)
         notGoodFruits = getNotGoodFruits(board_state["fruits"])
         allOtherSnakes = getAllOtherSnakes(board_state["snakes"], self.name)
+        # notDiePositions = []
+        # for allowedNext in allowedNextPositions:
+        #     if(not willDie(allowedNext, body_pos, notGoodFruits, self.allowed__border_cells, allOtherSnakes)):
+        #         notDiePositions.append(allowedNext)
+        # print("nextPos", nextPos)
+        # print("currentPosition", head)
+        # print("notDiePositions", notDiePositions)
+        # while(nextPos not in notDiePositions):
+        #     if(len(notDiePositions)>=1):
+        #         # nextPos = notDiePositions[0]
+        #         nextPos = random.choice(notDiePositions)
+        #         nexDir = getDirToGoToGivenPosition(head, direction, nextPos)
+        #         return nexDir
+        #     return nexDir
+
         # self.isWinnerForTheMoment = updateIfIAmTheWinner(board_state["snakes"], self.name, self.length)
         # isInSafeMode = len(board_state["snakes"])==1 and self.isWinnerForTheMoment
         # if(isInSafeMode):
@@ -58,35 +76,21 @@ class Jonas(Snake):
         # return changeDir
         # if(isInSafeMode):
             # return Direction.DOWN
-        if(nextPos in body_pos):
-            print("I WILL DIE FROM SNAKE")
-            changeDir = (nexDir+1)%4
-            if(changeDir==direction or changeDir==getopositeDir(direction)):
-                return (changeDir+1)%4
-            return changeDir
-        if(nextPos in notGoodFruits):
-            print("I WILL DIE FROM BOMB")
-            changeDir = (nexDir+1)%4
-            if(changeDir==direction or changeDir==getopositeDir(direction)):
-                return (changeDir+1)%4
-            return changeDir
-        if(nextPos in self.allowed__border_cells):
-            print("I WILL DIE FROM WALL")
-            changeDir = (nexDir+1)%4
-            if(changeDir==direction or changeDir==getopositeDir(direction)):
-                return (changeDir+1)%4
-        
-        if(nextPos in self.allowed__border_cells):
-            print("I WILL DIE FROM WALL")
-            changeDir = (nexDir+1)%4
-            if(changeDir==direction or changeDir==getopositeDir(direction)):
-                return (changeDir+1)%4
-        
-        if(nextPos in allOtherSnakes):
-            print("I WILL DIE FROM OTHER SNAKE")
-            changeDir = (nexDir+1)%4
-            if(changeDir==direction or changeDir==getopositeDir(direction)):
-                return (changeDir+1)%4
+
+        # while(willDie(nextPos, body_pos, notGoodFruits, self.allowed__border_cells, allOtherSnakes)):
+        #     nexDir = checkPos(nextPos, direction, nexDir, body_pos, notGoodFruits, self.allowed__border_cells, allOtherSnakes)
+        #     nextPos = calcNextPos(head, nexDir)
+
+        nexDir = checkPos(nextPos, direction, nexDir, body_pos, notGoodFruits, self.allowed__border_cells, allOtherSnakes)
+        nextPos = calcNextPos(head, nexDir)
+        nexDir = checkPos(nextPos, direction, nexDir, body_pos, notGoodFruits, self.allowed__border_cells, allOtherSnakes)
+        nextPos = calcNextPos(head, nexDir)
+        nexDir = checkPos(nextPos, direction, nexDir, body_pos, notGoodFruits, self.allowed__border_cells, allOtherSnakes)        
+        nextPos = calcNextPos(head, nexDir)
+        nexDir = checkPos(nextPos, direction, nexDir, body_pos, notGoodFruits, self.allowed__border_cells, allOtherSnakes)
+        nexDir = checkPos(nextPos, direction, nexDir, body_pos, notGoodFruits, self.allowed__border_cells, allOtherSnakes)
+        nextPos = calcNextPos(head, nexDir)
+        nexDir = checkPos(nextPos, direction, nexDir, body_pos, notGoodFruits, self.allowed__border_cells, allOtherSnakes)
         print("turning ", nexDir)
         return nexDir
 
@@ -99,6 +103,47 @@ class Jonas(Snake):
         #     if fruit.kind == FruitKind.DRAGON_FRUIT:
         #         # self.do_something()
         #         print("jon")
+def get_allowedNextPositions(head, direction):
+    x = head[0]
+    y = head[1]
+    allowed = []
+    if(direction==Direction.UP):
+        allowed = [[x-1, y], [x,y-1], [x+1, y]]
+    if(direction==Direction.DOWN):
+        allowed = [[x-1, y], [x,y+1], [x+1, y]]
+    if(direction==Direction.RIGHT):
+        allowed = [[x, y+1], [x,y-1], [x+1, y]]
+    if(direction==Direction.UP):
+        allowed = [[x, y+1], [x,y-1], [x-1, y]]
+    return allowed
+def willDie(nextPos, body_pos, notGoodFruits, borders, allOtherSnakes):
+    print(nextPos in (body_pos + notGoodFruits + borders + allOtherSnakes))
+    return nextPos in body_pos + notGoodFruits + borders + allOtherSnakes
+def checkPos(nextPos, direction, nexDir,  body_pos, notGoodFruits, borders, allOtherSnakes):
+        if(nextPos in body_pos):
+            print("I WILL DIE FROM SNAKE")
+            changeDir = (nexDir+1)%4
+            if(changeDir==direction or changeDir==getopositeDir(direction)):
+                return (changeDir+1)%4
+            return changeDir
+        if(nextPos in notGoodFruits):
+            print("I WILL DIE FROM BOMB")
+            changeDir = (nexDir+1)%4
+            if(changeDir==direction or changeDir==getopositeDir(direction)):
+                return (changeDir+1)%4
+            return changeDir
+        if(nextPos in borders):
+            print("I WILL DIE FROM WALL")
+            changeDir = (nexDir+1)%4
+            if(changeDir==direction or changeDir==getopositeDir(direction)):
+                return (changeDir+1)%4
+        
+        if(nextPos in allOtherSnakes):
+            print("I WILL DIE FROM OTHER SNAKE")
+            changeDir = (nexDir+1)%4
+            if(changeDir==direction or changeDir==getopositeDir(direction)):
+                return (changeDir+1)%4
+        return nexDir
 def getOpenentNeck(snakes, name):
     for snake in snakes:
         if(snake.name != name):
@@ -113,9 +158,9 @@ def getAllOtherSnakes(snakes, slefName):
     allSnakes = []
     for snake in snakes:
         if(snake.name != slefName):
-            print(snake.name)
+            # print(snake.name)
             allSnakes = allSnakes + snake.body_pos
-    print(allSnakes)
+    # print(allSnakes)
     return allSnakes
             # allSnakes = allSnakes + snake.allowed__body_position()
 def getopositeDir(direction):
@@ -165,6 +210,12 @@ def get_closestFruit(MyPosition, fruits):
     for fruit in fruits:
         currentDist = calculateDistance(MyPosition, fruit.pos)
         if(fruit.kind == FruitKind.KING):
+            if(fruit.lifespan>currentDist):
+                return fruit
+        if(fruit.kind == FruitKind.SHIELD):
+            if(fruit.lifespan>currentDist):
+                return fruit
+        if(fruit.kind == FruitKind.KNIFE):
             if(fruit.lifespan>currentDist):
                 return fruit
         print(currentDist, fruit.kind["name"])

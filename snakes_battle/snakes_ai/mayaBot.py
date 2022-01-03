@@ -91,7 +91,14 @@ class MayaWins(Snake):
                 return Direction.RIGHT
             else:
                 return Direction.UP
-            
+
+    # check if my head is close to any part of other snake       
+    def allowed__isCloseToOtherSnake(self, myHead, otherSnakePosition):
+        for i in range(0, len(otherSnakePosition)):
+            if self.allowed__calcDistance(myHead, otherSnakePosition[i]) == 1:
+                return True
+        return False
+
 
     def make_decision(self, board_state):
         myPosition = super().allowed__body_position()
@@ -104,10 +111,14 @@ class MayaWins(Snake):
         snakesWithoutMe = [s for s in board_state["snakes"] if type(s)!=MayaWins]
         closestSnake = self.allowed__findClosestSnake(myHead, snakesWithoutMe)
 
-        if isKing or isKnife:
-            return self.allowed__calcDirection(myHead, myDirection, closestSnake.body_pos[0])
-        elif self.allowed__calcDistance(myHead, closestSnake.body_pos[0]) == 1:
-            return self.allowed__calcOppositeDirection(closestSnake.direction, myDirection)
+        # if isKing or isKnife:
+        #     return self.allowed__calcDirection(myHead, myDirection, closestSnake.body_pos[0])
+        #elif self.allowed__calcDistance(myHead, closestSnake.body_pos[0]) == 1:
+        if self.allowed__isCloseToOtherSnake(myHead, closestSnake.body_pos):
+            if isKing or isKnife:
+                return self.allowed__calcDirection(myHead, myDirection, closestSnake.body_pos[0])
+            else:
+                return self.allowed__calcOppositeDirection(closestSnake.direction, myDirection)
         else:
             # TODO - PROIRITZE BETWEEN FRUITS
             non_harmful_fruits = [f for f in board_state["fruits"] if f.kind not in FruitKind.harmful_fruits]

@@ -1,9 +1,15 @@
+import random
 from snakes_battle.snake import Snake, Direction
 import sys
 
 
 class unit:
     def __init__(self, string = " ", safe = True, fruit = False, snake = False, my_snake = False, bomb = False, head = False):
+        if snake:
+            if my_snake:
+                string = "S"
+            else: 
+                string = 's'
         self.__str__ = string + " "
         self.safe = safe
         self.fruit = fruit 
@@ -73,7 +79,7 @@ class Falcon(Snake):
         for d in self.possible_directions():
         #  [ Direction.RIGHT , Direction.UP, Direction.DOWN, Direction.LEFT]:
             
-            print ("tyring")
+            print ("trying")
             print (d)
             # next_head = self.next_head_location(self.direction)
             if self.is_dangerous(self.next_head_location(d)):
@@ -99,7 +105,10 @@ class Falcon(Snake):
             recommended = self.moovit(y ,x)
             print (f"This is the target{t}")
             print (f"These were the given directions{recommended}")
+            random.shuffle(recommended)
+            random.shuffle(possible_moves)
             for i in recommended: 
+
                 if i in possible_moves:
                     
                     return i
@@ -150,18 +159,23 @@ class Falcon(Snake):
         super.allowed__change_direction(Direction.UP)
 
         super.allowed__change_direction(Direction.DOWN)
-
+    def best_and_closest(self):
+        pass
 
     def moovit_eta(self, y, x):
+        
         head = self.current_pos[0]
         # I dont' know 
         head = [head[1], head[0]]
         return abs(abs(y) - abs(head[0])) + abs(abs(x) - abs(head[1])    )
+        
 
     def possible_directions(self):
         moves = [ Direction.RIGHT , Direction.UP, Direction.DOWN, Direction.LEFT]
         
+
         if self.direction == Direction.RIGHT:
+            
             moves.remove(Direction.LEFT)
             return moves 
 
@@ -184,6 +198,7 @@ class Falcon(Snake):
     def make_board(self, board_state):
         self.board = create_board(self.max_height+1, self.max_width+1)
         for x,y in self.border_cells:
+            # print (f"These are the border cells, x: {x} y:{y}")
             # print (f"x: {x} y:{y} max{self.max_width}{self.max_height}")
             self.board[y][x] = unit(string="+", safe=False)
         
@@ -198,19 +213,31 @@ class Falcon(Snake):
             # print (f"snake body position : {p[0]} {p[1]}")
             # self.board[p[0]][p[1]]  = unit(string='s', safe=False, snake = True, head = True)
             
+            head = snake.body_pos[0]
+            #I don't know 
+            my_snake = False
+            if head == self.current_pos[0]:
+                my_snake = True
+
+            head = [head[1], head[0]]
+            has_knife = self.allowed__is_knife() or self.allowed__is_king()
+            print (f"is knife: {self.allowed__is_knife()} is king: {self.allowed__is_king()}")
+            
 
             for p in snake.body_pos:
-                try: self.board[p[1]][p[0]]  = unit(string='s', safe=False, snake = True)
+                try: self.board[p[1]][p[0]]  = unit(safe=has_knife and not my_snake, snake = True, my_snake=my_snake)
                 except: (f"snake body position : {p[1]} {p[0]}")
 
             # mark the area around the head
-            #I don't know 
-            head = snake.body_pos[0]
-            head = [head[1], head[0]]
             for y in [head[0]-1, head[0] + 1]:
                 for x in [head[1]-1, head[1] + 1]:
-                    try: self.board[p[0]][p[1]]  = unit(string='s', safe=False, snake = True)
+                    try: self.board[p[0]][p[1]]  = unit( safe=False, snake = True, my_snake=my_snake)
                     except: pass
+            
+            # if it's an enemy snake mark his neck
+            if not my_snake:
+                self.enemy_weak_spot = snake.body_pos[2]
+
 
         self.mark_self()
 
@@ -275,8 +302,11 @@ class Falcon(Snake):
 
     def is_dangerous(self, loc):
         y,x = loc
+        if not self.safe_test_scenario(y,x):
+            return False
+        else: pass
         # for snake in self.board['snakes']:
-        print(f"y: {y}  x: {x}")
+        # print(f"y: {y}  x: {x}")
         # if y >= self.max_height-1 or y <= 0+1 or x >= self.max_width-1 or x <= 0+1:
         #     print ("don't go there's a border")
         #     return True
@@ -287,6 +317,15 @@ class Falcon(Snake):
         else: 
             return True 
             
+    def safe_test_scenario(self, y, x):
+        return True
+        matrix = []
+        for row_n in range(len(self.board)):
+            matrix.append([])
+            for unit in self.board[row_n]:
+                matrix[row_n].append(unit.safe)
+        
+    
 
     def next_move(self):
             
@@ -300,43 +339,81 @@ class Falcon(Snake):
     def mark_self(self):
         x , y = self.current_pos[0]
         self.board[y][x] = unit(string="O")
+    
+    def close_enemy_location(self):
+        head_y,head_x = self.current_pos[0][1], self.current_pos[0][0]
+        for y in [head_y+1, head_y-1]:
+            for x in [head_x+1, head_x-1]:
+                if self.board[y][x].snake and not self.board[y][x].my_snake:
+                    return [x,y]
+        return False
 
     def target(self):
         try:
                 
-            if self.allowed__is_king:
-                return self.board_state['snakes'][0].body_pos[3]
-            elif self.allowed__is_knife:
-                return self.board_state['snakes'][0].body_pos[3]
+            if self.allowed__is_king() or self.allowed__is_knife():
+                print ("I'm going for a snake")
+                close_snake = self.close_enemy_location()
+                if close_snake:
+                    print (f"Attacking {close_snake}!!!")
+                    return close_snake
+                return self.enemy_weak_spot()
+            
         except:
             pass
+        # print ("we are going to look for fruit")
         goods = []
         for fruit in self.board_state['fruits']:
             if fruit.kind['name'] in ['KING','DRAGON_FRUIT', 'STRAWBERRY', 'SHIELD', 'KNIFE'] :
                 goods.append(fruit)
+        fruits = []
+        print ("This is the target")
         for i in goods:
-            if i.kind['name'] == 'KING':
-                if self.worth_it(i):
-                    return i.pos
-            elif i.kind['name'] == 'KNIFE':
-                if self.worth_it(i):
-                    return i.pos
-            elif i.kind['name'] == 'SHIELD':
-                if self.worth_it(i):
-                    return i.pos
-            elif i.kind['name'] == 'DRAGON_FRUIT':
-                if self.worth_it(i):
-                    return i.pos
-            elif i.kind['name'] == 'STRAWBERRY':
-                if self.worth_it(i):
-                    return i.pos
+            for food in ['KING', 'KNIFE', 'SHIELD', 'DRAGON_FRUIT', 'STRAWBERRY']:
+                if i.kind['name'] == food:
+                    if self.worth_it(i):
+                        fruits.append({
+                            'pos': i.pos,
+                            'name': food,
+                            'eta': self.moovit_eta(i.pos[1], i.pos[0])
+                        })
+                        
+        current_goal = fruits[0]
+        for i in fruits:
+            if i['eta'] < current_goal['eta']:
+                current_goal = i
+        print(f"The target is: {current_goal}")
+        return current_goal['pos']
+            # if i.kind['name'] == 'KING':
+            #     if self.worth_it(i):
+            #         print ("KING")
+            # elif i.kind['name'] == 'KNIFE':
+            #     if self.worth_it(i):
+            #         print ("KNIFE")
+            #         return i.pos
+            # elif i.kind['name'] == 'SHIELD':
+            #     if self.worth_it(i):
+            #         print ("SHIELD")
+            #         return i.pos
+            # elif i.kind['name'] == 'DRAGON_FRUIT':
+            #     if self.worth_it(i):
+            #         print ("DRAGON_FRUIT")
+            #         return i.pos
+            # elif i.kind['name'] == 'STRAWBERRY':
+            #     if self.worth_it(i):
+            #         print ("STRAWBERRY")
+            #         return i.pos
         return 0,0
         # return 
     def worth_it(self, i):
         # calculates whether it's worth going for a fruit 
-        if (i.kind['lifespan']) > self.moovit_eta(i.pos[1], i.pos[0]):
+        
+        if i.kind['lifespan'] < 0:
+            return True
+        if i.kind['lifespan'] > self.moovit_eta(i.pos[1], i.pos[0]) :
             return True
         else:
+            
             return False
 
     def moovit(self, y ,x):
@@ -377,13 +454,29 @@ def get_char(val):
 
 
 def print_matrix(matrix, c):
+    return
     text = ""
-    for row in matrix:
+    # text += str(len(matrix[0])) + '|'
+    # text += str(len(matrix[1]))
+    for i in range(10):
+        text += str(i) + " "
+    for i in range(10,len(matrix[0])):
+        text += str(i) + ""
+    for n, row in enumerate(matrix):
         text += "\n"
         for unit in row:
             
             text += get_char(unit)
+        text += str(n)
+        
     text += str(c)
     print (text)
 
 
+# def recursion_check_safe(matrix, n, y ,x):
+#     if n > 20:
+#         return True
+#     else:
+#         temp = [x[:]for x in matrix]
+#         temp[y][x] = False
+#         for 

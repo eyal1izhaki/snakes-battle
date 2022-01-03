@@ -34,7 +34,7 @@ def main():
         { "class": SimpleSnake, "should_play": False },
         # { "class": ManualSnake, "should_play": False },
         # { "class": ManualSnakeWASD, "should_play": False },
-        # { "class": Falcon, "should_play": False },
+        # { "class": Falcon, "should_play": True },
         # { "class": Eyal, "should_play": True },
         # { "class": MayaWins, "should_play": True },
         # { "class": Tomer, "should_play": True },
