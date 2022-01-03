@@ -9,7 +9,7 @@ class Tehila(Snake):
 
     def init(self, borders_cells):
         # Your bot initializations will be here.
-        self.allowed__version = 1.2
+        self.allowed__version = 1.3
 
         # All the cells that are fill with borders. This variable will store a list of (x, y) pairs
         self.allowed__border_cells = borders_cells
@@ -54,11 +54,13 @@ class Tehila(Snake):
             pos_to_check = snake_pos[0]
         pos_to_check = self.get_pos_to_check(direction,pos_to_check)
         
+        protect = self.allowed__is_shield() or (self.allowed__is_king() and self.allowed__get_king_remaining_effection()>0) 
         
         if self.is_pos_snake(pos_to_check, snake_pos):
                 return True
         
-        if self.is_pos_harmful_fruit(pos_to_check, fruits):
+        
+        if not protect and self.is_pos_harmful_fruit(pos_to_check, fruits):
                 return True
         
         if self.is_pos_other_snake(pos_to_check, snakes):
@@ -144,7 +146,6 @@ class Tehila(Snake):
         else: 
             return direction
     
-
     def make_decision(self, board_state):
 
         pos = super().allowed__body_position()
@@ -168,6 +169,15 @@ class Tehila(Snake):
                     min_fruit_dis = fruit_dis
                     fruit_to_follow = fruit
         
+        # if self.allowed__is_knife():
+        #     closest_snake_dis = self.get_distance(pos[0], snake.get_body_position()[0])
+        #     fruit_to_follow = snakessnake.get_body_position()[0]
+            
+        #     for snake in snakes:
+        #         closest_snake = self.get_distance(pos[0], snake.get_body_position()[0])
+            
+            
+        # self.run_away(snakes)
         direction = self.allowed__change_direction(pos, fruit_to_follow, fruits, snakes, pos[0])
-        direction2 = self.get_direction_after_clear_way(direction, pos, fruits, snakes,pos[0])        
+        direction2 = self.get_direction_after_clear_way(direction, pos, fruits, snakes, pos[0])        
         return direction2
