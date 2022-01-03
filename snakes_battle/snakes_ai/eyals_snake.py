@@ -248,6 +248,14 @@ class Eyal(Snake):
 
     def best_fruit(self, fruits):
 
+        for fruit in fruits:
+            if self.allowed__is_knife() and fruit.kind == FruitKind.KNIFE:
+                fruits.remove(fruit)
+            
+            elif self.allowed__is_shield() and fruit.kind == FruitKind.SHIELD:
+                fruits.remove(fruit)
+
+        
         second_close_fruit = fruits[1]
         
         closest_fruit = fruits[0]
