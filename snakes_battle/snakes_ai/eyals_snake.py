@@ -36,26 +36,30 @@ class Node:
         return [self.left, self.right, self.up, self.down]
         
     def get_best_direction(self, harmful_fruits, all_snakes, my_snake, wanted_direction, border_cells):
+        
         self.number_of_potential_dangerous = self.calculate_potential_dangerous(harmful_fruits, all_snakes, my_snake, border_cells)
         children = self.get_children()
         sorted_children = sorted(children, key=lambda child: child.number_of_potential_dangerous)
-
+    
         for child in sorted_children:
             if abs(child.direction - my_snake.allowed__current_direction) != 1: # Get the best non opposite direction
                 returned_direction = child.direction
                 break
 
         if abs(wanted_direction - my_snake.allowed__current_direction) == 1: # Wanted direction is in the opposite direction so returning safest direction
-            return returned_direction
+            for child in sorted_children:
+                if abs(child.direction - my_snake.allowed__current_direction) != 1 and abs(wanted_direction-child.direction) != 1: # Get the best non opposite direction
+                    returned_direction = child.direction
+                    return returned_direction
 
 
         for child in sorted_children:
             if child.direction == wanted_direction:
-                print(f"wanted({child.direction}): {child.number_of_potential_dangerous} safest({sorted_children[0].direction}): {sorted_children[0].number_of_potential_dangerous} worst({sorted_children[-1].direction}): {sorted_children[-1].number_of_potential_dangerous}")
+                print(f"wanted({wanted_direction}): {child.number_of_potential_dangerous} safest({sorted_children[0].direction}): {sorted_children[0].number_of_potential_dangerous} worst({sorted_children[-1].direction}): {sorted_children[-1].number_of_potential_dangerous}")
 
                 avg_of_safe_and_worst = (sorted_children[0].number_of_potential_dangerous + sorted_children[-1].number_of_potential_dangerous)/2
 
-                if child.number_of_potential_dangerous <= avg_of_safe_and_worst:
+                if child.number_of_potential_dangerous <= avg_of_safe_and_worst * 0.9:
                     returned_direction = wanted_direction
         
         print(f"current direction: {my_snake.allowed__current_direction}        next direction: {returned_direction}")
@@ -112,7 +116,7 @@ class Node:
 
         for cell in border_cells:
             if self.body_pos[0][0] == cell[0] and self.body_pos[0][1] == cell[1]:
-                return False
+                return True
 
         return True
 
@@ -170,11 +174,6 @@ class Eyal(Snake):
 
         new_direction = self.get_direction_to_a_specific_fruit(best_fruit, self.allowed__current_direction)
 
-        # bad_object = self.get_bad_objects_in_next_cell(new_direction)
-
-        # if bad_object != None:
-        #     new_direction = self.make_turn(new_direction)
-
         final_direction = self.calculate_best_step(new_direction, 3)
 
         return final_direction
@@ -198,20 +197,6 @@ class Eyal(Snake):
 
         return root.get_best_direction(self.allowed__harmful_fruits, self.allowed_all_snakes, self, wanted_direction, self.allowed__border_cells)
             
-       
-    def make_turn(self, direction):
-        if direction == Direction.DOWN or direction == Direction.UP:
-            if self.get_bad_objects_in_next_cell(Direction.RIGHT) == None:
-                return Direction.RIGHT
-            else:
-                return Direction.LEFT
-        
-        if direction == Direction.LEFT or direction == Direction.RIGHT:
-            if self.get_bad_objects_in_next_cell(Direction.DOWN) == None:
-                return Direction.DOWN
-            else:
-                return Direction.UP
-
     def simulate_turn(self,body_pos, current_direction, new_direction):
         new_body_pos = copy.deepcopy(body_pos)
         if new_direction == Direction.LEFT:
@@ -245,6 +230,35 @@ class Eyal(Snake):
 
         return new_body_pos
 
+    def simulate_turn_head_only(self,body_pos, current_direction, new_direction):
+        new_head_pos = copy.deepcopy(body_pos[0])
+        if new_direction == Direction.LEFT:
+            if current_direction == Direction.UP or current_direction == Direction.DOWN:
+                new_direction =  Direction.LEFT
+
+        elif new_direction == Direction.RIGHT:
+            if current_direction == Direction.UP or current_direction == Direction.DOWN:
+                new_direction =  Direction.RIGHT
+
+        elif new_direction == Direction.UP:
+            if current_direction == Direction.RIGHT or current_direction == Direction.LEFT:
+                new_direction =  Direction.UP
+
+        elif new_direction == Direction.DOWN:
+            if current_direction == Direction.RIGHT or current_direction == Direction.LEFT:
+                new_direction =  Direction.DOWN
+
+        if new_direction == Direction.DOWN:
+            new_head_pos[1] += 1
+        elif new_direction == Direction.UP:
+            new_head_pos[1] -= 1
+        elif new_direction == Direction.LEFT:
+            new_head_pos[0] -= 1
+        elif new_direction == Direction.RIGHT:
+            new_head_pos[0] += 1
+
+        return new_head_pos
+
     def calculate_distance(self, a, b):
         return math.dist(a,b)
 
@@ -262,22 +276,35 @@ class Eyal(Snake):
                 closest = fruit_distance
                 closest_fruit = fruit
         
-        for cell in self.allowed__border_cells:
-            if abs(closest_fruit.pos[0] - cell[0]) + abs(closest_fruit.pos[1] - cell[1]) == 1: # Don't take that fruit
-                return second_close_fruit
+        # for cell in self.allowed__border_cells:
+        #     if abs(closest_fruit.pos[0] - cell[0]) + abs(closest_fruit.pos[1] - cell[1]) == 1: # Don't take that fruit
+        #         return second_close_fruit
 
         return closest_fruit
-    
+
+    def chose_a_good_direction_when_wants_the_opposite(self, direction1, direction2, fruit):
+        head1 = self.simulate_turn_head_only(self.allowed__body_pos, self.allowed__current_direction, direction1)
+        head2 = self.simulate_turn_head_only(self.allowed__body_pos, self.allowed__current_direction, direction2)
+
+        distance1 = math.dist(head1, fruit.pos)
+        distance2 = math.dist(head2, fruit.pos)
+
+        if distance1 < distance2:
+            return direction1
+        
+        return distance2
+
     def get_direction_to_a_specific_fruit(self, fruit, current_direction):
+
         if self.allowed__body_pos[0][0] > fruit.pos[0]:
             if (current_direction == Direction.RIGHT):
-                return Direction.UP
+                return self.chose_a_good_direction_when_wants_the_opposite(Direction.UP, Direction.DOWN, fruit)
             else:
                 return Direction.LEFT
         
         if self.allowed__body_pos[0][0] < fruit.pos[0]:
             if (current_direction == Direction.LEFT):
-                return Direction.UP
+                return self.chose_a_good_direction_when_wants_the_opposite(Direction.UP, Direction.DOWN, fruit)
             else:
                 return Direction.RIGHT
         
@@ -285,137 +312,12 @@ class Eyal(Snake):
 
             if self.allowed__body_pos[0][1] < fruit.pos[1]:
                 if (current_direction == Direction.UP):
-                    return Direction.RIGHT
+                    return self.chose_a_good_direction_when_wants_the_opposite(Direction.RIGHT, Direction.LEFT, fruit)
                 else:
                     return Direction.DOWN
 
             if self.allowed__body_pos[0][1] > fruit.pos[1]:
                 if (current_direction == Direction.DOWN):
-                    return Direction.RIGHT
+                    return self.chose_a_good_direction_when_wants_the_opposite(Direction.RIGHT, Direction.LEFT, fruit)
                 else:
                     return Direction.UP
-
-
-    def get_bad_objects_in_next_cell(self, new_direction):
-
-        new_body_pos = self.simulate_turn(self.allowed__body_pos, self.allowed__current_direction, new_direction)
-
-        for fruit in self.allowed__harmful_fruits:
-            if new_body_pos[0] == fruit.pos:
-                return fruit
-        
-        for snake in self.allowed_all_snakes:
-
-            if snake.name == self.name:
-                for index, cell in enumerate(snake.body_pos):
-                    if index != 0 and cell == new_body_pos[0]:
-                        return snake
-            
-            else:
-                for cell in snake.body_pos:
-                    if new_body_pos[0] == cell:
-                        return snake
-
-
-    def pass_by_object(self, obj):
-        current_direction = self.allowed__current_direction
-        body_position = self.allowed__body_position()
-
-        if type(obj) == type(Snake):
-            snake = obj
-
-            for index, cell in enumerate(snake.body_pos):
-                if cell == body_position[0]:
-                    hitting_point = cell
-                    hitting_point_index = index
-                    break
-
-            # Hitting point to the tail
-            for i in range(hitting_point_index, snake.allowed__get_length() - 1):
-                new_head_pos = self.simulate_turn_head_only()
-
-
-            
-            # Hitting point to the head
-            for j in range(0, hitting_point_index):
-                pass
-
-
-            new_head_pos = self.simulate_turn_head_only()
-
-
-    def is_this_direction_safe(self, new_direction):
-        
-        current_direction = self.allowed__current_direction
-        next_body_pos = self.simulate_turn(self.allowed__body_pos, current_direction, new_direction)
-
-        next_next_body_pos_right = self.simulate_turn(next_body_pos, current_direction, new_direction)
-        next_next_body_pos_left = self.simulate_turn(next_body_pos, current_direction, new_direction)
-        next_next_body_pos_up = self.simulate_turn(next_body_pos, current_direction, new_direction)
-        next_next_body_pos_down = self.simulate_turn(next_body_pos, current_direction, new_direction)
-
-        right = True
-        left = True
-        up = True
-        down = True
-
-
-        for index, body_pos in enumerate([next_next_body_pos_right, next_next_body_pos_left, next_next_body_pos_up, next_next_body_pos_down]):
-            # Snake is going to hit a bad fruit.
-            for fruit in self.allowed__harmful_fruits:
-                if body_pos[0] in fruit.pos:
-
-                    if index == 0:
-                        right = False
-                    elif index == 1:
-                        left = False
-                    elif index == 2:
-                        up = False
-                    else:
-                        down = False
-            
-        # Snake is going to hit a border
-        for cell in body_pos:
-            if body_pos[0] in self.allowed__border_cells:
-                if index == 0:
-                    right = False
-                elif index == 1:
-                    left = False
-                elif index == 2:
-                    up = False
-                else:
-                    down = False
-
-        # Snake is going to hit itself
-        for i_cell, cell in enumerate(body_pos):
-            if i_cell != 0 and body_pos[0] == cell:
-                if index == 0:
-                    right = False
-                elif index == 1:
-                    left = False
-                elif index == 2:
-                    up = False
-                else:
-                    down = False
-        
-        # Snake is going to hit other snakes
-        for snake in  self.allowed__board_state["snakes"]:
-            if not self.name == snake.name:
-                if body_pos[0] in snake.allowed__body_position():
-                    if index == 0:
-                        right = False
-                    elif index == 1:
-                        left = False
-                    elif index == 2:
-                        up = False
-                    else:
-                        down = False
-
-        safe_directions = 0
-        for i in [right, left, up, down]:
-            if i:
-                safe_directions += 1
-
-
-        return safe_directions
-
