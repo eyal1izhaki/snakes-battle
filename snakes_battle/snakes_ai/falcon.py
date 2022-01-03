@@ -81,27 +81,65 @@ class Falcon(Snake):
             
             print ("trying")
             print (d)
-            # next_head = self.next_head_location(self.direction)
+            
             if self.is_dangerous(self.next_head_location(d)):
-                # print ("This is gonna be dangerous")
+                # print (f"{d} will not be added because our system detects that it's dangerous")
                 pass
             else:
+                print ("appearrantly it's safe")
                 
-                # print ("we found a non-dangrous path, we will be going here")
-                # print(self.next_head_location(self.direction))
                 possible_moves.append(d)
-        # print (possible_moves[0])
-        # return possible_moves[0]
+        if not len(possible_moves) == 0:
+            print (f"these are the moves {possible_moves}")
 
-        return self.make_best_choice(possible_moves)
+            return self.make_best_choice(possible_moves)
+        else: 
+            print ("we are in trouble")
+            for d in self.possible_directions():
+        
+                
+                print ("trying")
+                print (d)
+                
+                if self.is_dangerous(self.next_head_location(d), trouble=True):
+                    #danger
+                    pass
+                else:
+                    print ("appearrantly it's somewhat safe")
+                    possible_moves.append(d)
+        if not len(possible_moves) == 0:
+            print (f"these are the moves {possible_moves}")
+
+            return self.make_best_choice(possible_moves)
+        else: 
+            print ("we are in trouble")
+            for d in self.possible_directions():
+        
+                
+                print ("trying")
+                print (d)
+                
+                if self.is_dangerous(self.next_head_location(d), trouble=2):
+                    #danger
+                    pass
+                else:
+                    print ("appearrantly it's somewhat safe")
+                    possible_moves.append(d)
+            
+            return self.make_best_choice(possible_moves)
+    
+    
+
 
     def make_best_choice(self, possible_moves):
         print (f"These were the given safe moves {possible_moves}")
-        t = self.target()
-        print ("getting target ")
+        try: t = self.target()
+        except:
+            t = 10, 10
+        # print ("getting target ")
         try:
             x, y = t
-            print("getting directions")
+            # print("getting directions")
             recommended = self.moovit(y ,x)
             print (f"This is the target{t}")
             print (f"These were the given directions{recommended}")
@@ -110,7 +148,7 @@ class Falcon(Snake):
             for i in recommended: 
 
                 if i in possible_moves:
-                    
+                    print (f"final move: {i}")
                     return i
                 else: 
                     pass 
@@ -205,7 +243,8 @@ class Falcon(Snake):
 
 
     def mark_specials(self):
-
+        has_knife = self.allowed__is_knife() or self.allowed__is_king()
+        print (f"is knife: {self.allowed__is_knife()} is king: {self.allowed__is_king()}")
         for snake in self.board_state['snakes']:
             # print ("this is a snake")
             # snake.body_pos
@@ -220,24 +259,28 @@ class Falcon(Snake):
                 my_snake = True
 
             head = [head[1], head[0]]
-            has_knife = self.allowed__is_knife() or self.allowed__is_king()
-            print (f"is knife: {self.allowed__is_knife()} is king: {self.allowed__is_king()}")
             
-
+            
+            
             for p in snake.body_pos:
-                try: self.board[p[1]][p[0]]  = unit(safe=has_knife and not my_snake, snake = True, my_snake=my_snake)
-                except: (f"snake body position : {p[1]} {p[0]}")
+                try: self.board[p[1]][p[0]]  = unit(safe=(has_knife and not my_snake), snake = True, my_snake=my_snake)
+                except: print (f"snake body position : {p[1]} {p[0]}")
 
             # mark the area around the head
             for y in [head[0]-1, head[0] + 1]:
                 for x in [head[1]-1, head[1] + 1]:
-                    try: self.board[p[0]][p[1]]  = unit( safe=False, snake = True, my_snake=my_snake)
-                    except: pass
+                    try: self.board[p[0]][p[1]]  = unit( safe=False, snake = False, my_snake=my_snake)
+                    except: print ("coudln't mark head as dangerous")
             
             # if it's an enemy snake mark his neck
             if not my_snake:
-                self.enemy_weak_spot = snake.body_pos[2]
-
+                try: self.enemy_weak_spot = snake.body_pos[2]
+                except: 
+                    try: self.enemy_weak_spot = snake.body_pos[1]
+                    except: 
+                        try: self.enemy_weak_spot = snake.body_pos[0]
+                        except: self.enemy_weak_spot = [random.randint(1,30), random.randint(1,30)]
+            
 
         self.mark_self()
 
@@ -245,26 +288,6 @@ class Falcon(Snake):
             # print ("added the snakes")
         # print ("finished running through the snakes")
         # print ("we created the snakes")
-        
-        for fruit in self.board_state['fruits']:
-            # I don't know 
-            pos = fruit.pos
-            pos = [pos[1], pos[0]]
-            
-            try:
-
-                if fruit.kind['name'] in ['KING','DRAGON_FRUIT', 'STRAWBERRY', 'SHIELD', 'KNIFE'] :
-                    
-                    self.board[pos[0]][pos[1]] = unit(string = "F", fruit = fruit.kind['name'], safe=True) 
-                elif fruit.kind['name'] in ['BOMB', 'SKULL']:
-                    
-                    self.board[pos[0]][pos[1]] = unit(string = "X", fruit = fruit.kind['name'], safe=False) 
-                # print ("added fruits to list")
-            except:
-                print ("crashed while adding fruits to list")
-
-            # print ("we have entered the fruit position")
-            # print (f"length of the board{len(self.board)}   With of the board {len(self.board[0])}  fruit position W: {pos[0]} H:{pos[1]}   Height: {self.max_height}  Width: {self.max_width}")
             
             
         
@@ -300,30 +323,56 @@ class Falcon(Snake):
             return head[0], head[1] - 1   
 
 
-    def is_dangerous(self, loc):
+    def is_dangerous(self, loc, trouble = True):
         y,x = loc
-        if not self.safe_test_scenario(y,x):
+        print (f"this is the head we are checking y{y} x{x}")
+        if not self.board[y][x].safe:
+            print ("this space isn't safe")
+            if (not trouble) or self.board[y][x].snake:
+                return True
+            else: pass
+        else: pass 
+        if trouble == 2:
             return False
-        else: pass
+
+        print ("this space itself isn't dangerous, we're going to check whether the envionment itself is contained using safe_test_scenario")
+        if not self.safe_test_scenario(y,x, trouble = trouble): #if this is not a safe scenario return True since it is dangerous
+
+            print ("tested safe scenario and detected that this doesn't lead to a safe environment")
+            return True
+        else:
+            print ("tested safe scenario") 
+            pass
         # for snake in self.board['snakes']:
         # print(f"y: {y}  x: {x}")
         # if y >= self.max_height-1 or y <= 0+1 or x >= self.max_width-1 or x <= 0+1:
         #     print ("don't go there's a border")
         #     return True
 
-        if self.board[y][x].safe:
-            print ("safe")
-            return False 
-        else: 
-            return True 
+        # if self.board[y][x].safe:
+        #     print ("safe")
+        #     print (self.board[y][x].safe)
+        #     return False 
+        # else: 
+        #     print ("This space isn't safe")
+        #     return True 
             
-    def safe_test_scenario(self, y, x):
-        return True
+    def safe_test_scenario(self, y, x, trouble = False):
+        # return True
+        
         matrix = []
         for row_n in range(len(self.board)):
             matrix.append([])
             for unit in self.board[row_n]:
-                matrix[row_n].append(unit.safe)
+                if unit.safe and (not unit.snake):
+                    matrix[row_n].append(True)
+                else: matrix[row_n].append(False)
+        # matrix[y][x] = False
+        print (f"checking path from y{y} x{x}")
+        try: return  check_safe_path_recursive(matrix, 0, y ,x)
+        except:
+            print ("couldn't check path")
+            return True
         
     
 
@@ -341,7 +390,9 @@ class Falcon(Snake):
         self.board[y][x] = unit(string="O")
     
     def close_enemy_location(self):
-        head_y,head_x = self.current_pos[0][1], self.current_pos[0][0]
+        print ("i'm going to get my snakes location")
+        head_x, head_y = self.current_pos[0]
+        print (f"head closest to me, i am y{y} x{x}")
         for y in [head_y+1, head_y-1]:
             for x in [head_x+1, head_x-1]:
                 if self.board[y][x].snake and not self.board[y][x].my_snake:
@@ -454,7 +505,7 @@ def get_char(val):
 
 
 def print_matrix(matrix, c):
-    return
+    return 
     text = ""
     # text += str(len(matrix[0])) + '|'
     # text += str(len(matrix[1]))
@@ -470,13 +521,38 @@ def print_matrix(matrix, c):
         text += str(n)
         
     text += str(c)
-    print (text)
+    # print (text)
 
 
-# def recursion_check_safe(matrix, n, y ,x):
-#     if n > 20:
-#         return True
-#     else:
-#         temp = [x[:]for x in matrix]
-#         temp[y][x] = False
-#         for 
+def check_safe_path_recursive(matrix, path_length, y ,x): #if we have where to go from here (this place is already blocked)
+    # if we got to a depth of 20
+    # print ("recursion")
+    # print (path_length)
+    # print (f"checking path safety with original y {y} x {x}")
+    if path_length > 20:
+        # print ("path length is over 20")
+        return True  
+    else:
+        if matrix[y][x]:
+            matrix[y][x] = False
+            for ny, nx in [
+                [y-1, x], 
+                [y+1, x], 
+                [y, x-1],
+                [y, x+1]
+                        ]:
+                
+                
+                
+                if check_safe_path_recursive(matrix, path_length + 1 , ny, nx ):
+                    # print (ny, nx)
+                    return True 
+                # If we decide not to go through this path, mark it as safe 
+            
+            matrix[y][x] = True 
+            
+        # print ("hazard ahead!")
+        return False 
+
+                
+                
