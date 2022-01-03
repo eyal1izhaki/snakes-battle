@@ -30,21 +30,21 @@ from snakes_battle.fruit import FruitKind, Fruit
 
 def main():
     ai_classes_available = [
-        { "class": RandomSnake, "should_play": False },
-        { "class": SimpleSnake, "should_play": False },
-        { "class": ManualSnake, "should_play": False },
-        { "class": ManualSnakeWASD, "should_play": False },
-        # { "class": Falcon, "should_play": True },
+        # { "class": RandomSnake, "should_play": False },
+        # { "class": SimpleSnake, "should_play": False },
+        # { "class": ManualSnake, "should_play": False },
+        # { "class": ManualSnakeWASD, "should_play": False },
+        { "class": Falcon, "should_play": True },
         { "class": Eyal, "should_play": True },
         # { "class": MayaWins, "should_play": True },
-        # { "class": Tomer, "should_play": True },
+        { "class": Tomer, "should_play": True },
         # { "class": Yagel, "should_play": True },
         { "class": Jonas, "should_play": True },
         # { "class": Gavriel, "should_play": True },
-        # { "class": Tehila, "should_play": True },
-        # { "class": Saymon, "should_play": True },
-        # { "class": shlomo809, "should_play": True },
-        # { "class": TalmaDragon, "should_play": True },
+        { "class": Tehila, "should_play": True },
+        { "class": Saymon, "should_play": True },
+        { "class": shlomo809, "should_play": True },
+        { "class": TalmaDragon, "should_play": True },
 
     ]
 

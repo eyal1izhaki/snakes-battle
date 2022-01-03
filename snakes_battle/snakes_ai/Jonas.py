@@ -47,8 +47,9 @@ class Jonas(Snake):
         heads_of_other = getHeadsOfOthers(board_state["snakes"], self.name)
         bestFruit_length = get_closestFruit(body_pos[0], interestingFruits, heads_of_other, self)
         nexDir =  getDirToGoToGivenPosition(head, direction, bestFruit_length.pos)
-        # if(len(heads_of_other)>0):
-            # nexDir =  getDirToGoToGivenPosition(head, direction, (heads_of_other[0][0]+1, heads_of_other[0][1]))
+        # if(len(heads_of_other)>0):  
+        #     nexDir =  getDirToGoToGivenPosition(head, direction, (heads_of_other[0][0]+3, heads_of_other[0][1]))
+        
         # previousDist = self.distanceToTarget
         # self.distanceToTarget = calculateDistance(head, bestFruit_length.pos)
         # if(previousDist<=self.distanceToTarget):
@@ -189,6 +190,9 @@ def get_allowedNextPositions(head, direction):
         allowed = [[x, y+1], [x,y-1], [x-1, y]]
     return allowed
 def willDie(nextPos, body_pos, notGoodFruits, borders, allOtherSnakes):
+    print(nextPos)
+    if(nextPos[0]==0 or nextPos[1]==0 or nextPos[0]==41 or nextPos[1]==41):
+        return True
     # print(nextPos in (body_pos + notGoodFruits + borders + allOtherSnakes))
     return nextPos in (body_pos + notGoodFruits + borders + allOtherSnakes)
 def checkPos(nextPos, direction, nexDir,  body_pos, notGoodFruits, borders, allOtherSnakes):
@@ -286,12 +290,12 @@ def get_closestFruit(MyPosition, fruits, headsOfOthers, me):
     bestFruitPosition = (-1,-1)
     for fruit in fruits:
         currentDist = calculateDistance(MyPosition, fruit.pos)
-        if(fruit.kind == FruitKind.KING):
+        if(fruit.kind == FruitKind.KING and len(headsOfOthers)!=0):
             if(fruit.lifespan>currentDist):
-                if(iAmTheClosestSnakeToFruit(MyPosition, fruit.pos, headsOfOthers)):
-                    print("king")
-                    return fruit
-        if(fruit.kind == FruitKind.SHIELD and not me.shield):
+                # if(iAmTheClosestSnakeToFruit(MyPosition, fruit.pos, headsOfOthers)):
+                #     print("king")
+                return fruit
+        if(fruit.kind == FruitKind.SHIELD and not me.shield and len(headsOfOthers)!=0):
             if(fruit.lifespan>currentDist):
                 print("shield")
                 return fruit
@@ -299,23 +303,29 @@ def get_closestFruit(MyPosition, fruits, headsOfOthers, me):
                 # if(iAmTheClosestSnakeToFruit(MyPosition, fruit.pos, headsOfOthers)):
                 #     print("shield")
                 #     return fruit
-        if(fruit.kind == FruitKind.KNIFE):
+        if(fruit.kind == FruitKind.KNIFE and len(headsOfOthers)!=0):
             if(fruit.lifespan>currentDist):
-                if(iAmTheClosestSnakeToFruit(MyPosition, fruit.pos, headsOfOthers)):
-                    print("knife")
-                    return fruit
+                # if(iAmTheClosestSnakeToFruit(MyPosition, fruit.pos, headsOfOthers)):
+                    # print("knife")
+                return fruit
         # print(currentDist, fruit.kind["name"])
         if(currentDist<min_dist):
-            min_dist = currentDist
-            bestFruitPosition = fruit
+        #     min_dist = currentDist
+        #     bestFruitPosition = fruit
 
-            # if(iAmTheClosestSnakeToFruit(MyPosition, fruit.pos, headsOfOthers)):
-            #     min_dist = currentDist
-            #     bestFruitPosition = fruit
-            # else:
-            #     if(bestFruitPosition == (-1,-1)):
-            #         min_dist = currentDist
-            #         bestFruitPosition = fruit
+            if(not iAmTheClosestSnakeToFruit(MyPosition, fruit.pos, headsOfOthers)):
+                # bestFruitPosition = fruit
+                if(bestFruitPosition == (-1,-1)):
+                    min_dist = currentDist
+                    bestFruitPosition = fruit
+            else:
+                # if(bestFruitPosition == (-1,-1)):
+                min_dist = currentDist
+                bestFruitPosition = fruit
+        else:
+            if(bestFruitPosition == (-1,-1)):
+                    min_dist = currentDist
+                    bestFruitPosition = fruit
 
     # print(fruit.kind["name"])
     return bestFruitPosition
@@ -324,6 +334,8 @@ def iAmTheClosestSnakeToFruit(myPosition, fruit, headOfOthers):
     # print("IN")
     if(len(headOfOthers)>0):
         return(calculateDistance(myPosition, fruit)>=calculateDistance(headOfOthers[0],fruit)) 
+    else:
+        return True
     # print("OUT")             
 def calculateDistance(HeadPosition, ElementPosition):
         return sqrt( 

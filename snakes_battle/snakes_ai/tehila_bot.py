@@ -9,7 +9,7 @@ class Tehila(Snake):
 
     def init(self, borders_cells):
         # Your bot initializations will be here.
-        self.allowed__version = 1.3
+        self.allowed__version = 1.4
 
         # All the cells that are fill with borders. This variable will store a list of (x, y) pairs
         self.allowed__border_cells = borders_cells
@@ -165,7 +165,7 @@ class Tehila(Snake):
             for fruit in not_harmful_fruits:
                 snake_dis = self.get_distance(snake.get_body_position()[0], fruit.pos)
                 fruit_dis = self.get_distance(pos[0], fruit.pos)
-                if fruit_dis <= min_fruit_dis and (snake.__class__  == Tehila  or fruit_dis < snake_dis):
+                if fruit_dis <= min_fruit_dis and (fruit_dis < snake_dis):
                     min_fruit_dis = fruit_dis
                     fruit_to_follow = fruit
         

@@ -290,6 +290,14 @@ class Saymon(Snake):
 
         return self.allowed__clost_loc(shields)
 
+    def allowed__get_best_king(self, board_state):
+        kings = []
+        for k in board_state["fruits"]:
+            if k.kind == FruitKind.KING:
+                kings.append(k.pos)
+
+        return self.allowed__clost_loc(kings)
+
     def allowed__attack(self, board_state):
         my_head = super().allowed__body_position()[0]
         enemy_neck = None
@@ -349,11 +357,11 @@ class Saymon(Snake):
 
     def allowed__avoid_other(self, board_state):
         my_head = super().allowed__body_position()[0]
-        enemy_all = None
+        enemy_all = []
         for snake in board_state["snakes"]:
            if not snake.allowed__body_position()[0] == my_head:
-               enemy_all = snake.allowed__body_position()
-        if enemy_all:
+               enemy_all += snake.allowed__body_position()
+        if len(enemy_all) > 0:
             if self.allowed__get_future_location() in enemy_all:
                 #print(self.allowed__get_future_location())
                 #print("enemy", enemy_all)
@@ -411,6 +419,7 @@ class Saymon(Snake):
         super().allowed__is_shield()  # returns True if your snake is shielded else returns False.
 
         print("starting direction", self.direction)
+
         if not self.allowed__is_shield():
             print("no shield")
             shield = self.allowed__get_best_shield(board_state)
@@ -468,6 +477,11 @@ class Saymon(Snake):
             print("other", self.allowed__direction_to_return)
             self.allowed__avoid_other(board_state)
             print("other", self.allowed__direction_to_return)
+
+        if not self.allowed__is_king():
+            king = self.allowed__get_best_king(board_state)
+            if king and math.dist(king, my_head) < 13:
+                self.allowed__go_there(king)
 
         self.allowed__dont_crush_into_border()
         print("border", self.allowed__direction_to_return)
