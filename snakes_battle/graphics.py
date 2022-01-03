@@ -110,7 +110,6 @@ class GameGraphics:
         return [top_left, bottom_left, bottom_right, top_right]
 
     def _draw_snake(self, snake, margin=4):
-
         snake_head_offset_to_body = 2
         head_image = self.images[snake.__class__.__name__]
 
