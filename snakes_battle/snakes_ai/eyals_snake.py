@@ -39,7 +39,15 @@ class Node:
         self.number_of_potential_dangerous = self.calculate_potential_dangerous(harmful_fruits, all_snakes, my_snake, border_cells)
         children = self.get_children()
         sorted_children = sorted(children, key=lambda child: child.number_of_potential_dangerous)
-        
+
+        for child in sorted_children:
+            if abs(child.direction - my_snake.allowed__current_direction) != 1: # Get the best non opposite direction
+                returned_direction = child.direction
+                break
+
+        if abs(wanted_direction - my_snake.allowed__current_direction) == 1: # Wanted direction is in the opposite direction so returning safest direction
+            return returned_direction
+
 
         for child in sorted_children:
             if child.direction == wanted_direction:
@@ -47,10 +55,15 @@ class Node:
 
                 avg_of_safe_and_worst = (sorted_children[0].number_of_potential_dangerous + sorted_children[-1].number_of_potential_dangerous)/2
 
-                if child.number_of_potential_dangerous <= avg_of_safe_and_worst * 0.9:
-                    return wanted_direction
-
-        return sorted_children[0].direction
+                if child.number_of_potential_dangerous <= avg_of_safe_and_worst:
+                    returned_direction = wanted_direction
+        
+        print(f"current direction: {my_snake.allowed__current_direction}        next direction: {returned_direction}")
+        
+        if abs(returned_direction - my_snake.allowed__current_direction) == 1:
+            print("Cant go in the opposite direction")
+            
+        return returned_direction
 
 
     def calculate_potential_dangerous(self, harmful_fruits, all_snakes, my_snake, border_cells):
