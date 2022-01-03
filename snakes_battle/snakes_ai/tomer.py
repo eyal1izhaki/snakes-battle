@@ -1,4 +1,6 @@
 import math
+import random
+from random import choice
 
 from snakes_battle.fruit import FruitKind
 from snakes_battle.snake import Snake, Direction
@@ -16,11 +18,11 @@ class Tomer(Snake):
 
     def init(self, borders_cells):
         # Your bot initializations will be here.
-        self.allowed__version = 1.0
+        self.allowed__version = "ICTORY"
 
         # All the cells that are fill with borders. This variable will store a list of (x, y) pairs
         self.allowed__border_cells = borders_cells
-        self.priority = ["KING", "KNIFE", "SHIELD", "DRAGON_FRUIT", "STRAWBERRY"]
+        self.priority = ["KING", "SHIELD",  "KNIFE", "DRAGON_FRUIT", "STRAWBERRY"]
 
     def make_decision(self, board_state):
         # You can only call methods that starts with the word 'allowed__'. You can't change attrbiutes directly.
@@ -34,12 +36,14 @@ class Tomer(Snake):
         snakes = board_state["snakes"]
         pos = super().allowed__body_position()
         self.can_kill_me = self.enemy_can_kill_me(snakes)
+        self.priority = ["KING", "KNIFE", "SHIELD", "DRAGON_FRUIT", "STRAWBERRY"]
 
         x = pos[0][0]
         y = pos[0][1]
 
-        if super().allowed__is_king() or super().allowed__is_knife():
-            return self.kill(x, y, self.get_enemy_neck_pos(snakes, fruits), snakes, fruits)
+        if len(snakes) > 1:
+            if super().allowed__is_king() or super().allowed__is_knife():
+                return self.kill(x, y, self.get_enemy_neck_pos(x, y, snakes, fruits), snakes, fruits)
         where = self.go_get_it_safer(x, y, self.choose_best_fruit_from_array(fruits, x, y), snakes, fruits)
         print(where)
         return where
@@ -50,7 +54,9 @@ class Tomer(Snake):
         my_snake_pos = my_snake_pos[2::]  # without head and neck
         snakes_pos, bad_poses = [], []
 
-        bad_poses += my_snake_pos  # there is no way crashing into myself is good
+        if not super().allowed__is_shield:
+            bad_poses += my_snake_pos
+        # bad_poses += my_snake_pos  # there is no way crashing into myself is good
         bad_poses += self.allowed__border_cells
 
         for s in snakes:
@@ -110,11 +116,12 @@ class Tomer(Snake):
                     return Direction.UP
         return Direction.DOWN
 
-    def get_enemy_neck_pos(self, snakes, fruits):
+    def get_enemy_neck_pos(self, x, y, snakes, fruits):
         for s in snakes:
             if s.name != "Tomer":
                 return s.body_pos[1]
-        return self.find_best_fruit(fruits)  # if I am the only snake I will go to the fruit
+        # return self.find_best_fruit(fruits)  # if I am the only snake I will go to the fruit
+        return self.choose_best_fruit_from_array(fruits, x, y)
 
     def find_best_fruit(self, fruits):
         best_type_of_food_locations = []
@@ -177,6 +184,9 @@ class Tomer(Snake):
         return a
 
     def enemy_can_kill_me(self, snakes):
+
+        if len(snakes) == 1:  # no enemies
+            return ["DRAGON_FRUIT", "STRAWBERRY", "KING", "SHIELD", "KNIFE"]
         for s in snakes:
             if s.name != "Tomer":
                 if s.allowed__is_knife() or s.allowed__is_king():
@@ -228,6 +238,6 @@ class Tomer(Snake):
             return Direction.DOWN
 
         if safe_directions:
-            return safe_directions[0]
+            return random.choice(safe_directions)
 
         return Direction.DOWN
