@@ -15,7 +15,7 @@ class Board:
         self.empty_cells = [] # Current empty cells. You have to call _update_empty_cells function every time before accessing this variable.
         self.all_cells_pos = [] # All potentially empty cells.
         self.border_cells = []
-        self.start_time = time.time()
+        self.frames_passed = 0
 
         self.is_there_a_king = False
         
@@ -73,12 +73,9 @@ class Board:
             "snakes": snakes_copy,
             "fruits": copy.deepcopy(self.fruits)
             }
-
-    def total_game_time(self):
-        return time.time() - self.start_time
     
     def game_time_left(self):
-        return round(settings.GAME_TIME_LENGTH - self.total_game_time(), 2)
+        return settings.GAME_FRAME_LENGTH - self.frames_passed
     
     def is_game_timed_out(self):
         return self.game_time_left() <= 0

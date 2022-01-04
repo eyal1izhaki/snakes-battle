@@ -35,18 +35,18 @@ def main():
         # { "class": SimpleSnake, "should_play": False },
         # { "class": ManualSnake, "should_play": False },
         # { "class": ManualSnakeWASD, "should_play": False },
-        # { "class": Falcon, "should_play": True },
-        # { "class": Eyal, "should_play": True },
-        { "class": MayaWins, "should_play": True },
+        { "class": Falcon, "should_play": True },
+        { "class": Eyal, "should_play": True },
+        # { "class": MayaWins, "should_play": True },
         # { "class": Tomer, "should_play": True },
         # { "class": Yagel, "should_play": True },
         # { "class": Jonas, "should_play": True },
         # { "class": Gavriel, "should_play": True },
-        # { "class": Tehila, "should_play": True },
-        # { "class": Saymon, "should_play": True },
+        { "class": Tehila, "should_play": True },
+        { "class": Saymon, "should_play": True },
         # { "class": shlomo809, "should_play": True },
-        # { "class": TalmaDragon, "should_play": True },
-        { "class": DavidalkKing, "should_play": False }
+        { "class": TalmaDragon, "should_play": True },
+        { "class": DavidalkKing, "should_play": True }
 
     ]
 
@@ -125,7 +125,9 @@ def run_game(playing_classes, ai_classes_available):
     for i in range(settings.NUMBER_OF_BENEFICIAL_FRUITS_ON_BOARD):
         board.add_fruit(Fruit(choice(FruitKind.beneficial_fruits), logic.get_new_fruit_position(board)))
 
+    i = 0
     while not board.is_game_timed_out() and len(board.snakes) > 0:
+        i += 1
         time.sleep(frames_delay)
 
         should_exit = False
@@ -145,18 +147,18 @@ def run_game(playing_classes, ai_classes_available):
 
         # The AI Snake Should make a decision in which direction to go.
         for snake in board.snakes:
-            try:
+            # try:
                 
-                if (snake.__class__ in [ManualSnake, ManualSnakeWASD] ):
-                    
-                    new_direction = snake.make_decision(board.get_board_state(), events)
-                else:
-                    new_direction = snake.make_decision(board.get_board_state())
+            if (snake.__class__ in [ManualSnake, ManualSnakeWASD] ):
+                
+                new_direction = snake.make_decision(board.get_board_state(), events)
+            else:
+                new_direction = snake.make_decision(board.get_board_state())
 
-            except Exception as e:
-                print(e)
-                logic.snake_lost(snake, board)
-                continue
+            # except Exception as e:
+            #     print(e)
+            #     logic.snake_lost(snake, board)
+            #     continue
 
 
             if new_direction in [0,1,2,3]:
@@ -166,10 +168,12 @@ def run_game(playing_classes, ai_classes_available):
 
 
         logic.apply_logic(board, events)
-
+        board.frames_passed += 1
         graphics.update_screen(board)
+        
 
 
+    print ("Number of frames:", i)
     combined_snakes = board.snakes + board.lost_snakes
     snakes_win = [combined_snakes[0]]
 

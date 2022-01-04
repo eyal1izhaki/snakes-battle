@@ -36,7 +36,7 @@ DELAY_BETWEEN_SCREEN_UPDATES = 0.06 # Delay between screen update to another. Sn
 
 ######################################
 
-
+GAME_FRAME_LENGTH = 850
 
 
 ######################################
