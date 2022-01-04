@@ -27,6 +27,8 @@ class TalmaDragon(Snake):
         # All the cells that are fill with borders. This variable will store a list of (x, y) pairs
         self.allowed__border_cells = borders_cells
 
+        self.print_something(self.allowed__border_cells)
+
     
     def make_decision(self, board_state):
         # You can only call methods that starts with the word 'allowed__'. You can't change attrbiutes directly.
@@ -39,15 +41,27 @@ class TalmaDragon(Snake):
         super().allowed__is_shield() # returns True if your snake is shielded else returns False.'''
         #self.print_something(super().allowed__body_position())
         possible_directions = [Direction.RIGHT, Direction.LEFT, Direction.UP, Direction.DOWN]
+        direction = self.allowed__get_direction()
+        if(direction == Direction.UP):
+            possible_directions.remove(Direction.DOWN)
+        if(direction == Direction.DOWN):
+            possible_directions.remove(Direction.UP)
+        if(direction == Direction.LEFT):
+            possible_directions.remove(Direction.RIGHT)
+        if(direction == Direction.RIGHT):
+            possible_directions.remove(Direction.LEFT)
+                
         self.allowed__is_hit_border(possible_directions)
-        #self.print_something("after border check" + str(possible_directions))
+        self.print_something("after border check: " + str(possible_directions))
         # Finds the fruit I wanna eat 
         target_fruit = self.allowed__find_target_fruit(board_state['fruits'], possible_directions)
         if target_fruit[FRUIT_FIELD] == None:
             return possible_directions[0]
         # If safe ignores the enemy and self hit
         if (self.allowed__is_safe() != AINT_ACTIVATE):
-            return self.allowed__calculates_direction(target_fruit[FRUIT_FIELD].pos, possible_directions)
+            decision = self.allowed__calculates_direction(target_fruit[FRUIT_FIELD].pos, possible_directions)
+            self.print_something(decision)
+            return decision
 
         # Checks self hit 
         self.allowed__dangerous_targets_iterate \
@@ -55,16 +69,17 @@ class TalmaDragon(Snake):
         #self.print_something("after self hit check" + str(possible_directions))
         # If can attack enemy not dangerous
         if (self.allowed__is_attack() != AINT_ACTIVATE):
-            return self.allowed__calculates_direction(target_fruit[FRUIT_FIELD].pos, possible_directions)
+            decision = self.allowed__calculates_direction(target_fruit[FRUIT_FIELD].pos, possible_directions)
+            self.print_something(decision)
 
         # Checks enemy hit 
         for enemy in board_state['snakes']:
             self.allowed__dangerous_targets_iterate \
                 (enemy.allowed__body_position(), possible_directions)
-        #self.print_something(possible_directions)
+        self.print_something("After body remove: " + str(possible_directions))
          
         decision = self.allowed__calculates_direction(target_fruit[FRUIT_FIELD].pos, possible_directions)
-        #self.print_something(decision)
+        self.print_something(decision)
         return decision
 
 
@@ -152,14 +167,10 @@ class TalmaDragon(Snake):
         if(my_x >= target_x and my_y >= target_y):
             favorite_direction = Direction.UP if my_x == target_x else Direction.LEFT
             if favorite_direction in possible_directions:
-                
                 return favorite_direction
             favorite_direction = Direction.UP if favorite_direction == Direction.LEFT else Direction.LEFT
             if favorite_direction in possible_directions:
-                
                 return favorite_direction
-            #print("BAD")
-            return possible_directions[0]
         
         if(my_x <= target_x and my_y >= target_y):
             favorite_direction = Direction.UP if my_x == target_x else Direction.RIGHT
@@ -168,8 +179,6 @@ class TalmaDragon(Snake):
             favorite_direction = Direction.UP if favorite_direction == Direction.RIGHT else Direction.RIGHT
             if favorite_direction in possible_directions:
                 return favorite_direction
-            #print("BAD")
-            return possible_directions[0]
 
         if(my_x >= target_x and my_y <= target_y):
             favorite_direction = Direction.DOWN if my_x == target_x else Direction.LEFT
@@ -178,8 +187,6 @@ class TalmaDragon(Snake):
             favorite_direction = Direction.DOWN if favorite_direction == Direction.LEFT else Direction.LEFT
             if favorite_direction in possible_directions:
                 return favorite_direction
-            #print("BAD")
-            return possible_directions[0]
         
         if(my_x <= target_x and my_y <= target_y):
             favorite_direction = Direction.DOWN if my_x == target_x else Direction.RIGHT
@@ -188,11 +195,8 @@ class TalmaDragon(Snake):
             favorite_direction = Direction.DOWN if favorite_direction == Direction.RIGHT else Direction.RIGHT
             if favorite_direction in possible_directions:
                 return favorite_direction
-            #print("BAD")
-            return possible_directions[0]
 
-        #print("How thw fuck")
-        return possible_directions[0]
+        return Direction.UP if len(possible_directions) == 0 else possible_directions[0]
         
     
     def allowed__is_safe(self) -> int:
@@ -214,14 +218,17 @@ class TalmaDragon(Snake):
     def allowed__is_hit_border(self, possible_directions):
         my_x, my_y = super().allowed__body_position()[0]
         border_x, bordar_y = self.allowed__border_cells[-1]
+        direction_to_remove = None
         if my_x + 1 == border_x:
-            possible_directions.remove(Direction.RIGHT)
+            direction_to_remove = Direction.RIGHT
         if my_x - 1 == 0:
-            possible_directions.remove(Direction.LEFT)
+            direction_to_remove = Direction.LEFT
         if my_y + 1 == bordar_y:
-            possible_directions.remove(Direction.DOWN)
+            direction_to_remove = Direction.DOWN
         if my_y - 1 == 0:
-            possible_directions.remove(Direction.UP)
+            direction_to_remove = Direction.UP
+        if(direction_to_remove in possible_directions):
+            possible_directions.remove(direction_to_remove)
 
 
     def print_something(self, something):

@@ -70,7 +70,7 @@ class MayaWins(Snake):
         return closestSnake
     
     # get a direction and return the opposite direction
-    def allowed__calcOppositeDirection(self, otherSnakeDirection, myDirection):
+    def allowed__calcOppositeDirectionFromOtherSnake(self, otherSnakeDirection, myDirection):
         if otherSnakeDirection == Direction.RIGHT:
             if myDirection == Direction.RIGHT:
                 return Direction.UP
@@ -92,14 +92,62 @@ class MayaWins(Snake):
             else:
                 return Direction.UP
 
-    # check if my head is close to any part of other snake       
-    def allowed__isCloseToOtherSnake(self, myHead, otherSnakePosition):
+    # check if my head is close to any part of other snake and if yes return this snake part. if not return none      
+    def allowed__findOtherSnakeClosestBodyPart(self, myHead, otherSnakePosition):
         for i in range(0, len(otherSnakePosition)):
             if self.allowed__calcDistance(myHead, otherSnakePosition[i]) == 1:
-                return True
-        return False
+                return otherSnakePosition[i]
+        return None
 
-
+    # if the next cell is safe return true and false if not 
+    def allowed__isCellSafe(self, allSnakesPositions, wantedCell):
+        # make sure the snake is not killing itself or touching other snakes 
+        #for pos in myPosition:
+            # if myDirection == Direction.RIGHT and [myHead[0] + 1, myHead[1]] == pos:
+            #     return False
+            # elif myDirection == Direction.LEFT and [myHead[0] - 1, myHead[1]] == pos:
+            #     return False
+            # elif myDirection == Direction.UP and [myHead[0], myHead[1] + 1] == pos:
+            #     return False
+            # elif myDirection == Direction.DOWN and [myHead[0], myHead[1] - 1] == pos:
+            #     return False
+                # elif pos in self.allowed__border_cells:
+                #     return False
+        for snakePosition in allSnakesPositions:
+            if wantedCell in snakePosition:
+                return False
+            if wantedCell in self.allowed__border_cells:
+                return False
+        return True
+          
+    # checks all options and finds a safe cell to go 
+    def allowed__findSafeCell(self, currentCell, allSnakePositions, direction):
+        newCell = [currentCell[0] + 1, currentCell[1]]
+        if direction == Direction.RIGHT and self.allowed__isCellSafe(allSnakePositions, newCell):
+            return newCell
+        newCell = [currentCell[0] - 1, currentCell[1]]
+        if direction == Direction.LEFT and self.allowed__isCellSafe(allSnakePositions, newCell):
+            return newCell
+        newCell = [currentCell[0], currentCell[1] + 1]
+        if direction == Direction.UP and self.allowed__isCellSafe(allSnakePositions, newCell):
+            return newCell
+        newCell = [currentCell[0], currentCell[1] - 1]
+        if direction == Direction.DOWN and self.allowed__isCellSafe(allSnakePositions, newCell):
+            return newCell
+        # newCell = [currentCell[0] + 1, currentCell[1]]
+        # if self.allowed__isCellSafe(newCell, positions, direction):
+        #     return newCell
+        # newCell = [currentCell[0] - 1, currentCell[1]]
+        # if self.allowed__isCellSafe(newCell, positions, direction):
+        #     return newCell
+        # newCell = [currentCell[0], currentCell[1] + 1]
+        # if self.allowed__isCellSafe(newCell, positions, direction):
+        #     return newCell
+        # newCell = [currentCell[0], currentCell[1] -1]
+        # if self.allowed__isCellSafe(newCell, positions, direction):
+        #     return newCell
+        return None
+            
     def make_decision(self, board_state):
         myPosition = super().allowed__body_position()
         myHead = myPosition[0]
@@ -109,21 +157,32 @@ class MayaWins(Snake):
         myDirection = super().allowed__get_direction()
 
         snakesWithoutMe = [s for s in board_state["snakes"] if type(s)!=MayaWins]
+        allSnakesPositions = [s.body_pos for s in board_state["snakes"]]
         closestSnake = self.allowed__findClosestSnake(myHead, snakesWithoutMe)
+        closestSnakeBodyPart = self.allowed__findOtherSnakeClosestBodyPart(myHead, closestSnake.body_pos)
 
-        # if isKing or isKnife:
-        #     return self.allowed__calcDirection(myHead, myDirection, closestSnake.body_pos[0])
-        #elif self.allowed__calcDistance(myHead, closestSnake.body_pos[0]) == 1:
-        if self.allowed__isCloseToOtherSnake(myHead, closestSnake.body_pos):
+        # if another snake is close to me - distance is 1 
+        if closestSnakeBodyPart:
             if isKing or isKnife:
-                return self.allowed__calcDirection(myHead, myDirection, closestSnake.body_pos[0])
+                if self.allowed__isCellSafe(allSnakesPositions, closestSnakeBodyPart) or isSheild or isKing:
+                    return self.allowed__calcDirection(myHead, myDirection, closestSnakeBodyPart)
+                else:
+                    safeCell = self.allowed__findSafeCell(myHead, allSnakesPositions, myDirection)
+                    return self.allowed__calcDirection(myHead, myDirection, safeCell)
             else:
-                return self.allowed__calcOppositeDirection(closestSnake.direction, myDirection)
+                if self.allowed__isCellSafe(allSnakesPositions, closestSnakeBodyPart) or isSheild or isKing:
+                    return self.allowed__calcOppositeDirectionFromOtherSnake(closestSnake.direction, myDirection)
+                else:
+                    safeCell = self.allowed__findSafeCell(myHead, allSnakesPositions, myDirection)
+                    return self.allowed__calcDirection(myHead, myDirection, safeCell)
         else:
-            # TODO - PROIRITZE BETWEEN FRUITS
             non_harmful_fruits = [f for f in board_state["fruits"] if f.kind not in FruitKind.harmful_fruits]
             closestFruitPosition = self.allowed__findClosestFruitPosition(myHead, non_harmful_fruits)
-            return self.allowed__calcDirection(myHead, myDirection, closestFruitPosition)
+            if self.allowed__isCellSafe(allSnakesPositions, closestFruitPosition) or isSheild or isKing:
+                return self.allowed__calcDirection(myHead, myDirection, closestFruitPosition)
+            else:
+                safeCell = self.allowed__findSafeCell(myHead, allSnakesPositions, myDirection)
+                return self.allowed__calcDirection(myHead, myDirection, safeCell)
 
  
         

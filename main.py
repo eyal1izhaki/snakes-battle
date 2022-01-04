@@ -40,7 +40,7 @@ def main():
         # { "class": MayaWins, "should_play": True },
         # { "class": Tomer, "should_play": True },
         # { "class": Yagel, "should_play": True },
-        # { "class": Jonas, "should_play": True },
+        { "class": Jonas, "should_play": True },
         # { "class": Gavriel, "should_play": True },
         { "class": Tehila, "should_play": True },
         { "class": Saymon, "should_play": True },
