@@ -7,6 +7,7 @@ class Direction:
     LEFT = 1
     UP = 2
     DOWN = 3
+    CONTINUE = 4
 
 
 class Snake:
@@ -20,6 +21,8 @@ class Snake:
         self._direction = randint(0, 3)
         self._length = 1
         self._lost = False # If True, snake will be removed from game
+        self._lived_x_frames = 0 # Number of frames the snake lived.
+
         self._body_position = None
         self._version = "0.0"
 
@@ -162,6 +165,9 @@ class Snake:
         elif direction == Direction.DOWN:
             if self._direction == Direction.RIGHT or self._direction == Direction.LEFT:
                 self._direction = Direction.DOWN
+        
+        elif direction == Direction.CONTINUE or direction is None:
+            pass # Continue in the same direction
 
     def _move_one_cell(self):
         # Changes the position of the snake's head.

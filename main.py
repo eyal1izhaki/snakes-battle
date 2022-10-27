@@ -29,6 +29,7 @@ def main():
     should_exit = False
     game_running = False
     game_menus = True
+    run_num = 0
 
     graphics = GameGraphics(ai_classes_available)
 
@@ -37,9 +38,13 @@ def main():
             playing_classes = [x['class']
                                for x in ai_classes_available if x["should_play"] == True]
             if len(playing_classes) > 0:
+                run_num += 1
+                print(
+                    f"\n\n######################### Game Number {run_num} #########################\n")
                 run_game(playing_classes, ai_classes_available)
-            else:
-                print("Error! Cannot play without any snakes chosen.")
+                print(
+                    f"\n#################################################################")
+
             game_menus = True
             game_running = False
 
@@ -81,8 +86,10 @@ def run_menus(graphics, ai_classes_available):
 
 
 def run_game(playing_classes, ai_classes_available):
+
     graphics = GameGraphics(ai_classes_available)
     board = Board(graphics.board_size)
+
     frames_delay = settings.DELAY_BETWEEN_SCREEN_UPDATES
 
     snakes_array = []
@@ -99,7 +106,8 @@ def run_game(playing_classes, ai_classes_available):
         snake._grow(settings.STARTING_SNAKE_LENGTH - 1)
 
         board.add_snake(snake)
-    for i in range(settings.NUMBER_OF_BENEFICIAL_FRUITS_ON_BOARD):
+
+    for _ in range(settings.NUMBER_OF_BENEFICIAL_FRUITS_ON_BOARD):
         board.add_fruit(Fruit(choice(FruitKind.beneficial_fruits),
                         logic.get_new_fruit_position(board)))
 
@@ -126,38 +134,40 @@ def run_game(playing_classes, ai_classes_available):
             try:
 
                 if snake.__class__ in [ManualSnake, ManualSnakeWASD]:
-
                     new_direction = snake.make_decision(
                         board.get_board_state(), events)
+
                 else:
                     new_direction = snake.make_decision(
                         board.get_board_state())
 
             except Exception as e:
-                print(e)
-                logic.remove_snake(snake, board)
+                print(snake._name, "was removed from the game: ", e)
+                snake._lost = True
                 continue
 
-            if new_direction in [0, 1, 2, 3]:
+            if new_direction in [0, 1, 2, 3, 4, None]:
                 snake._change_direction(new_direction)
 
+            else:
+                print(snake._name, "was removed from the game: ",
+                      "snake not returned a valid direction", f"({new_direction})")
+                snake._lost = True
+
+        for snake in board.snakes:
             snake._move_one_cell()
 
         logic.apply_logic(board, events)
-
         graphics.update_screen(board)
 
-    combined_snakes = board.snakes + board.lost_snakes
-    snakes_win = [combined_snakes[0]]
+    winners = logic.get_first_place(board)
 
-    for snake in combined_snakes[1:]:
-        if snakes_win[0]._length == snake._length:
-            snakes_win.append(snake)
-        elif snakes_win[0]._length < snake._length:
-            snakes_win = [snake]
+    if len(winners) == 1:
+        print(winners[0]._name + " is the winner!!!")
 
-    # printing who won
-    print(snakes_win[0]._name + " is the winner!!!")
+    else:
+        print("There is a tie between", winners, " !!!")
+
     time.sleep(2)
 
 

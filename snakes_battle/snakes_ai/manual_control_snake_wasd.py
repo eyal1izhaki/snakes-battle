@@ -19,3 +19,5 @@ class ManualSnakeWASD(Snake):
                     return Direction.UP
                 elif event.key == pygame.K_s:
                     return Direction.DOWN
+        
+        return Direction.CONTINUE

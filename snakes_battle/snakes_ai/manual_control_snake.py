@@ -20,3 +20,5 @@ class ManualSnake(Snake):
                     return Direction.UP
                 elif event.key == pygame.K_DOWN:
                     return Direction.DOWN
+        
+        return Direction.CONTINUE

@@ -8,11 +8,12 @@ Every frame, the method make_decision is being called so every snake will have t
 Some information about the game:
 
 Logic:
-1. When a snake hits itself it loses.
-2. When a snake hits a border it loses.
-3. When a snake hits other snake it loses.
-4. When snakes collide head to head, they both lose, unless one of the is a king, it will survive the collision.
-5. The winner is the snake with the highest score when the time is over or when there are no more snakes in the board.
+1. Snake that hits itself is out.
+2. Snake hits a border is out.
+3. Snake hits other snake is out.
+4. When snakes collide head to head, they both will out of the game, unless one of them is a king, it will survive the collision.
+5. Snake that caused an exception to raise, will be removed from game.
+6. The winner is the snake with the highest score when the time is over or when there are no more snakes in the board.
 
 Fruits:
 1. 'Strawberry' - makes the snake one unit longer.

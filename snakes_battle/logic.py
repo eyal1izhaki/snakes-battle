@@ -13,6 +13,9 @@ from snakes_battle.snakes_ai.manual_control_snake_wasd import ManualSnakeWASD
 
 def apply_snake_logic(board, snake):
 
+    if snake._lost == True:
+        return
+
     for fruit in board.fruits:
 
         # Rule: Snake eats a fruit
@@ -99,7 +102,8 @@ def apply_snake_logic(board, snake):
                     if snake._body_position[0] == _snake._body_position[0]:
 
                         if snake._king == True:
-                            _snake, board._lost = False
+                            _snake._lost = True
+                            return
                         
                         elif _snake._king == True:
                             snake._lost = True
@@ -168,6 +172,8 @@ def apply_logic(board, events):
     for snake in board.snakes:
         if snake._lost == True:
             remove_snake(snake, board) # Removing lost snakes
+        else:
+            snake._lived_x_frames += 1
 
     # Creates randomly created fruits in their creation_probability.
     for randomly_created_fruit in FruitKind.randomly_created:
@@ -248,3 +254,34 @@ def get_unique_snake_head_position(board: Board):
         generate_position = too_close
 
     return random_head_position
+
+
+def get_first_place(board):
+    
+    
+    snakes = board.snakes + board.lost_snakes
+
+    highest = snakes[0]
+    tie_with_highest = []
+
+    for snake in snakes:
+
+        if snake is highest:
+            continue
+
+        if snake._length > highest._length:
+            highest = snake
+            tie_with_highest = []
+        
+        elif snake._length == highest._length:
+            if snake._lived_x_frames > highest._lived_x_frames:
+                highest = snake
+                tie_with_highest = []
+            
+            elif snake._lived_x_frames == highest._lived_x_frames:
+                tie_with_highest.append(snake)
+        
+    return [highest] + tie_with_highest
+    
+
+    

@@ -38,3 +38,5 @@ class SimpleSnake(Snake):
                     return Direction.RIGHT
                 else:
                     return Direction.UP
+    
+        return Direction.CONTINUE
