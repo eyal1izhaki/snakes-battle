@@ -166,7 +166,7 @@ def run_game(playing_classes, ai_classes_available):
         print(winners[0]._name + " is the winner!!!")
 
     else:
-        print("There is a tie between", winners, " !!!")
+        print("There is a tie between", winners, "!!!")
 
     time.sleep(2)
 

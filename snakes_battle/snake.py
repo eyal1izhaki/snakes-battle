@@ -195,3 +195,6 @@ class Snake:
 
         # Removing nodes from the snake
         self._body_position = self._body_position[:self._length]
+    
+    def __repr__(self) -> str:
+        return f"{self._name}"

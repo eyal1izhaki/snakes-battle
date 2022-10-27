@@ -4,6 +4,7 @@
 
 import random
 import math
+import copy
 import settings
 from snakes_battle.board import Board
 from snakes_battle.fruit import Fruit, FruitKind
@@ -148,7 +149,7 @@ def apply_logic(board, events):
             if fruit.kind == FruitKind.KING:
                 board.is_there_a_king = False
 
-    for snake in board.snakes:
+    for snake in copy.copy(board.snakes):
         apply_snake_logic(board, snake)
 
         if snake._king:
@@ -163,13 +164,20 @@ def apply_logic(board, events):
             except Exception as e:
                 print(e)
 
-            if new_direction in [0, 1, 2, 3]:
+            if new_direction in [0, 1, 2, 3, 4, None]:
                 snake._change_direction(new_direction)
 
-            snake._move_one_cell()
+            else:
+                print(snake._name, "was removed from the game: ",
+                      "snake not returned a valid direction", f"({new_direction})")
+                snake._lost = True
+
+            if snake._lost != True:
+                snake._move_one_cell()
+
             apply_snake_logic(board, snake)
-    
-    for snake in board.snakes:
+
+    for snake in copy.copy(board.snakes):
         if snake._lost == True:
             remove_snake(snake, board) # Removing lost snakes
         else:
