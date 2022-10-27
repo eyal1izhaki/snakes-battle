@@ -9,7 +9,7 @@ class FruitKind:
         "image": "snakes_battle/images/fruits/strawberry.png",
         "score": 1,
         "lifespan": -1
-        }
+    }
 
     DRAGON_FRUIT = {
         "name": "DRAGON_FRUIT",
@@ -33,7 +33,7 @@ class FruitKind:
         "creation_probability": 1/80,
         "lifespan": 50,
     }
-    
+
     SKULL = {
         "name": "SKULL",
         "color": (38, 38, 38),

@@ -1,11 +1,13 @@
 from random import randint
 import copy
 
+
 class Direction:
     RIGHT = 0
     LEFT = 1
     UP = 2
     DOWN = 3
+
 
 class Snake:
 
@@ -13,8 +15,9 @@ class Snake:
 
         self._name = name
         self._color = color
-        
-        self._direction = randint(0,3) # Only 4 directions - will pick one of them
+
+        # Only 4 directions - will pick one of them
+        self._direction = randint(0, 3)
         self._length = 1
         self._body_position = None
         self._version = "0.0"
@@ -28,67 +31,66 @@ class Snake:
     @property
     def version(self):
         return self._version
-    
+
     @version.setter
     def version(self, value):
         self._version = value
-        
+
     @property
     def body_position(self):
         return copy.deepcopy(self._body_position)
-    
+
     @body_position.setter
     def body_position(self, value):
-        pass # Player can't change body_position value
-    
+        pass  # Player can't change body_position value
+
     @property
     def direction(self):
         return self._direction
-    
+
     @direction.setter
     def direction(self, value):
-        pass # Player can't change direction value
+        pass  # Player can't change direction value
 
     @property
     def length(self):
         return self._length
-    
+
     @length.setter
     def length(self):
-        pass # Player can't change length value
+        pass  # Player can't change length value
 
     @property
     def king(self):
         return self._king
-    
+
     @king.setter
     def king(self, value):
-        pass # Player can't change king value
+        pass  # Player can't change king value
 
     @property
     def knife(self):
         return self._knife
-    
+
     @knife.setter
     def knife(self, value):
-        pass # Player can't change knife value
+        pass  # Player can't change knife value
 
     @property
     def shield(self):
         return self._shield
-    
+
     @shield.setter
     def shield(self, value):
-        pass # Player can't change shield value
+        pass  # Player can't change shield value
 
     @property
     def king_remaining_time(self):
         return self._king_remaining_time
-    
+
     @king_remaining_time.setter
     def king_remaining_time(self, value):
-        pass # Player can't change 'king_remaining_time' value
-
+        pass  # Player can't change 'king_remaining_time' value
 
     def _grow(self, growth_amount):
         # Makes the snake <growth_amount> cells longer. Will be called when a snake eats a fruit for example
@@ -102,7 +104,7 @@ class Snake:
                 tail_neighbor_x, tail_neighbor_y = self._body_position[-2]
 
                 # Adding the new cell above the tail cell.
-                if  tail_y < tail_neighbor_y:
+                if tail_y < tail_neighbor_y:
                     self._body_position.append([tail_x, tail_y-1])
 
                 # Adding the new cell under the tail cell.
@@ -130,7 +132,6 @@ class Snake:
 
                 elif self._direction == Direction.RIGHT:
                     self._body_position.append([tail_x-1, tail_y])
-
 
             self._length += 1
 
@@ -164,7 +165,7 @@ class Snake:
         # varies depending on the position of the neighboring block.
 
         self._update_body_position()
-        
+
         if self._direction == Direction.DOWN:
             self._body_position[0][1] += 1
         elif self._direction == Direction.UP:
@@ -179,5 +180,6 @@ class Snake:
         if self._length == 0:
             self._body_position = []
             return
-        
-        self._body_position = self._body_position[:self._length] # Removing nodes from the snake
+
+        # Removing nodes from the snake
+        self._body_position = self._body_position[:self._length]
