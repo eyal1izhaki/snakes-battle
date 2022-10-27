@@ -32,7 +32,7 @@ def main():
 
     graphics = GameGraphics(ai_classes_available)
 
-    while (should_exit == False):
+    while should_exit == False:
         if game_running == True:
             playing_classes = [x['class']
                                for x in ai_classes_available if x["should_play"] == True]
@@ -59,7 +59,7 @@ def run_menus(graphics, ai_classes_available):
     main_menu = True
     snake_picker = False
 
-    while (menu_running == True):
+    while menu_running == True:
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:

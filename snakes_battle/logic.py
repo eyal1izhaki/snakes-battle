@@ -238,7 +238,7 @@ def get_unique_snake_head_position(board: Board):
 
     # Generating random and unique position to the head of the snake, that will not collide with other snake's tail
     generate_position = True
-    while (generate_position == True):
+    while generate_position == True:
         random_head_position = list(random.choice(board.all_cells_pos))
         too_close = False
         for snake in board.snakes:
