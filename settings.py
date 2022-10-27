@@ -5,7 +5,7 @@
 
 # Board
 # The number of cells in the board area. The actual number of cells will be close to this number.
-NUMBER_OF_CELLS = 2500
+NUMBER_OF_CELLS = 1500
 
 BACKGROUND_COLOR = (255, 255, 255)  # rgb
 
@@ -35,7 +35,7 @@ DEAD_SNAKE_IMAGE_PATH = "snakes_battle/images/dead_icon.png"
 
 # General
 # Delay between screen update to another. Snakes move one cell every screen update. 0.07 looks good
-DELAY_BETWEEN_SCREEN_UPDATES = 0.2
+DELAY_BETWEEN_SCREEN_UPDATES = 0.06
 
 ######################################
 
@@ -45,7 +45,7 @@ DELAY_BETWEEN_SCREEN_UPDATES = 0.2
 ######################################
 
 
-STARTING_SNAKE_LENGTH = 10
+STARTING_SNAKE_LENGTH = 3
 
 GAME_TIME_LENGTH = 200
 
