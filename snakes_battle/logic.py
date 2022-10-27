@@ -38,7 +38,7 @@ def apply_snake_logic(board, snake):
         
 
     # Rule: Snake must have a length of 1 at least (can be lower if the snake was hit by a bomb and it's length was reduced too much)
-    if (snake._length == 0):
+    if snake._length == 0:
         snake_lost(snake, board)
         return
 
@@ -162,7 +162,7 @@ def apply_logic(board,events):
         
         if snake._king:
             try:
-                if (snake.__class__ in [ManualSnake, ManualSnakeWASD] ):
+                if snake.__class__ in [ManualSnake, ManualSnakeWASD]:
                     new_direction = snake.make_decision(board.get_board_state(), events)
                 else:
                     new_direction = snake.make_decision(board.get_board_state())
@@ -250,7 +250,7 @@ def get_unique_snake_head_position(board: Board):
         random_head_position = list(random.choice(board.all_cells_pos))
         too_close = False
         for snake in board.snakes:
-            if (math.dist(snake._body_position[0], random_head_position) < settings.STARTING_SNAKE_LENGTH):
+            if math.dist(snake._body_position[0], random_head_position) < settings.STARTING_SNAKE_LENGTH:
                 too_close = True
                 break
         generate_position = too_close

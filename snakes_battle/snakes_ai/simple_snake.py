@@ -14,13 +14,13 @@ class SimpleSnake(Snake):
         pos = self.body_position
 
         if pos[0][0] > fruits[0].pos[0]:
-            if (self._direction == Direction.RIGHT):
+            if self._direction == Direction.RIGHT:
                 return Direction.UP
             else:
                 return Direction.LEFT
         
         if pos[0][0] < fruits[0].pos[0]:
-            if (self._direction == Direction.LEFT):
+            if self._direction == Direction.LEFT:
                 return Direction.UP
             else:
                 return Direction.RIGHT
@@ -28,13 +28,13 @@ class SimpleSnake(Snake):
         if pos[0][0] == fruits[0].pos[0]:
 
             if pos[0][1] < fruits[0].pos[1]:
-                if (self._direction == Direction.UP):
+                if self._direction == Direction.UP:
                     return Direction.RIGHT
                 else:
                     return Direction.DOWN
 
             if pos[0][1] > fruits[0].pos[1]:
-                if (self._direction == Direction.DOWN):
+                if self._direction == Direction.DOWN:
                     return Direction.RIGHT
                 else:
                     return Direction.UP

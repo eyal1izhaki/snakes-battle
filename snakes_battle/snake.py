@@ -176,7 +176,7 @@ class Snake:
 
     def _shrink(self, shrinking_amount):
         self._length -= min(self._length, shrinking_amount)
-        if (self._length == 0):
+        if self._length == 0:
             self._body_position = []
             return
         

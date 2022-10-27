@@ -299,18 +299,18 @@ class GameGraphics:
             self.surface.blit(score_text_surface, score_position)
 
             # If the snake is dead - add a dead image over it
-            if (snake in board.lost_snakes):
+            if snake in board.lost_snakes:
                 self.surface.blit(self.dead_snake_image, score_position)
             
             # Drawing powerups the snake has on
             separator_count = 0 # How many powerups are displayed
-            if (snake._shield == True):
+            if snake._shield == True:
                 self.surface.blit(self.images["SHIELD"], [score_position[0] + (settings.SCOREBOARD_SCORE_POWERUPS_SEPARATOR + separator_count) * self.cell_size, score_position[1]])
                 separator_count += 1
-            if (snake._king == True):
+            if snake._king == True:
                 self.surface.blit(self.images["KING"], [score_position[0] + (settings.SCOREBOARD_SCORE_POWERUPS_SEPARATOR + separator_count) * self.cell_size, score_position[1]])
                 separator_count += 1
-            if (snake._knife == True):
+            if snake._knife == True:
                 self.surface.blit(self.images["KNIFE"], [score_position[0] + (settings.SCOREBOARD_SCORE_POWERUPS_SEPARATOR + separator_count) * self.cell_size, score_position[1]])
                 separator_count += 1
 
@@ -406,19 +406,19 @@ class GameGraphics:
         # Checking if a button is pressed
         for event in events:
             if event.type == pygame.KEYDOWN:
-                if (event.key == pygame.K_SPACE):
+                if event.key == pygame.K_SPACE:
                     return "Play"
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
                 for button in buttons_list:
-                    if (button.button_rect.collidepoint(pos)):
+                    if button.button_rect.collidepoint(pos):
                         return button.text
         
         # Displaying the available classes to play
         class_picker_header_text = self.score_font.render("Choose classes to play (Toggle number)", False, (255, 255, 255))
         self.surface.blit(class_picker_header_text, (settings.CLASS_NAME_START_X, settings.CLASS_NAME_START_Y))
         for index, class_dict in enumerate(ai_classes_available):
-            if (class_dict['should_play'] == True):
+            if class_dict['should_play'] == True:
                 text_color = (0, 255, 0)
             else:
                 text_color = (255, 0, 0)
