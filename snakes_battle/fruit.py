@@ -66,7 +66,7 @@ class FruitKind:
 
 
 class Fruit:
-    def __init__(self, fruitKind, position) -> None:
-        self.kind = fruitKind
+    def __init__(self, fruit_kind, position) -> None:
+        self.kind = fruit_kind
         self.pos = position
-        self.lifespan = fruitKind["lifespan"]
+        self.lifespan = fruit_kind["lifespan"]
