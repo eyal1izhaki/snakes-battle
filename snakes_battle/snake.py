@@ -19,6 +19,7 @@ class Snake:
         # Only 4 directions - will pick one of them
         self._direction = randint(0, 3)
         self._length = 1
+        self._lost = False # If True, snake will be removed from game
         self._body_position = None
         self._version = "0.0"
 
@@ -43,6 +44,14 @@ class Snake:
     @body_position.setter
     def body_position(self, value):
         pass  # Player can't change body_position value
+
+    @property
+    def head(self):
+        return copy.copy(self._body_position[0])
+    
+    @head.setter
+    def head(self, value):
+        pass # Player can't change head value
 
     @property
     def direction(self):

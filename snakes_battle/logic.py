@@ -1,6 +1,6 @@
 
 # All the rules of the game should be defined here.
-# For example, If snake eats a fruit, we grows. If a snake hit a border a loses and so on...
+# For example, If snake eats a fruit, it grows. If a snake hits a border it loses and so on...
 
 import random
 import math
@@ -12,6 +12,7 @@ from snakes_battle.snakes_ai.manual_control_snake_wasd import ManualSnakeWASD
 
 
 def apply_snake_logic(board, snake):
+
     for fruit in board.fruits:
 
         # Rule: Snake eats a fruit
@@ -36,54 +37,56 @@ def apply_snake_logic(board, snake):
         snake._king_remaining_time -= 1
 
         if snake._king_remaining_time == 0:
-            snake._king = False
+            snake._king = False # Not a king anymore
             board.is_there_a_king = False
 
-    # Rule: Snake must have a length of 1 at least (can be lower if the snake was hit by a bomb and it's length was reduced too much)
+    # Rule: Snake must have a length of 1 at least (can be lower if the snake ate a bomb and it's length was reduced too much)
     if snake._length == 0:
-        snake_lost(snake, board)
-        return
+        snake._lost = True
+        return 
 
     # Rule: Snake hits a border
-    if snake._body_position[0][0] == settings.BORDER_THICKNESS-1:  # Hitted left border
-        snake_lost(snake, board)
+
+    # Hits left border
+    if snake._body_position[0][0] == settings.BORDER_THICKNESS-1:  
+        snake._lost = True
         return
 
-    # Hitted right border
+    # Hits right border
     if snake._body_position[0][0] == board.board_size[0] - settings.BORDER_THICKNESS:
-        snake_lost(snake, board)
+        snake._lost = True
         return
 
-    if snake._body_position[0][1] == settings.BORDER_THICKNESS-1:  # Hitted upper border
-        snake_lost(snake, board)
+    # Hits upper border
+    if snake._body_position[0][1] == settings.BORDER_THICKNESS-1:  
+        snake._lost = True
         return
 
-    # Hitted bottom border
+    # Hits bottom border
     if snake._body_position[0][1] == board.board_size[1] - settings.BORDER_THICKNESS:
-        snake_lost(snake, board)
+        snake._lost = True
         return
 
     # Rule: Snake hits itself or other snakes
     for _snake in board.snakes:
 
-        if snake == _snake:  # snake hitted itself.
+        if snake == _snake:  # snake hits itself.
 
             # Snake body position without the head
             headless = _snake._body_position[1:]
 
             for i in range(len(headless)):
-                if snake._body_position[0] == headless[i]:
+                if snake._body_position[0] == headless[i]: # Head is in the same position of one of the nodes in the body
 
                     if snake._king:  # King can cross itself
                         break
 
                     if snake._shield:  # If snake is shielded then it won't shrink
                         snake._shield = False
-                    else:
-                        # Snake is not shielded so it will be shrinked. Snake cuts itself.
-                        # snake._shrink(len(headless) - i)
+                        break
 
-                        snake_lost(snake, board)
+                    else:
+                        snake._lost = True
                         break
 
         else:  # snake hits other snakes
@@ -95,42 +98,20 @@ def apply_snake_logic(board, snake):
                     # When a snake hits other snake head to head.
                     if snake._body_position[0] == _snake._body_position[0]:
 
-                        if snake._knife or snake._king:
-                            snake._knife = False
+                        if snake._king == True:
+                            _snake, board._lost = False
+                        
+                        elif _snake._king == True:
+                            snake._lost = True
+                            return
+                        
+                        else: # Non of them is a king
+                            snake._lost = True
+                            _snake._lost = True
+                            return
 
-                            if _snake._shield:
-                                _snake._shield = False
-                                break
+                    else:  # Snake hits other snake but not in its head.
 
-                            _snake._shrink(len(_snake._body_position) - i)
-
-                            if _snake._knife or _snake._king:
-                                _snake._knife = False
-
-                                if snake._shield:
-                                    snake._shield = False
-                                    break
-
-                                snake._shrink(snake.length-1)
-                            break
-
-                        elif snake._shield:
-                            snake._shield = False
-
-                            if _snake._shield:
-                                _snake._shield = False
-                                break
-
-                            snake_lost(_snake, board)
-                            break
-
-                        else:
-                            if not _snake._shield:
-                                snake_lost(_snake, board)
-
-                            snake_lost(snake, board)
-
-                    else:  # Snake hits other snake but not in it head.
                         if snake._knife or snake._king:
                             snake._knife = False
 
@@ -146,8 +127,8 @@ def apply_snake_logic(board, snake):
                             break
 
                         else:  # Snake not shielded so it loses.
-                            snake_lost(snake, board)
-                            break
+                            snake._lost = True
+                            return
 
 
 def apply_logic(board, events):
@@ -183,6 +164,10 @@ def apply_logic(board, events):
 
             snake._move_one_cell()
             apply_snake_logic(board, snake)
+    
+    for snake in board.snakes:
+        if snake._lost == True:
+            remove_snake(snake, board) # Removing lost snakes
 
     # Creates randomly created fruits in their creation_probability.
     for randomly_created_fruit in FruitKind.randomly_created:
@@ -207,12 +192,12 @@ def snake_eats(snake, fruit):
         snake._grow(FruitKind.KING["fruits_score"])
         return
 
-    if fruit.kind in FruitKind.beneficial_fruits:
+    if fruit.kind in FruitKind.beneficial_fruits: # Snake ate a beneficial fruit
         snake._grow(fruit.kind["score"])
 
-    elif fruit.kind in FruitKind.harmful_fruits:
+    elif fruit.kind in FruitKind.harmful_fruits: # Snake ate an harmful fruit
         if snake._shield or snake._king:
-            snake._shield = False
+            snake._shield = False 
             return
 
         if fruit.kind == FruitKind.BOMB:
@@ -221,7 +206,7 @@ def snake_eats(snake, fruit):
         elif fruit.kind == FruitKind.SKULL:
             snake._shrink(snake._length)
 
-    elif fruit.kind in FruitKind.special_fruits:
+    elif fruit.kind in FruitKind.special_fruits: # Snake ate a special fruit
         if fruit.kind == FruitKind.SHIELD:
             snake._shield = True
 
@@ -234,8 +219,7 @@ def snake_eats(snake, fruit):
             snake._king = True
             snake._king_remaining_time = FruitKind.KING["effection_duration"]
 
-
-def snake_lost(snake, board):
+def remove_snake(snake, board):
     if snake._king:
         board.is_there_a_king = False
 
