@@ -92,9 +92,9 @@ def run_game(playing_classes, ai_classes_available):
     for snake in snakes_array:
         # The position of the head is determined by the rules and the board state.
         head_pos = logic.get_unique_snake_head_position(board)
-        snake.body_pos = [head_pos]
+        snake._body_position = [head_pos]
 
-        snake.grow(settings.STARTING_SNAKE_LENGTH - 1)
+        snake._grow(settings.STARTING_SNAKE_LENGTH - 1)
 
         board.add_snake(snake)
     for i in range(settings.NUMBER_OF_BENEFICIAL_FRUITS_ON_BOARD):
@@ -135,9 +135,9 @@ def run_game(playing_classes, ai_classes_available):
 
 
             if new_direction in [0,1,2,3]:
-                snake.change_direction(new_direction)
+                snake._change_direction(new_direction)
                 
-            snake.move_one_cell()
+            snake._move_one_cell()
 
 
         logic.apply_logic(board, events)
@@ -149,13 +149,13 @@ def run_game(playing_classes, ai_classes_available):
     snakes_win = [combined_snakes[0]]
 
     for snake in combined_snakes[1:]:
-        if snakes_win[0].length == snake.length:
+        if snakes_win[0]._length == snake._length:
             snakes_win.append(snake)
-        elif snakes_win[0].length < snake.length:
+        elif snakes_win[0]._length < snake._length:
             snakes_win = [snake]
 
     # printing who won
-    print (snakes_win[0].name + " is the winner!!!")
+    print (snakes_win[0]._name + " is the winner!!!")
     time.sleep(2)
 
 if (__name__ == "__main__"):

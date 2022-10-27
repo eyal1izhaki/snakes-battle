@@ -33,7 +33,7 @@ class Board:
     def update_empty_cells(self):
         self.empty_cells = self.all_cells_pos.copy()
         for snake in self.snakes:
-            for cell_pos in snake.body_pos:
+            for cell_pos in snake._body_position:
                 for cell in self.empty_cells:
                     if cell[0] == cell_pos[0] and cell[1] == cell_pos[1]:
                         self.empty_cells.remove(cell)
@@ -58,14 +58,14 @@ class Board:
     def get_board_state(self):
         snakes_copy = []
         for snake in self.snakes:
-            snake_copy = Snake(snake.color, snake.name)
-            snake_copy.body_pos = copy.deepcopy(snake.body_pos)
-            snake_copy.length = snake.length
-            snake_copy.direction = snake.direction
-            snake_copy.king = snake.king
-            snake_copy.knife = snake.knife
-            snake_copy.shield = snake.shield
-            snake_copy.king_remaining_effection = snake.king_remaining_effection
+            snake_copy = Snake(snake._color, snake._name)
+            snake_copy._body_position = copy.deepcopy(snake._body_position)
+            snake_copy._length = snake._length
+            snake_copy._direction = snake._direction
+            snake_copy._king = snake._king
+            snake_copy._knife = snake._knife
+            snake_copy._shield = snake._shield
+            snake_copy._king_remaining_time = snake._king_remaining_time
             
             snakes_copy.append(snake)
 

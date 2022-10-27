@@ -126,32 +126,32 @@ class GameGraphics:
         x6 = (margin, self.cell_size)
 
         # The turn block is in a position of: form up direction turn right.
-        pygame.draw.polygon(snake_turn_block, snake.color, [x1,x2,x3,x4,x5,x6])
+        pygame.draw.polygon(snake_turn_block, snake._color, [x1,x2,x3,x4,x5,x6])
 
         # Drawing the head and the rest of the snakes body.
         head=True
-        for i in range(len(snake.body_pos)):
+        for i in range(len(snake._body_position)):
 
             if head:    
                 head = False
     
-                if snake.direction == Direction.UP:
+                if snake._direction == Direction.UP:
                     head_image = pygame.transform.rotate(head_image, 180)
-                    head_x_y = self._get_cell_coordinates(snake.body_pos[i])[1]
+                    head_x_y = self._get_cell_coordinates(snake._body_position[i])[1]
                     head_x_y = (head_x_y[0], head_x_y[1] - head_image.get_height() + snake_head_offset_to_body)
 
-                elif snake.direction == Direction.LEFT:
+                elif snake._direction == Direction.LEFT:
                     head_image = pygame.transform.rotate(head_image, 270)
-                    head_x_y = self._get_cell_coordinates(snake.body_pos[i])[3]
+                    head_x_y = self._get_cell_coordinates(snake._body_position[i])[3]
                     head_x_y = (head_x_y[0] - head_image.get_width() + snake_head_offset_to_body, head_x_y[1])
 
-                elif snake.direction == Direction.RIGHT:
+                elif snake._direction == Direction.RIGHT:
                     head_image = pygame.transform.rotate(head_image, 90)
-                    head_x_y = self._get_cell_coordinates(snake.body_pos[i])[0]
+                    head_x_y = self._get_cell_coordinates(snake._body_position[i])[0]
                     head_x_y = (head_x_y[0] - snake_head_offset_to_body, head_x_y[1])
                 
                 else:
-                    head_x_y = self._get_cell_coordinates(snake.body_pos[i])[0]
+                    head_x_y = self._get_cell_coordinates(snake._body_position[i])[0]
                     head_x_y = (head_x_y[0], head_x_y[1] - snake_head_offset_to_body)
 
                 self.surface.blit(head_image, head_x_y)
@@ -160,16 +160,16 @@ class GameGraphics:
             # Drawing the rest of the body.
             else:
 
-                coordinates = self._get_cell_coordinates(snake.body_pos[i])
+                coordinates = self._get_cell_coordinates(snake._body_position[i])
 
                 # Checking if this block in the snake body is a turn block.
-                if i < len(snake.body_pos) - 1 and snake.body_pos[i-1][1] != snake.body_pos[i+1][1] and snake.body_pos[i-1][0] != snake.body_pos[i+1][0]:
+                if i < len(snake._body_position) - 1 and snake._body_position[i-1][1] != snake._body_position[i+1][1] and snake._body_position[i-1][0] != snake._body_position[i+1][0]:
 
                     turn_block_top_left = coordinates[0]
                     # Up and left or right.
-                    if snake.body_pos[i+1][1] > snake.body_pos[i][1]:
+                    if snake._body_position[i+1][1] > snake._body_position[i][1]:
                         # Left
-                        if snake.body_pos[i][0] > snake.body_pos[i-1][0]:
+                        if snake._body_position[i][0] > snake._body_position[i-1][0]:
                             self.surface.blit(pygame.transform.rotate(snake_turn_block, -90), turn_block_top_left)
                         
                         # Right
@@ -177,34 +177,34 @@ class GameGraphics:
                             self.surface.blit(snake_turn_block, turn_block_top_left)
                     
                     # Down and left ot right.
-                    elif snake.body_pos[i+1][1] < snake.body_pos[i][1]:
+                    elif snake._body_position[i+1][1] < snake._body_position[i][1]:
                         # Left
-                        if snake.body_pos[i][0] > snake.body_pos[i-1][0]:
+                        if snake._body_position[i][0] > snake._body_position[i-1][0]:
                             self.surface.blit(pygame.transform.rotate(snake_turn_block, 180), turn_block_top_left)
                         # Right
                         else:
                             self.surface.blit(pygame.transform.rotate(snake_turn_block, 90), turn_block_top_left)
                         
                     # Right and up or down.
-                    elif snake.body_pos[i][0] < snake.body_pos[i+1][0]:
+                    elif snake._body_position[i][0] < snake._body_position[i+1][0]:
                         # Up
-                        if snake.body_pos[i][1] > snake.body_pos[i-1][1]:
+                        if snake._body_position[i][1] > snake._body_position[i-1][1]:
                             self.surface.blit(pygame.transform.rotate(snake_turn_block, 90), turn_block_top_left)
                         # Down
                         else:
                             self.surface.blit(snake_turn_block, turn_block_top_left)
 
                     # Left and up or down
-                    elif snake.body_pos[i][0] > snake.body_pos[i+1][0]:
+                    elif snake._body_position[i][0] > snake._body_position[i+1][0]:
                         # Up
-                        if snake.body_pos[i][1] > snake.body_pos[i-1][1]:
+                        if snake._body_position[i][1] > snake._body_position[i-1][1]:
                             self.surface.blit(pygame.transform.rotate(snake_turn_block, 180), turn_block_top_left)
                         # Down
                         else:
                             self.surface.blit(pygame.transform.rotate(snake_turn_block, -90), turn_block_top_left)
 
                 # Square is horizontal (The block is in right or left direction).
-                elif  snake.body_pos[i][1] == snake.body_pos[i-1][1]:
+                elif  snake._body_position[i][1] == snake._body_position[i-1][1]:
 
                     top_left, bottom_left, bottom_right, top_right = coordinates
                     top_left = (top_left[0], top_left[1] + margin)
@@ -215,10 +215,10 @@ class GameGraphics:
                                         
                     coordinates = [top_left, bottom_left, bottom_right, top_right]
 
-                    pygame.draw.polygon(self.surface, snake.color, coordinates)
+                    pygame.draw.polygon(self.surface, snake._color, coordinates)
 
                 # Square is vertical (The block is in up or down direction).
-                elif snake.body_pos[i][0] == snake.body_pos[i-1][0]:
+                elif snake._body_position[i][0] == snake._body_position[i-1][0]:
                     top_left, bottom_left, bottom_right, top_right =  coordinates
                     top_left = (top_left[0] + margin, top_left[1])
                     top_right = (top_right[0] - margin, top_right[1])
@@ -227,15 +227,15 @@ class GameGraphics:
 
                     coordinates = [top_left, bottom_left, bottom_right, top_right]
 
-                    pygame.draw.polygon(self.surface, snake.color, coordinates)
+                    pygame.draw.polygon(self.surface, snake._color, coordinates)
 
                 # Drawing the king image in the snake
-                if i == 1 and snake.king:
-                    if snake.direction == Direction.UP:
+                if i == 1 and snake._king:
+                    if snake._direction == Direction.UP:
                         rotated = pygame.transform.rotate(self.images["KING"], 180)
-                    elif snake.direction == Direction.DOWN:
+                    elif snake._direction == Direction.DOWN:
                         rotated = pygame.transform.rotate(self.images["KING"], 0) 
-                    elif snake.direction == Direction.RIGHT:
+                    elif snake._direction == Direction.RIGHT:
                         rotated = pygame.transform.rotate(self.images["KING"], 90) 
                     else:
                         rotated = pygame.transform.rotate(self.images["KING"], -90)
@@ -295,7 +295,7 @@ class GameGraphics:
         for i, snake in enumerate(all_snakes):
             # Drawing the snake and it's score
             score_position = (self.SCOREBOARD_STARTING_POSITION[0], self.SCOREBOARD_STARTING_POSITION[1] + (i + 2) * self.cell_size * settings.SCOREBOARD_TITLE_SCORE_SEPERATION)
-            score_text_surface = self.score_font.render(f"{snake.name} (v{snake.allowed__version}): {snake.length}", False, snake.color)
+            score_text_surface = self.score_font.render(f"{snake._name} (v{snake._version}): {snake._length}", False, snake._color)
             self.surface.blit(score_text_surface, score_position)
 
             # If the snake is dead - add a dead image over it
@@ -304,13 +304,13 @@ class GameGraphics:
             
             # Drawing powerups the snake has on
             seperator_count = 0 # How many powerups are displayed
-            if (snake.shield == True):
+            if (snake._shield == True):
                 self.surface.blit(self.images["SHIELD"], [score_position[0] + (settings.SCOREBOARD_SCORE_POWERUPS_SEPERATOR + seperator_count) * self.cell_size, score_position[1]])
                 seperator_count += 1
-            if (snake.king == True):
+            if (snake._king == True):
                 self.surface.blit(self.images["KING"], [score_position[0] + (settings.SCOREBOARD_SCORE_POWERUPS_SEPERATOR + seperator_count) * self.cell_size, score_position[1]])
                 seperator_count += 1
-            if (snake.knife == True):
+            if (snake._knife == True):
                 self.surface.blit(self.images["KNIFE"], [score_position[0] + (settings.SCOREBOARD_SCORE_POWERUPS_SEPERATOR + seperator_count) * self.cell_size, score_position[1]])
                 seperator_count += 1
 
