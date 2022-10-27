@@ -135,12 +135,6 @@ class Snake:
 
             self._length += 1
 
-    def _update_body_position(self):
-        # updates the position of the rest of the snake's body.
-        for i in reversed(range(1, self._length)):
-            self._body_position[i][0] = self._body_position[i-1][0]
-            self._body_position[i][1] = self._body_position[i-1][1]
-
     def _change_direction(self, direction: int):
         # Changes the direction of the snake.
 
@@ -161,19 +155,22 @@ class Snake:
                 self._direction = Direction.DOWN
 
     def _move_one_cell(self):
-        # Changes the position of the snake's head. The position of each block in the snake's body
-        # varies depending on the position of the neighboring block.
+        # Changes the position of the snake's head.
 
-        self._update_body_position()
+        head = copy.copy(self._body_position[0])
 
         if self._direction == Direction.DOWN:
-            self._body_position[0][1] += 1
+            head[1] += 1
         elif self._direction == Direction.UP:
-            self._body_position[0][1] -= 1
+            head[1] -= 1
         elif self._direction == Direction.LEFT:
-            self._body_position[0][0] -= 1
+            head[0] -= 1
         elif self._direction == Direction.RIGHT:
-            self._body_position[0][0] += 1
+            head[0] += 1
+
+        self._body_position.pop() # Removing tail
+        self._body_position.insert(0, head) # Inserting new head
+        
 
     def _shrink(self, shrinking_amount):
         self._length -= min(self._length, shrinking_amount)
