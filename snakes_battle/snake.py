@@ -117,7 +117,7 @@ class Snake:
                 elif tail_x < tail_neighbor_x:
                     self._body_position.append([tail_x-1, tail_y])
 
-            # In case the length of the snake is 1.  This pieace of code runs only once - when the snake is created.
+            # In case the length of the snake is 1.  This piece of code runs only once - when the snake is created.
             else:
                 if self._direction == Direction.DOWN:
                     self._body_position.append([tail_x, tail_y-1])
@@ -135,14 +135,13 @@ class Snake:
             self._length += 1
 
     def _update_body_position(self):
-        # updates the position of the rest of the snake's body. The position of the head changes in the continuse_movement method.
-
+        # updates the position of the rest of the snake's body.
         for i in reversed(range(1, self._length)):
             self._body_position[i][0] = self._body_position[i-1][0]
             self._body_position[i][1] = self._body_position[i-1][1]
 
     def _change_direction(self, direction: int):
-        # Changes the direcation of the snake.
+        # Changes the direction of the snake.
 
         if direction == Direction.LEFT:
             if self._direction == Direction.UP or self._direction == Direction.DOWN:

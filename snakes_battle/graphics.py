@@ -71,8 +71,8 @@ class GameGraphics:
         self.score_font = pygame.font.SysFont('Arial Black', settings.SCOREBOARD_TEXT_FONT_SIZE)
 
     
-        self.SCOREBOARD_STARTING_POSITION = ((self.board_size[0] + settings.SCOREBOARD_TITLE_TEXT_SEPERATION) * self.cell_size,
-                                        settings.SCOREBOARD_TITLE_TEXT_SEPERATION * self.cell_size)
+        self.SCOREBOARD_STARTING_POSITION = ((self.board_size[0] + settings.SCOREBOARD_TITLE_TEXT_SEPARATION) * self.cell_size,
+                                        settings.SCOREBOARD_TITLE_TEXT_SEPARATION * self.cell_size)
         
         self.dead_snake_image = pygame.image.load(os.path.join(settings.DEAD_SNAKE_IMAGE_PATH))
         self.dead_snake_image = pygame.transform.scale(self.dead_snake_image, (40, 40))
@@ -294,7 +294,7 @@ class GameGraphics:
         all_snakes = board.snakes + board.lost_snakes
         for i, snake in enumerate(all_snakes):
             # Drawing the snake and it's score
-            score_position = (self.SCOREBOARD_STARTING_POSITION[0], self.SCOREBOARD_STARTING_POSITION[1] + (i + 2) * self.cell_size * settings.SCOREBOARD_TITLE_SCORE_SEPERATION)
+            score_position = (self.SCOREBOARD_STARTING_POSITION[0], self.SCOREBOARD_STARTING_POSITION[1] + (i + 2) * self.cell_size * settings.SCOREBOARD_TITLE_SCORE_SEPARATION)
             score_text_surface = self.score_font.render(f"{snake._name} (v{snake._version}): {snake._length}", False, snake._color)
             self.surface.blit(score_text_surface, score_position)
 
@@ -303,16 +303,16 @@ class GameGraphics:
                 self.surface.blit(self.dead_snake_image, score_position)
             
             # Drawing powerups the snake has on
-            seperator_count = 0 # How many powerups are displayed
+            separator_count = 0 # How many powerups are displayed
             if (snake._shield == True):
-                self.surface.blit(self.images["SHIELD"], [score_position[0] + (settings.SCOREBOARD_SCORE_POWERUPS_SEPERATOR + seperator_count) * self.cell_size, score_position[1]])
-                seperator_count += 1
+                self.surface.blit(self.images["SHIELD"], [score_position[0] + (settings.SCOREBOARD_SCORE_POWERUPS_SEPARATOR + separator_count) * self.cell_size, score_position[1]])
+                separator_count += 1
             if (snake._king == True):
-                self.surface.blit(self.images["KING"], [score_position[0] + (settings.SCOREBOARD_SCORE_POWERUPS_SEPERATOR + seperator_count) * self.cell_size, score_position[1]])
-                seperator_count += 1
+                self.surface.blit(self.images["KING"], [score_position[0] + (settings.SCOREBOARD_SCORE_POWERUPS_SEPARATOR + separator_count) * self.cell_size, score_position[1]])
+                separator_count += 1
             if (snake._knife == True):
-                self.surface.blit(self.images["KNIFE"], [score_position[0] + (settings.SCOREBOARD_SCORE_POWERUPS_SEPERATOR + seperator_count) * self.cell_size, score_position[1]])
-                seperator_count += 1
+                self.surface.blit(self.images["KNIFE"], [score_position[0] + (settings.SCOREBOARD_SCORE_POWERUPS_SEPARATOR + separator_count) * self.cell_size, score_position[1]])
+                separator_count += 1
 
 
     def _load_and_scale_image(self, image_path, fit_width=True, fit_height=True):

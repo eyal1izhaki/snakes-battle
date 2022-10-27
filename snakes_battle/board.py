@@ -19,13 +19,13 @@ class Board:
 
         self.is_there_a_king = False
         
-        # Initilazing the 'border_cells' list.
+        # Initializing the 'border_cells' list.
         for x in range( self.board_size[0]):
             for y in range( self.board_size[1]):
                 if x < settings.BORDER_THICKNESS or x >=  self.board_size[0] - settings.BORDER_THICKNESS or y < settings.BORDER_THICKNESS or y >= board_size[1] - settings.BORDER_THICKNESS:
                     self.border_cells.append((x,y))
 
-        # Initilazing the 'all_cells_pos' with all the cells on the board except the borders cells.
+        # Initializing the 'all_cells_pos' with all the cells on the board except the borders cells.
         for x in range(settings.BORDER_THICKNESS, self.board_size[0]-settings.BORDER_THICKNESS-1):
             for y in range(settings.BORDER_THICKNESS, self.board_size[1]-settings.BORDER_THICKNESS-1):
                 self.all_cells_pos.append((x,y))

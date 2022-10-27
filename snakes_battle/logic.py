@@ -28,7 +28,7 @@ def apply_snake_logic(board, snake):
 
             break
 
-    # Rules - subtract king remaining effection by 1 every frame.
+    # Rules: subtract king remaining effection by 1 every frame.
     if snake._king:
         snake._king_remaining_time -=1
 
@@ -37,12 +37,12 @@ def apply_snake_logic(board, snake):
             board.is_there_a_king = False
         
 
-    # Rule - Snake must have a length of 1 at least (can be lower if the snake was hit by a bomb and it's length was reduced too much)
+    # Rule: Snake must have a length of 1 at least (can be lower if the snake was hit by a bomb and it's length was reduced too much)
     if (snake._length == 0):
         snake_lost(snake, board)
         return
 
-    # Rule: Snake hitted a border
+    # Rule: Snake hits a border
     if snake._body_position[0][0] == settings.BORDER_THICKNESS-1: # Hitted left border
         snake_lost(snake,board)
         return
@@ -59,7 +59,7 @@ def apply_snake_logic(board, snake):
         snake_lost(snake,board)
         return
 
-    # Rule: Snake hitted itself or other snakes
+    # Rule: Snake hits itself or other snakes
     for _snake in board.snakes:
 
         if snake == _snake: # snake hitted itself.
@@ -81,7 +81,7 @@ def apply_snake_logic(board, snake):
                         snake_lost(snake, board)
                         break
 
-        else: # snake hitted other snakes
+        else: # snake hits other snakes
 
             for i in range(len(_snake._body_position) - 1):
 
@@ -125,7 +125,7 @@ def apply_snake_logic(board, snake):
                                 
                             snake_lost(snake, board)
 
-                    else: # Snake hitted other snake but not in it head.
+                    else: # Snake hits other snake but not in it head.
                         if snake._knife or snake._king:
                             snake._knife = False
 
