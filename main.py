@@ -10,6 +10,7 @@ import time
 from snakes_battle.board import Board
 from snakes_battle.exceptions import InvalidDirection
 from snakes_battle.snakes_ai.random_snake import RandomSnake
+from snakes_battle.snakes_ai.yoav_snake import YoavSnake
 from snakes_battle.snakes_ai.simple_snake import SimpleSnake
 from snakes_battle.snakes_ai.manual_control_snake import ManualSnake
 from snakes_battle.snakes_ai.manual_control_snake_wasd import ManualSnakeWASD
@@ -18,10 +19,10 @@ from snakes_battle.graphics import GameGraphics
 import settings
 from snakes_battle.fruit import FruitKind, Fruit
 
-
 def main():
     ai_classes_available = [
         {"class": RandomSnake, "should_play": False},
+        {"class": YoavSnake, "should_play": False},
         {"class": SimpleSnake, "should_play": False},
         {"class": ManualSnake, "should_play": False},
         {"class": ManualSnakeWASD, "should_play": False}
