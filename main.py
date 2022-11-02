@@ -26,7 +26,8 @@ def main():
         {"class": SimpleSnake, "should_play": False},
         {"class": ManualSnake, "should_play": False},
         {"class": ManualSnakeWASD, "should_play": False},
-        {"class": ElitzSnake, "should_play": False}
+        {"class": ElitzSnake , "should_play": False}
+
     ]
 
     should_exit = False
