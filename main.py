@@ -13,6 +13,7 @@ from snakes_battle.snakes_ai.random_snake import RandomSnake
 from snakes_battle.snakes_ai.simple_snake import SimpleSnake
 from snakes_battle.snakes_ai.manual_control_snake import ManualSnake
 from snakes_battle.snakes_ai.manual_control_snake_wasd import ManualSnakeWASD
+from snakes_battle.snakes_ai.snakysnake import SnakySnake
 from snakes_battle import logic
 from snakes_battle.graphics import GameGraphics
 import settings
@@ -24,7 +25,8 @@ def main():
         {"class": RandomSnake, "should_play": False},
         {"class": SimpleSnake, "should_play": False},
         {"class": ManualSnake, "should_play": False},
-        {"class": ManualSnakeWASD, "should_play": False}
+        {"class": ManualSnakeWASD, "should_play": False},
+        {"class": SnakySnake, "should_play": False}
     ]
 
     should_exit = False
