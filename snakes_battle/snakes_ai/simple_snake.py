@@ -9,7 +9,7 @@ class SimpleSnake(Snake):
 
     
     def make_decision(self, board_state):
-
+        print("changes")
         fruits = board_state["fruits"]
         pos = self.body_position
 
