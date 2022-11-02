@@ -37,7 +37,7 @@ class MoshesSnake(Snake):
         available_directions = [Direction.DOWN, Direction.UP, Direction.LEFT, Direction.RIGHT]
         available_directions = list(set(available_directions) - set(not_available_directions))
 
-        print("available: ", available_directions)
+        # print("available: ", available_directions)
 
         # if x of the snake's head > x of the fruit
         if current_x > closest_fruit.pos[0]:
@@ -97,7 +97,7 @@ class MoshesSnake(Snake):
 
         for fruit in board_state["fruits"]:
             if fruit.kind in FruitKind.harmful_fruits:
-                print("Fruit pos",fruit.pos)
+                # print("Fruit pos",fruit.pos)
                 if fruit.pos == [head_x + 1, head_y]:
                     if Direction.RIGHT not in not_available_directions:
                         not_available_directions.append(Direction.RIGHT)
@@ -114,7 +114,7 @@ class MoshesSnake(Snake):
         for snake in board_state["snakes"]:
             snake_pos = snake.body_position
             for cell in snake_pos:
-                print("cell",cell)
+                # print("cell",cell)
                 if cell == [head_x + 1, head_y]:
                     if Direction.RIGHT not in not_available_directions:
                         not_available_directions.append(Direction.RIGHT)
@@ -129,7 +129,7 @@ class MoshesSnake(Snake):
                         not_available_directions.append(Direction.UP)
 
 
-        print("border cells",self.border_cells)
+        # print("border cells",self.border_cells)
 
         # for cell in self.border_cells:
         #     if cell[0] == 0 or cell[0]
