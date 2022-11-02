@@ -10,6 +10,7 @@ import time
 from snakes_battle.board import Board
 from snakes_battle.exceptions import InvalidDirection
 from snakes_battle.snakes_ai.random_snake import RandomSnake
+from snakes_battle.snakes_ai.ari_snake import AriSnake
 from snakes_battle.snakes_ai.simple_snake import SimpleSnake
 from snakes_battle.snakes_ai.manual_control_snake import ManualSnake
 from snakes_battle.snakes_ai.manual_control_snake_wasd import ManualSnakeWASD
@@ -24,7 +25,8 @@ def main():
         {"class": RandomSnake, "should_play": False},
         {"class": SimpleSnake, "should_play": False},
         {"class": ManualSnake, "should_play": False},
-        {"class": ManualSnakeWASD, "should_play": False}
+        {"class": ManualSnakeWASD, "should_play": False},
+        {"class": AriSnake, "should_play": False}
     ]
 
     should_exit = False
