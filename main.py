@@ -15,6 +15,7 @@ from snakes_battle.snakes_ai.ari_snake import AriSnake
 from snakes_battle.snakes_ai.yakov_snake import Yakov
 from snakes_battle.snakes_ai.yoav_snake import YoavSnake
 from snakes_battle.snakes_ai.simple_snake import SimpleSnake
+from snakes_battle.snakes_ai.moshes_snake import MoshesSnake
 from snakes_battle.snakes_ai.manual_control_snake import ManualSnake
 from snakes_battle.snakes_ai.manual_control_snake_wasd import ManualSnakeWASD
 from snakes_battle.snakes_ai.snakysnake import SnakySnake
@@ -32,6 +33,7 @@ def main():
         {"class": SimpleSnake, "should_play": False},
         {"class": ManualSnake, "should_play": False},
         {"class": ManualSnakeWASD, "should_play": False},
+        {"class": MoshesSnake, "should_play": False},
         {"class": SnakySnake, "should_play": False},
         {"class": WorstSnakeEU, "should_play": False},
         {"class": ElitzSnake , "should_play": False},

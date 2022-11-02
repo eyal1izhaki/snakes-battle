@@ -1,3 +1,5 @@
+
+
 from snakes_battle.snake import Snake, Direction
 
 
