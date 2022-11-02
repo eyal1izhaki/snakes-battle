@@ -9,24 +9,37 @@ import time
 
 from snakes_battle.board import Board
 from snakes_battle.exceptions import InvalidDirection
+from snakes_battle.snakes_ai.chaim_snake import ChaimSnake
 from snakes_battle.snakes_ai.random_snake import RandomSnake
+from snakes_battle.snakes_ai.ari_snake import AriSnake
+from snakes_battle.snakes_ai.yakov_snake import Yakov
+from snakes_battle.snakes_ai.yoav_snake import YoavSnake
 from snakes_battle.snakes_ai.simple_snake import SimpleSnake
 from snakes_battle.snakes_ai.moshes_snake import MoshesSnake
 from snakes_battle.snakes_ai.manual_control_snake import ManualSnake
 from snakes_battle.snakes_ai.manual_control_snake_wasd import ManualSnakeWASD
+from snakes_battle.snakes_ai.snakysnake import SnakySnake
+from snakes_battle.snakes_ai.worstSnakeEU import WorstSnakeEU
+from snakes_battle.snakes_ai.elitz_snake import ElitzSnake
 from snakes_battle import logic
 from snakes_battle.graphics import GameGraphics
 import settings
 from snakes_battle.fruit import FruitKind, Fruit
 
-
 def main():
     ai_classes_available = [
         {"class": RandomSnake, "should_play": False},
+        {"class": YoavSnake, "should_play": False},
         {"class": SimpleSnake, "should_play": False},
         {"class": ManualSnake, "should_play": False},
         {"class": ManualSnakeWASD, "should_play": False},
-        {"class": MoshesSnake, "should_play": False}
+        {"class": MoshesSnake, "should_play": False},
+        {"class": SnakySnake, "should_play": False},
+        {"class": WorstSnakeEU, "should_play": False},
+        {"class": ElitzSnake , "should_play": False},
+        {"class": ChaimSnake, "should_play": True},
+        {"class": AriSnake, "should_play": False},
+        {"class": Yakov, "should_play": False},
     ]
 
     should_exit = False
@@ -109,10 +122,11 @@ def run_game(playing_classes, ai_classes_available):
         snake._grow(settings.STARTING_SNAKE_LENGTH - 1)
 
         board.add_snake(snake)
-
+# ///////////////////////////////
     for _ in range(settings.NUMBER_OF_BENEFICIAL_FRUITS_ON_BOARD):
         board.add_fruit(Fruit(choice(FruitKind.beneficial_fruits),
                         logic.get_new_fruit_position(board)))
+    # board.add_fruit(Fruit(FruitKind.BOMB,[1,2]))
 
     while not board.is_game_timed_out() and len(board.snakes) > 0:
         time.sleep(frames_delay)
@@ -147,10 +161,10 @@ def run_game(playing_classes, ai_classes_available):
             except Exception as e:
                 print(snake._name, "was removed from the game: ", e)
                 snake._lost = True
-                
+
                 if settings.DEBUG == True:
                     raise e
-                    
+
                 continue
 
             if new_direction in [0, 1, 2, 3, 4, None]:
