@@ -8,6 +8,7 @@ import sys
 import time
 
 from snakes_battle.board import Board
+from snakes_battle.exceptions import InvalidDirection
 from snakes_battle.snakes_ai.random_snake import RandomSnake
 from snakes_battle.snakes_ai.simple_snake import SimpleSnake
 from snakes_battle.snakes_ai.manual_control_snake import ManualSnake
@@ -144,6 +145,10 @@ def run_game(playing_classes, ai_classes_available):
             except Exception as e:
                 print(snake._name, "was removed from the game: ", e)
                 snake._lost = True
+                
+                if settings.DEBUG == True:
+                    raise e
+                    
                 continue
 
             if new_direction in [0, 1, 2, 3, 4, None]:
@@ -153,6 +158,9 @@ def run_game(playing_classes, ai_classes_available):
                 print(snake._name, "was removed from the game: ",
                       "snake not returned a valid direction", f"({new_direction})")
                 snake._lost = True
+
+                if settings.DEBUG == True:
+                    raise InvalidDirection(f'Snake not returned a valid direction ({new_direction})')
 
         for snake in board.snakes:
             snake._move_one_cell()
