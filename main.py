@@ -17,6 +17,7 @@ from snakes_battle.snakes_ai.yoav_snake import YoavSnake
 from snakes_battle.snakes_ai.simple_snake import SimpleSnake
 from snakes_battle.snakes_ai.manual_control_snake import ManualSnake
 from snakes_battle.snakes_ai.manual_control_snake_wasd import ManualSnakeWASD
+from snakes_battle.snakes_ai.elitz_snake import ElitzSnake
 from snakes_battle import logic
 from snakes_battle.graphics import GameGraphics
 import settings
@@ -29,6 +30,7 @@ def main():
         {"class": SimpleSnake, "should_play": False},
         {"class": ManualSnake, "should_play": False},
         {"class": ManualSnakeWASD, "should_play": False},
+        {"class": ElitzSnake , "should_play": False},
         {"class": ChaimSnake, "should_play": True},
         {"class": AriSnake, "should_play": False},
         {"class": Yakov, "should_play": False},

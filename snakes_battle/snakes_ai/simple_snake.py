@@ -9,11 +9,10 @@ class SimpleSnake(Snake):
 
     
     def make_decision(self, board_state):
-
+        
         fruits = board_state["fruits"]
         snakes = board_state["snakes"]
         pos = self.body_position
-
         if pos[0][0] > fruits[0].pos[0]:
             if self.direction == Direction.RIGHT:
                 return Direction.UP
