@@ -183,7 +183,7 @@ def apply_logic(board, events):
         else:
             snake._lived_x_frames += 1
 
-    # Creates randomly created fruits in their creation_probability.
+    # # Creates randomly created fruits in their creation_probability.
     for randomly_created_fruit in FruitKind.randomly_created:
         if random.random() < randomly_created_fruit["creation_probability"]:
 
