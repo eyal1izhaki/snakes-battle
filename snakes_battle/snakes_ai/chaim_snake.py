@@ -99,18 +99,29 @@ class ChaimSnake(Snake):
                     return ['left']
         return []
 
-    def try_to_go(self, up, down, left, right):
-        if up:
+    def try_to_go(self, first, second, third, fourth):
+        if first:
             return Direction.UP
-        elif down:
+        elif second:
             return Direction.DOWN
-        elif left:
+        elif third:
             return Direction.LEFT
-        elif right:
+        elif fourth:
             return Direction.RIGHT
+        else:
+            return Direction.CONTINUE
 
     def fruits_to_go(self, fruit, up, down, left, right):
         if self.head[0] > fruit.pos[0]:
+            # added
+            # if self.head[1] < fruit.pos[1]:
+            #     if self.direction == Direction.RIGHT:
+            #         if down:
+            #             return Direction.DOWN
+            #         else:
+            #             return self.try_to_go(up, down, left, right)
+            # added
+            
             if self.direction == Direction.RIGHT:
                 if up:
                     return Direction.UP
@@ -162,6 +173,7 @@ class ChaimSnake(Snake):
                         return Direction.UP
                     else:
                         return self.try_to_go(up, down, left, right)
+                    
 
     def check_cells(self):
         for cell in self.border_cells:
@@ -205,7 +217,7 @@ class ChaimSnake(Snake):
         
         min_far = fruits[0]
         up = right = left = down = True
-
+        # print(len(self.body_position))
         # check celss
         if 'up' in self.check_cells():
             up = False
@@ -289,44 +301,80 @@ class ChaimSnake(Snake):
 
         
 
-        
+        # check the fruit before the snake
         if not self.is_fruit_up_ok(all_fruits):
-            # return Direction.RIGHT
             up = False
         if not self.is_fruit_down_ok(all_fruits):
-            # return Direction.RIGHT
             down = False
         if not self.is_fruit_right_ok(all_fruits):
-            # return Direction.RIGHT
             right = False
         if not self.is_fruit_left_ok(all_fruits):
-            # return Direction.RIGHT
             left = False
         
         
-            
-        for index in range(len(fruits)):
-            if fruits[index].kind['name'] == 'KING':
-                if abs(self.head[0]+self.head[1]-fruits[index].pos[0]+fruits[index].pos[1]) < 15:
-                    index_to_go = index
-                    return self.fruits_to_go(fruits[index_to_go], up, down, left, right)
-            if fruits[index].kind['name'] == 'SHIELD':
-                if abs(self.head[0]+self.head[1]-fruits[index].pos[0]+fruits[index].pos[1]) < 25 and not self.shield:
-                    index_to_go = index
-                    return self.fruits_to_go(fruits[index_to_go], up, down, left, right)    
-            
-        
-        for fruit in fruits:
+        # if no other snakes
+        if len(all_snakes)==1:
+            print(True)
             for index in range(len(fruits)):
-                if abs(self.head[0]+self.head[1]-fruits[index].pos[0]+fruits[index].pos[1]) < abs(self.head[0]+self.head[1]-min_far.pos[0]+min_far.pos[1]):
+                if abs(self.head[0]-fruits[index].pos[0]+self.head[1]-fruits[index].pos[1]) < abs(self.head[0]-min_far.pos[0]+self.head[1]-min_far.pos[1]):
+                    if fruits[index].kind['name']=='KNIFE' and self.knife:
+                        pass
+                    elif fruits[index].kind['name']=='SHIELD' and self.shield:
+                        pass
+                    # elif fruits[index].kind['name']=='SHIELD':
+                        
+                    else:
+                        min_far = fruits[index]
+            return self.fruits_to_go(min_far, up, down, left, right)
+        
+        
+        elif len(self.body_position)<10:
+            for index in range(len(fruits)):
+                if fruits[index].kind['name'] == 'KING':
+                    if abs(self.head[0]-fruits[index].pos[0]+self.head[1]-fruits[index].pos[1]) < 5:
+                        index_to_go = index
+                        return self.fruits_to_go(fruits[index_to_go], up, down, left, right)
+                if fruits[index].kind['name'] == 'SHIELD':
+                    if abs(self.head[0]-fruits[index].pos[0]+self.head[1]-fruits[index].pos[1]) < 10 and not self.shield:
+                        index_to_go = index
+                        return self.fruits_to_go(fruits[index_to_go], up, down, left, right)    
+                
+            
+            
+            for index in range(len(fruits)):
+                if abs(self.head[0]-fruits[index].pos[0]+self.head[1]-fruits[index].pos[1]) < abs(self.head[0]-min_far.pos[0]+self.head[1]-min_far.pos[1]):
                     if fruits[index].kind['name']=='KNIFE' and self.knife:
                         pass
                     elif fruits[index].kind['name']=='SHIELD' and self.shield:
                         pass
                     else:
                         min_far = fruits[index]
-        # if min_far.kind['name'] in self.beneficial_fruits or min_far.kind['name'] in self.special_fruits:
-        return self.fruits_to_go(min_far, up, down, left, right)
+            # if min_far.kind['name'] in self.beneficial_fruits or min_far.kind['name'] in self.special_fruits:
+            return self.fruits_to_go(min_far, up, down, left, right)
+        
+        else:
+            for index in range(len(fruits)):
+                if fruits[index].kind['name'] == 'KING':
+                    if abs(self.head[0]-fruits[index].pos[0]+self.head[1]-fruits[index].pos[1]) < 15:
+                        index_to_go = index
+                        return self.fruits_to_go(fruits[index_to_go], up, down, left, right)
+                if fruits[index].kind['name'] == 'SHIELD':
+                    if abs(self.head[0]-fruits[index].pos[0]+self.head[1]-fruits[index].pos[1]) < 20 and not self.shield:
+                        index_to_go = index
+                        return self.fruits_to_go(fruits[index_to_go], up, down, left, right)    
+                
+            
+            
+            for index in range(len(fruits)):
+                if abs(self.head[0]-fruits[index].pos[0]+self.head[1]-fruits[index].pos[1]) < abs(self.head[0]-min_far.pos[0]+self.head[1]-min_far.pos[1]):
+                    if fruits[index].kind['name']=='KNIFE' and self.knife:
+                        pass
+                    elif fruits[index].kind['name']=='SHIELD' and self.shield:
+                        pass
+                    else:
+                        min_far = fruits[index]
+            # if min_far.kind['name'] in self.beneficial_fruits or min_far.kind['name'] in self.special_fruits:
+            return self.fruits_to_go(min_far, up, down, left, right)
 
         
-        return Direction.CONTINUE
+        

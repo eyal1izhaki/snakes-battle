@@ -52,85 +52,35 @@ class MoshesSnake(Snake):
 
         # First chance
         ############################    
-        if current_x > closest_fruit.pos[0]:
-            if self.direction == Direction.RIGHT:
-                if Direction.UP in available_directions:
-                    new_direction = Direction.UP
-                else:
-                    new_direction = Direction.DOWN
-            else:
-                new_direction = Direction.LEFT
-
-        elif current_x < closest_fruit.pos[0]:
-            if self.direction == Direction.LEFT:
-                if Direction.UP in available_directions:
-                    new_direction = Direction.UP
-                else:
-                    new_direction = Direction.CONTINUE
-            else:
-                new_direction = Direction.RIGHT
-
-        elif current_x == closest_fruit.pos[0]:
-
-            if current_y < closest_fruit.pos[1]:
-                if self.direction == Direction.UP:
-                    if Direction.RIGHT in available_directions:
-                        new_direction = Direction.RIGHT
-                    else:
-                        if Direction.LEFT in available_directions:
-                            new_direction = Direction.LEFT
-                        else:
-                            new_direction = Direction.CONTINUE
-                else:
-                    new_direction = Direction.DOWN
-
-            if current_y > closest_fruit.pos[1]:
-                if self.direction == Direction.DOWN:
-                    if Direction.RIGHT in available_directions:
-                        new_direction = Direction.RIGHT
-                    else:
-                        if Direction.LEFT in available_directions:
-                            new_direction = Direction.LEFT
-                        else:
-                            new_direction = Direction.CONTINUE
-                else:
-                    new_direction = Direction.UP
-        ############################
-        
-        # Second chance
-        ############################
         # if current_x > closest_fruit.pos[0]:
         #     if self.direction == Direction.RIGHT:
-        #         if current_x == closest_fruit.pos[0]:
-        #             if current_y < closest_fruit.pos[1]:
-        #                 new_direction = Direction.DOWN
-        #             else:
-        #                 new_direction = Direction.UP
+        #         if Direction.UP in available_directions:
+        #             new_direction = Direction.UP
         #         else:
-        #             new_direction = Direction.RIGHT
+        #             new_direction = Direction.DOWN
         #     else:
         #         new_direction = Direction.LEFT
 
         # elif current_x < closest_fruit.pos[0]:
         #     if self.direction == Direction.LEFT:
-        #         if current_x == closest_fruit.pos[0]:
-        #             if current_y < closest_fruit.pos[1]:
-        #                 new_direction = Direction.DOWN
-        #             else:
-        #                 new_direction = Direction.UP
+        #         if Direction.UP in available_directions:
+        #             new_direction = Direction.UP
         #         else:
-        #             new_direction = Direction.LEFT
+        #             new_direction = Direction.CONTINUE
         #     else:
         #         new_direction = Direction.RIGHT
 
         # elif current_x == closest_fruit.pos[0]:
-        #     if current_y < closest_fruit.pos[1]:
 
+        #     if current_y < closest_fruit.pos[1]:
         #         if self.direction == Direction.UP:
         #             if Direction.RIGHT in available_directions:
         #                 new_direction = Direction.RIGHT
         #             else:
-        #                 new_direction = Direction.LEFT
+        #                 if Direction.LEFT in available_directions:
+        #                     new_direction = Direction.LEFT
+        #                 else:
+        #                     new_direction = Direction.CONTINUE
         #         else:
         #             new_direction = Direction.DOWN
 
@@ -139,9 +89,59 @@ class MoshesSnake(Snake):
         #             if Direction.RIGHT in available_directions:
         #                 new_direction = Direction.RIGHT
         #             else:
-        #                 new_direction = Direction.LEFT
+        #                 if Direction.LEFT in available_directions:
+        #                     new_direction = Direction.LEFT
+        #                 else:
+        #                     new_direction = Direction.CONTINUE
         #         else:
         #             new_direction = Direction.UP
+        ############################
+        
+        # Second chance
+        ############################
+        if current_x > closest_fruit.pos[0]:
+            if self.direction == Direction.RIGHT:
+                if current_x == closest_fruit.pos[0]:
+                    if current_y < closest_fruit.pos[1]:
+                        new_direction = Direction.DOWN
+                    else:
+                        new_direction = Direction.UP
+                else:
+                    new_direction = Direction.RIGHT
+            else:
+                new_direction = Direction.LEFT
+
+        elif current_x < closest_fruit.pos[0]:
+            if self.direction == Direction.LEFT:
+                if current_x == closest_fruit.pos[0]:
+                    if current_y < closest_fruit.pos[1]:
+                        new_direction = Direction.DOWN
+                    else:
+                        new_direction = Direction.UP
+                else:
+                    new_direction = Direction.LEFT
+            else:
+                new_direction = Direction.RIGHT
+
+        elif current_x == closest_fruit.pos[0]:
+            if current_y < closest_fruit.pos[1]:
+
+                if self.direction == Direction.UP:
+                    if Direction.RIGHT in available_directions:
+                        new_direction = Direction.RIGHT
+                    else:
+                        new_direction = Direction.LEFT
+                else:
+                    new_direction = Direction.DOWN
+
+            if current_y > closest_fruit.pos[1]:
+                if self.direction == Direction.DOWN:
+                    if Direction.RIGHT in available_directions:
+                        new_direction = Direction.RIGHT
+                    else:
+                        new_direction = Direction.LEFT
+                else:
+                    new_direction = Direction.UP
 
         ############################
 
