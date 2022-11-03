@@ -7,7 +7,7 @@ class MoshesSnake(Snake):
     def __init__(self, borders_cells, color, name) -> None:
         super().__init__(color, name)
 
-        self.version = 1.0
+        self.version = 2.0
         self.border_cells = borders_cells
 
     def make_decision(self, board_state):
@@ -20,34 +20,44 @@ class MoshesSnake(Snake):
 
         # choosing the closest fruit
         for fruit in fruits:
-            fruit_x = fruit.pos[0]
-            fruit_y = fruit.pos[1]
+            fruit_x, fruit_y = fruit.pos
+
+            if fruit.kind in FruitKind.harmful_fruits:
+                continue
+            else:
+                if closest_fruit in FruitKind.harmful_fruits:
+                    closest_fruit = fruit
 
             distance = abs(current_x - fruit_x) + abs(current_y - fruit_y)
-            if (distance < min_dist) and (fruit.lifespan > distance) and (fruit.kind not in FruitKind.harmful_fruits):
+            if (distance < min_dist):
+                # and ((fruit.lifespan > distance))
+                if fruit.kind['name'] != "STRAWBERRY" and fruit.kind['name'] != "DRAGON_FRUIT":
+                    if fruit.lifespan > distance:
+                        continue
                 min_dist = distance
                 closest_fruit = fruit
                 if fruit.kind['name'] == "KING":
                     break
 
-        # print(closest_fruit.kind, distance)
-
         new_direction = Direction.CONTINUE
-        not_available_directions = self.check_next_step(board_state)
+        not_available_directions = self.check_next_step(board_state, 1)
+        # not_available_directions3 = self.check_next_step(board_state, 3)
         available_directions = [Direction.DOWN,
                                 Direction.UP, Direction.LEFT, Direction.RIGHT]
         available_directions = list(
             set(available_directions) - set(not_available_directions))
 
-        # print("available: ", available_directions)
+        if len(available_directions) == 0:
+            return Direction.CONTINUE
 
-        # if x of the snake's head > x of the fruit
+        # First chance
+        ############################    
         if current_x > closest_fruit.pos[0]:
             if self.direction == Direction.RIGHT:
                 if Direction.UP in available_directions:
                     new_direction = Direction.UP
                 else:
-                    new_direction = Direction.CONTINUE
+                    new_direction = Direction.DOWN
             else:
                 new_direction = Direction.LEFT
 
@@ -64,20 +74,79 @@ class MoshesSnake(Snake):
 
             if current_y < closest_fruit.pos[1]:
                 if self.direction == Direction.UP:
-                    new_direction = Direction.RIGHT
+                    if Direction.RIGHT in available_directions:
+                        new_direction = Direction.RIGHT
+                    else:
+                        if Direction.LEFT in available_directions:
+                            new_direction = Direction.LEFT
+                        else:
+                            new_direction = Direction.CONTINUE
                 else:
                     new_direction = Direction.DOWN
 
             if current_y > closest_fruit.pos[1]:
                 if self.direction == Direction.DOWN:
-                    new_direction = Direction.RIGHT
+                    if Direction.RIGHT in available_directions:
+                        new_direction = Direction.RIGHT
+                    else:
+                        if Direction.LEFT in available_directions:
+                            new_direction = Direction.LEFT
+                        else:
+                            new_direction = Direction.CONTINUE
                 else:
                     new_direction = Direction.UP
+        ############################
+        
+        # Second chance
+        ############################
+        # if current_x > closest_fruit.pos[0]:
+        #     if self.direction == Direction.RIGHT:
+        #         if current_x == closest_fruit.pos[0]:
+        #             if current_y < closest_fruit.pos[1]:
+        #                 new_direction = Direction.DOWN
+        #             else:
+        #                 new_direction = Direction.UP
+        #         else:
+        #             new_direction = Direction.RIGHT
+        #     else:
+        #         new_direction = Direction.LEFT
 
-        if len(available_directions) == 0:
-            return Direction.CONTINUE
-            
+        # elif current_x < closest_fruit.pos[0]:
+        #     if self.direction == Direction.LEFT:
+        #         if current_x == closest_fruit.pos[0]:
+        #             if current_y < closest_fruit.pos[1]:
+        #                 new_direction = Direction.DOWN
+        #             else:
+        #                 new_direction = Direction.UP
+        #         else:
+        #             new_direction = Direction.LEFT
+        #     else:
+        #         new_direction = Direction.RIGHT
+
+        # elif current_x == closest_fruit.pos[0]:
+        #     if current_y < closest_fruit.pos[1]:
+
+        #         if self.direction == Direction.UP:
+        #             if Direction.RIGHT in available_directions:
+        #                 new_direction = Direction.RIGHT
+        #             else:
+        #                 new_direction = Direction.LEFT
+        #         else:
+        #             new_direction = Direction.DOWN
+
+        #     if current_y > closest_fruit.pos[1]:
+        #         if self.direction == Direction.DOWN:
+        #             if Direction.RIGHT in available_directions:
+        #                 new_direction = Direction.RIGHT
+        #             else:
+        #                 new_direction = Direction.LEFT
+        #         else:
+        #             new_direction = Direction.UP
+
+        ############################
+
         if new_direction in available_directions:
+
             return new_direction
         else:
             if Direction.CONTINUE in available_directions:
@@ -87,7 +156,7 @@ class MoshesSnake(Snake):
 
         return Direction.CONTINUE
 
-    def check_next_step(self, board_state):
+    def check_next_step(self, board_state, i=1):
         not_available_directions = []
         head_x, head_y = self.body_position[0]
 
@@ -102,52 +171,63 @@ class MoshesSnake(Snake):
 
         for fruit in board_state["fruits"]:
             if fruit.kind in FruitKind.harmful_fruits:
-                # print("Fruit pos",fruit.pos)
-                if fruit.pos == [head_x + 1, head_y]:
+                if fruit.pos == [head_x + i, head_y]:
                     if Direction.RIGHT not in not_available_directions:
                         not_available_directions.append(Direction.RIGHT)
-                elif fruit.pos == [head_x - 1, head_y]:
+                elif fruit.pos == [head_x - i, head_y]:
                     if Direction.LEFT not in not_available_directions:
                         not_available_directions.append(Direction.LEFT)
-                elif fruit.pos == [head_x, head_y + 1]:
+                elif fruit.pos == [head_x, head_y + i]:
                     if Direction.DOWN not in not_available_directions:
                         not_available_directions.append(Direction.DOWN)
-                elif fruit.pos == [head_x, head_y - 1]:
+                elif fruit.pos == [head_x, head_y - i]:
                     if Direction.UP not in not_available_directions:
                         not_available_directions.append(Direction.UP)
 
         for snake in board_state["snakes"]:
             snake_pos = snake.body_position
             for cell in snake_pos:
-                # print("cell",cell)
-                if cell == [head_x + 1, head_y]:
+                if cell == [head_x + i, head_y]:
                     if Direction.RIGHT not in not_available_directions:
                         not_available_directions.append(Direction.RIGHT)
-                elif cell == [head_x - 1, head_y]:
+                elif cell == [head_x - i, head_y]:
                     if Direction.LEFT not in not_available_directions:
                         not_available_directions.append(Direction.LEFT)
-                elif cell == [head_x, head_y + 1]:
+                elif cell == [head_x, head_y + i]:
                     if Direction.DOWN not in not_available_directions:
                         not_available_directions.append(Direction.DOWN)
-                elif cell == [head_x, head_y - 1]:
+                elif cell == [head_x, head_y - i]:
                     if Direction.UP not in not_available_directions:
                         not_available_directions.append(Direction.UP)
 
-        # print("border cells",self.border_cells)
+            # if snake_pos[0] == self.body_position[0]:
+            #     for cell in snake_pos:
+            #         if cell == [head_x + i + 1, head_y]:
+            #             if Direction.RIGHT not in not_available_directions:
+            #                 not_available_directions.append(Direction.RIGHT)
+            #         elif cell == [head_x - i - 1, head_y]:
+            #             if Direction.LEFT not in not_available_directions:
+            #                 not_available_directions.append(Direction.LEFT)
+            #         elif cell == [head_x, head_y + i + 1]:
+            #             if Direction.DOWN not in not_available_directions:
+            #                 not_available_directions.append(Direction.DOWN)
+            #         elif cell == [head_x, head_y - i -1]:
+            #             if Direction.UP not in not_available_directions:
+            #                 not_available_directions.append(Direction.UP)
+
 
         for cell in self.border_cells:
-            if cell[0] == 0 or cell[0] == 39 or cell[1] == 0 or cell[1] == 35:
-                if cell == (head_x + 1, head_y):
-                    if Direction.RIGHT not in not_available_directions:
-                        not_available_directions.append(Direction.RIGHT)
-                elif cell == (head_x - 1, head_y):
-                    if Direction.LEFT not in not_available_directions:
-                        not_available_directions.append(Direction.LEFT)
-                elif cell == (head_x, head_y + 1):
-                    if Direction.DOWN not in not_available_directions:
-                        not_available_directions.append(Direction.DOWN)
-                elif cell == (head_x, head_y - 1):
-                    if Direction.UP not in not_available_directions:
-                        not_available_directions.append(Direction.UP)
+            if head_x + i >= 39:
+                if Direction.RIGHT not in not_available_directions:
+                    not_available_directions.append(Direction.RIGHT)
+            elif head_x - i <= 0:
+                if Direction.LEFT not in not_available_directions:
+                    not_available_directions.append(Direction.LEFT)
+            elif head_y + i >= 35:
+                if Direction.DOWN not in not_available_directions:
+                    not_available_directions.append(Direction.DOWN)
+            elif head_y - i <= 0:
+                if Direction.UP not in not_available_directions:
+                    not_available_directions.append(Direction.UP)
 
         return not_available_directions
