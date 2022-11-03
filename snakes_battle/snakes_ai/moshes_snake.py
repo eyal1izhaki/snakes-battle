@@ -34,8 +34,10 @@ class MoshesSnake(Snake):
 
         new_direction = Direction.CONTINUE
         not_available_directions = self.check_next_step(board_state)
-        available_directions = [Direction.DOWN, Direction.UP, Direction.LEFT, Direction.RIGHT]
-        available_directions = list(set(available_directions) - set(not_available_directions))
+        available_directions = [Direction.DOWN,
+                                Direction.UP, Direction.LEFT, Direction.RIGHT]
+        available_directions = list(
+            set(available_directions) - set(not_available_directions))
 
         # print("available: ", available_directions)
 
@@ -43,18 +45,18 @@ class MoshesSnake(Snake):
         if current_x > closest_fruit.pos[0]:
             if self.direction == Direction.RIGHT:
                 if Direction.UP in available_directions:
-                    new_direction = Direction.UP 
+                    new_direction = Direction.UP
                 else:
-                    new_direction = Direction.DOWN
+                    new_direction = Direction.CONTINUE
             else:
                 new_direction = Direction.LEFT
 
         elif current_x < closest_fruit.pos[0]:
             if self.direction == Direction.LEFT:
                 if Direction.UP in available_directions:
-                    new_direction = Direction.UP 
+                    new_direction = Direction.UP
                 else:
-                    new_direction = Direction.DOWN
+                    new_direction = Direction.CONTINUE
             else:
                 new_direction = Direction.RIGHT
 
@@ -71,16 +73,19 @@ class MoshesSnake(Snake):
                     new_direction = Direction.RIGHT
                 else:
                     new_direction = Direction.UP
-        
-        
+
+        if len(available_directions) == 0:
+            return Direction.CONTINUE
+            
         if new_direction in available_directions:
             return new_direction
         else:
-            return random.choice(available_directions)
+            if Direction.CONTINUE in available_directions:
+                return Direction.CONTINUE
+            else:
+                return random.choice(available_directions)
 
         return Direction.CONTINUE
-
-
 
     def check_next_step(self, board_state):
         not_available_directions = []
@@ -128,24 +133,21 @@ class MoshesSnake(Snake):
                     if Direction.UP not in not_available_directions:
                         not_available_directions.append(Direction.UP)
 
-
         # print("border cells",self.border_cells)
 
-        # for cell in self.border_cells:
-        #     if cell[0] == 0 or cell[0]
-        #     if cell == (head_x + 1, head_y):
-        #         if Direction.RIGHT not in not_available_directions:
-        #             not_available_directions.append(Direction.RIGHT)
-        #     elif cell == [head_x - 1, head_y]:
-        #         if Direction.LEFT not in not_available_directions:
-        #             not_available_directions.append(Direction.LEFT)
-        #     elif cell == [head_x, head_y + 1]:
-        #         if Direction.DOWN not in not_available_directions:
-        #             not_available_directions.append(Direction.DOWN)
-        #     elif cell == [head_x, head_y - 1]:
-        #         if Direction.UP not in not_available_directions:
-        #             not_available_directions.append(Direction.UP)
-
-
+        for cell in self.border_cells:
+            if cell[0] == 0 or cell[0] == 39 or cell[1] == 0 or cell[1] == 35:
+                if cell == (head_x + 1, head_y):
+                    if Direction.RIGHT not in not_available_directions:
+                        not_available_directions.append(Direction.RIGHT)
+                elif cell == (head_x - 1, head_y):
+                    if Direction.LEFT not in not_available_directions:
+                        not_available_directions.append(Direction.LEFT)
+                elif cell == (head_x, head_y + 1):
+                    if Direction.DOWN not in not_available_directions:
+                        not_available_directions.append(Direction.DOWN)
+                elif cell == (head_x, head_y - 1):
+                    if Direction.UP not in not_available_directions:
+                        not_available_directions.append(Direction.UP)
 
         return not_available_directions
