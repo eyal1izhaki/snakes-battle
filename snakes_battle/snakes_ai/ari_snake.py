@@ -39,10 +39,9 @@ class AriSnake(Snake):
         not_harmful_fruits = self.remove_harmful_fruits(fruits)
         harmful_fruits = self.get_harmful_fruits(fruits)
 
-
-        # for fruit in not_harmful_fruits:
-        #     print(fruit.kind['name'],end= ' ')
-        # print()
+        for fruit in not_harmful_fruits:
+            print(fruit.kind['name'],end= ' ')
+        print()
 
         limit_x = self.border_cells[-1][0]
         limit_y = self.border_cells[-1][1]
@@ -57,15 +56,15 @@ class AriSnake(Snake):
         snakes = board_state["snakes"]
         enemy_snakes = self.find_closet_enemy_snakes(snakes)
 
-        # if enemy_snakes > 
+        # if enemy_snakes >
 
         target = not_harmful_fruits[0].pos
         if enemy_snakes:
             if self.king or self.knife:
                 target = enemy_snakes[0].head
 
-            if enemy_snakes[0].length > self.length:
-                target = enemy_snakes[0].body_position[1]
+                if enemy_snakes[0].length > self.length:
+                    target = enemy_snakes[0].body_position[1]
 
         if pos[0][0] > target[0]:
             if self._direction == Direction.RIGHT:
@@ -175,7 +174,7 @@ class AriSnake(Snake):
     def distance(self, fruit):
         head_pos = self.head
         fruit_pos = fruit.pos
-        return math.floor(((head_pos[0] - fruit_pos[0])**2 + (head_pos[1] - fruit_pos[1])**2)**0.5)
+        return abs(head_pos[0] - fruit_pos[0]) + abs(head_pos[1] - fruit_pos[1])
 
     def find_closest_fruit(self, fruits):
         fruits.sort(key=self.distance)
@@ -204,13 +203,23 @@ class AriSnake(Snake):
 
         harmful_fruits = self.get_harmful_fruits(fruits)
         left_pos = [self.head[0] - 1, self.head[1]]
+        bad_pos = [left_pos, [self.head[0] - 2, self.head[1]],
+                   [self.head[0] - 1, self.head[1] + 1],
+                   [self.head[0] - 1, self.head[1] - 1]]
 
         for fruit in harmful_fruits:
             if left_pos == fruit.pos:
                 return False
+
         if self.knife == False and self.king == False:
-            for snake in snakes:
-                if left_pos in snake.body_position:
+
+            for snake in enemy_snakes:
+                for bad in bad_pos:
+                    if bad == snake.head:
+                        return False
+
+            for snake in enemy_snakes:
+                if left_pos in snake.body_position[1:]:
                     return False
 
         if left_pos in pos or left_pos[0] == 0:
@@ -226,15 +235,24 @@ class AriSnake(Snake):
         limit_x = self.border_cells[-1][0]
         harmful_fruits = self.get_harmful_fruits(fruits)
         right_pos = [self.head[0] + 1, self.head[1]]
-
+        bad_pos = [right_pos,
+                   [self.head[0] + 2, self.head[1]],
+                   [self.head[0] + 1, self.head[1] + 1],
+                   [self.head[0] + 1, self.head[1] - 1]
+                   ]
         for fruit in harmful_fruits:
             if right_pos == fruit.pos:
                 return False
 
         if self.knife == False and self.king == False:
-            for snake in snakes:
-                if right_pos in snake.body_position:
-                    return False
+            for snake in enemy_snakes:
+                for bad in bad_pos:
+                    if bad == snake.head:
+                        return False
+
+        for snake in enemy_snakes:
+            if right_pos in snake.body_position[1:]:
+                return False
 
         if right_pos in pos or right_pos[0] == limit_x:
             return False
@@ -245,15 +263,26 @@ class AriSnake(Snake):
         snakes = board_state["snakes"]
         fruits = board_state["fruits"]
         harmful_fruits = self.get_harmful_fruits(fruits)
+        enemy_snakes = self.find_closet_enemy_snakes(snakes)
         up_pos = [self.head[0], self.head[1] - 1]
+
+        bad_pos = [up_pos, [self.head[0], self.head[1] - 2],
+                   [self.head[0] - 1, self.head[1] - 1],
+                   [self.head[0] + 1, self.head[1] - 1]]
 
         for fruit in harmful_fruits:
             if up_pos == fruit.pos:
                 return False
 
         if self.knife == False and self.king == False:
-            for snake in snakes:
-                if up_pos in snake.body_position:
+
+            for snake in enemy_snakes:
+                for bad in bad_pos:
+                    if bad == snake.head:
+                        return False
+
+            for snake in enemy_snakes:
+                if up_pos in snake.body_position[1:]:
                     return False
 
         if up_pos in pos or up_pos[1] == 0:
@@ -266,16 +295,29 @@ class AriSnake(Snake):
         snakes = board_state["snakes"]
         limit_y = self.border_cells[-1][1]
         harmful_fruits = self.get_harmful_fruits(fruits)
+        enemy_snakes = self.find_closet_enemy_snakes(snakes)
+
         down_pos = [self.head[0], self.head[1] + 1]
 
+        bad_pos = [down_pos, [self.head[0], self.head[1] + 2],
+                   [self.head[0] - 1, self.head[1] + 1],
+                   [self.head[0] + 1, self.head[1] + 1]]
         for fruit in harmful_fruits:
             if down_pos == fruit.pos:
                 return False
 
         if self.knife == False and self.king == False:
-            for snake in snakes:
-                if down_pos in snake.body_position:
-                    return False
+
+            for snake in enemy_snakes:
+                for bad in bad_pos:
+                    if bad == snake.head:
+                        return False
+                        
+            for snake in enemy_snakes:
+                if down_pos in snake.body_position[1:]:
+                            return False
+
+
 
         if down_pos in pos or down_pos[1] == limit_y:
             return False
