@@ -8,86 +8,107 @@ class YoavSnake(Snake):
         self.version = 1.0
         self.border_cells = borders_cells
 
-    def is_harmful(self, fruits, x_val, y_val):
+    def is_harmful(self, fruits, dir):
         pos = self.body_position
         for item in fruits:
             curr_fruit = item.kind["name"]
             if curr_fruit == "BOMB" or curr_fruit == "SKULL":
-                if item.pos[0] == pos[0][0] + x_val and item.pos[1] == pos[0][1] + y_val:
+                if item.pos[0] == pos[0][0] + dir[0] and item.pos[1] == pos[0][1] + dir[1]:
                     return True
         return False
 
-    def is_snake(self, snakes, x, y):
+    def is_snake(self, snakes, dir):
+        x, y = dir
         pos = self.body_position
-        curr_snake = snakes[0].body_position
-        for body_part in curr_snake:
-            if body_part[0] == pos[0][0] + x and body_part[1] == pos[0][1] + y:
-                return True
+        for snake in snakes:
+            curr_snake = snake.body_position
+            for body_part in curr_snake:
+                if body_part[0] == pos[0][0] + x and body_part[1] == pos[0][1] + y:
+                    return True
         return False
 
+    def is_border(self, dir):
+        x_head = self.body_position[0][0]
+        y_head = self.body_position[0][1]
+        x, y = dir
+        my_head = (x_head + x, y_head + y)
+        if my_head in self.border_cells:
+            return True
+        return False
+
+    
     def get_next_fruit(self, fruits):
-        for fruit in fruits:
+        for idx, fruit in enumerate(fruits):
             if fruit.kind in FruitKind.harmful_fruits:
                 continue
+            elif fruits[idx+1].kind in FruitKind.special_fruits:
+                return fruits[idx+1]
             else:
                 return fruit
+
+    def do_this_move(self, snakes):
+        up, down, right, left = [0, -1], [0, 1], [1, 0], [-1, 0]
+        if (not self.is_snake(snakes, up) and not self.is_border(up)):
+            return Direction.UP
+        if (not self.is_snake(snakes, down) and not self.is_border(down)):
+            return Direction.DOWN
+        if (not self.is_snake(snakes, right) and not self.is_border(right)):
+            return Direction.RIGHT
+        if (not self.is_snake(snakes, left) and not self.is_border(left)):
+            return Direction.LEFT
+        return Direction.CONTINUE
+        
     
     def make_decision(self, board_state):
+        up, down, right, left = [0, -1], [0, 1], [1, 0], [-1, 0]
         fruits = board_state["fruits"]
         snakes = board_state["snakes"]
         fruit = self.get_next_fruit(fruits)
         pos = self.body_position
+
         if pos[0][0] > fruit.pos[0]:
             if self.direction == Direction.RIGHT:
-                if (not self.is_harmful(fruits, 0, -1) and not self.is_snake(snakes, 0, -1)):  # If the position I want to go to has a harmful item, don't go there.
+                if (not self.is_harmful(fruits, up) and not self.is_snake(snakes, up) and not self.is_border(up)):
                     return Direction.UP
-                elif(not self.is_snake(snakes, 0, 1)):
+                elif(not self.is_snake(snakes, down) and not self.is_border(down)):
                     return Direction.DOWN
             else:
-                if (not self.is_harmful(fruits, -1, 0) and not self.is_snake(snakes, -1, 0)):
+                if (not self.is_harmful(fruits, left) and not self.is_snake(snakes, left) and not self.is_border(left)):
                     return Direction.LEFT
-                elif(not self.is_snake(snakes, 0, -1)):
-                    return Direction.UP
         
         if pos[0][0] < fruit.pos[0]:
             if self.direction == Direction.LEFT:
-                if (not self.is_harmful(fruits, 0, -1) and not self.is_snake(snakes, 0, -1)):
+                if (not self.is_harmful(fruits, up) and not self.is_snake(snakes, up) and not self.is_border(up)):
                     return Direction.UP
-                elif(not self.is_snake(snakes, 0, 1)):
+                elif(not self.is_snake(snakes, down) and not self.is_border(down)):
                     return Direction.DOWN
             else:
-                if (not self.is_harmful(fruits, 1, 0) and not self.is_snake(snakes, 1, 0)):
+                if (not self.is_harmful(fruits, right) and not self.is_snake(snakes, right) and not self.is_border(right)):
                     return Direction.RIGHT
-                elif(not self.is_snake(snakes, 0, 1)):
-                    return Direction.DOWN
         
         if pos[0][0] == fruit.pos[0]:
 
             if pos[0][1] < fruit.pos[1]:
                 if self.direction == Direction.UP:
-                    if (not self.is_harmful(fruits, 1, 0) and not self.is_snake(snakes, 1, 0)):
+                    if (not self.is_harmful(fruits, right) and not self.is_snake(snakes, right) and not self.is_border(right)):
                         return Direction.RIGHT
-                    elif(not self.is_snake(snakes, -1, 0)):
+                    elif(not self.is_snake(snakes, left) and not self.is_border(left)):
                         return Direction.LEFT
                 else:
-                    if (not self.is_harmful(fruits, 0, 1) and not self.is_snake(snakes, 0, 1)):
+                    if (not self.is_harmful(fruits, down) and not self.is_snake(snakes, down) and not self.is_border(down)):
                         return Direction.DOWN
-                    elif(not self.is_snake(snakes, 1, 0)):
-                        return Direction.RIGHT
 
             if pos[0][1] > fruit.pos[1]:
                 if self.direction == Direction.DOWN:
-                    if (not self.is_harmful(fruits, 1, 0) and not self.is_snake(snakes, 1, 0)):
+                    if (not self.is_harmful(fruits, right) and not self.is_snake(snakes, right) and not self.is_border(right)):
                         return Direction.RIGHT
-                    elif(not self.is_snake(snakes, -1, 0)):
+                    elif(not self.is_snake(snakes, left) and not self.is_border(left)):
                         return Direction.LEFT
                 else:
-                    if (not self.is_harmful(fruits, 0, -1) and not self.is_snake(snakes, 0, -1)):
+                    if (not self.is_harmful(fruits, up) and not self.is_snake(snakes, up) and not self.is_border(up)):
                         return Direction.UP
-                    elif(not self.is_snake(snakes, -1, 0)):
-                        return Direction.LEFT
-    
-        return Direction.CONTINUE
+            
+        return self.do_this_move(snakes)
     
 
 
