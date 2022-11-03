@@ -49,15 +49,15 @@ class YoavSnake(Snake):
             else:
                 return fruit
 
-    def do_this_move(self, snakes):
+    def do_this_move(self, board_state):
         up, down, right, left = self.directions
-        if (not self.is_snake(snakes, up) and not self.is_border(up)):
+        if (self.no_problem_found(board_state, up)):
             return Direction.UP
-        if (not self.is_snake(snakes, down) and not self.is_border(down)):
+        if (self.no_problem_found(board_state, down)):
             return Direction.DOWN
-        if (not self.is_snake(snakes, right) and not self.is_border(right)):
+        if (self.no_problem_found(board_state, right)):
             return Direction.RIGHT
-        if (not self.is_snake(snakes, left) and not self.is_border(left)):
+        if (self.no_problem_found(board_state, left)):
             return Direction.LEFT
         return Direction.CONTINUE
 
@@ -71,11 +71,10 @@ class YoavSnake(Snake):
     def make_decision(self, board_state):
         up, down, right, left = self.directions
         fruits = board_state["fruits"]
-        snakes = board_state["snakes"]
         fruit = self.get_next_fruit(fruits)
-        pos = self.body_position
+        head = self.body_position[0]
 
-        if pos[0][0] > fruit.pos[0]:
+        if head[0] > fruit.pos[0]:
             if self.direction == Direction.RIGHT:
                 if (self.no_problem_found(board_state, up)):
                     return Direction.UP
@@ -85,7 +84,7 @@ class YoavSnake(Snake):
                 if (self.no_problem_found(board_state, left)):
                     return Direction.LEFT
 
-        if pos[0][0] < fruit.pos[0]:
+        if head[0] < fruit.pos[0]:
             if self.direction == Direction.LEFT:
                 if (self.no_problem_found(board_state, up)):
                     return Direction.UP
@@ -95,9 +94,9 @@ class YoavSnake(Snake):
                 if (self.no_problem_found(board_state, right)):
                     return Direction.RIGHT
 
-        if pos[0][0] == fruit.pos[0]:
+        if head[0] == fruit.pos[0]:
 
-            if pos[0][1] < fruit.pos[1]:
+            if head[1] < fruit.pos[1]:
                 if self.direction == Direction.UP:
                     if (self.no_problem_found(board_state, right)):
                         return Direction.RIGHT
@@ -107,7 +106,7 @@ class YoavSnake(Snake):
                     if (self.no_problem_found(board_state, down)):
                         return Direction.DOWN
 
-            if pos[0][1] > fruit.pos[1]:
+            if head[1] > fruit.pos[1]:
                 if self.direction == Direction.DOWN:
                     if (self.no_problem_found(board_state, right)):
                         return Direction.RIGHT
@@ -117,4 +116,4 @@ class YoavSnake(Snake):
                     if (self.no_problem_found(board_state, up)):
                         return Direction.UP
 
-        return self.do_this_move(snakes)
+        return self.do_this_move(board_state)
