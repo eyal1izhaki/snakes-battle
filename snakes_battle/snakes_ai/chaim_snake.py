@@ -307,11 +307,11 @@ class ChaimSnake(Snake):
             
         for index in range(len(fruits)):
             if fruits[index].kind['name'] == 'KING':
-                if abs(self.head[0]+self.head[1]-fruits[index].pos[0]+fruits[index].pos[1]) < 10:
+                if abs(self.head[0]+self.head[1]-fruits[index].pos[0]+fruits[index].pos[1]) < 15:
                     index_to_go = index
                     return self.fruits_to_go(fruits[index_to_go], up, down, left, right)
             if fruits[index].kind['name'] == 'SHIELD':
-                if abs(self.head[0]+self.head[1]-fruits[index].pos[0]+fruits[index].pos[1]) < 20 and not self.shield:
+                if abs(self.head[0]+self.head[1]-fruits[index].pos[0]+fruits[index].pos[1]) < 25 and not self.shield:
                     index_to_go = index
                     return self.fruits_to_go(fruits[index_to_go], up, down, left, right)    
             
