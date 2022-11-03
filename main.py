@@ -11,6 +11,7 @@ from snakes_battle.board import Board
 from snakes_battle.exceptions import InvalidDirection
 from snakes_battle.snakes_ai.random_snake import RandomSnake
 from snakes_battle.snakes_ai.simple_snake import SimpleSnake
+from snakes_battle.snakes_ai.moshes_snake import MoshesSnake
 from snakes_battle.snakes_ai.manual_control_snake import ManualSnake
 from snakes_battle.snakes_ai.manual_control_snake_wasd import ManualSnakeWASD
 from snakes_battle.snakes_ai.snakysnake import SnakySnake
@@ -24,13 +25,19 @@ from snakes_battle.fruit import FruitKind, Fruit
 
 def main():
     ai_classes_available = [
-        {"class": RandomSnake, "should_play": False},
-        {"class": SimpleSnake, "should_play": False},
-        {"class": ManualSnake, "should_play": False},
-        {"class": ManualSnakeWASD, "should_play": False},
-        {"class": SnakySnake, "should_play": False},
-        {"class": WorstSnakeEU, "should_play": False},
         {"class": Dumpster, "should_play": False}
+        # {"class": RandomSnake, "should_play": False},
+        {"class": YoavSnake, "should_play": False},
+        # {"class": SimpleSnake, "should_play": False},
+        # {"class": ManualSnake, "should_play": False},
+        # {"class": ManualSnakeWASD, "should_play": False},
+        {"class": MoshesSnake, "should_play": False},
+        {"class": SnakySnake, "should_play": False},
+        # {"class": WorstSnakeEU, "should_play": False},
+        {"class": ElitzSnake , "should_play": False},
+        {"class": ChaimSnake, "should_play": False},
+        {"class": AriSnake, "should_play": False},
+        {"class": Yakov, "should_play": False},
     ]
 
     should_exit = False
@@ -151,10 +158,10 @@ def run_game(playing_classes, ai_classes_available):
             except Exception as e:
                 print(snake._name, "was removed from the game: ", e)
                 snake._lost = True
-
+                
                 if settings.DEBUG == True:
                     raise e
-
+                    
                 continue
 
             if new_direction in [0, 1, 2, 3, 4, None]:
