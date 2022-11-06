@@ -279,38 +279,30 @@ class ChaimSnake(Snake):
                 arr_return.append("left")
             if self.head[1]+1 == snake.body_position[0][1]:
                 if self.head[0]+1 == snake.body_position[0][0] and snake.direction == Direction.LEFT or snake.direction == Direction.UP:
-                    print(True)
                     arr_return.append('right')
                     arr_return.append("down")
                 elif self.head[0]-1 == snake.body_position[0][0] and snake.direction == Direction.RIGHT or snake.direction == Direction.UP:
-                    print(True)
                     arr_return.append('left')
                     arr_return.append("down")
             if self.head[1]-1 == snake.body_position[0][1]:
                 if self.head[0]+1 == snake.body_position[0][0] and snake.direction == Direction.LEFT or snake.direction == Direction.DOWN:
-                    print(True)
                     arr_return.append('right')
                     arr_return.append("up")
                 elif self.head[0]-1 == snake.body_position[0][0] and snake.direction == Direction.RIGHT or snake.direction == Direction.DOWN:
-                    print(True)
                     arr_return.append("up")
                     arr_return.append('left')
             if self.head[0]+1 == snake.body_position[0][0]:
                 if self.head[1]+1 == snake.body_position[0][1] and snake.direction == Direction.UP or snake.direction == Direction.LEFT:
-                    print(True)
                     arr_return.append('down')
                     arr_return.append("right")
                 elif self.head[1]-1 == snake.body_position[0][1] and snake.direction == Direction.DOWN or snake.direction == Direction.LEFT:
-                    print(True)
                     arr_return.append('up')
                     arr_return.append("right")
             if self.head[0]-1 == snake.body_position[0][0]:
                 if self.head[1]+1 == snake.body_position[0][1] and snake.direction == Direction.UP or snake.direction == Direction.RIGHT:
-                    print(True)
                     arr_return.append("left")
                     arr_return.append('down')
                 elif self.head[1]-1 == snake.body_position[0][1] and snake.direction == Direction.DOWN or snake.direction == Direction.RIGHT:
-                    print(True)
                     arr_return.append('up')
                     arr_return.append("left")
         return arr_return
