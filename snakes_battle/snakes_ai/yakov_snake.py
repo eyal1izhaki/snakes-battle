@@ -308,7 +308,7 @@ class Yakov(Snake):
                     my_options.append(close_king)
         if not shield:
             close_shield = {"place": self.closest('SHIELD', fruits), "name": 'SHIELD'}
-            close_shield["value"] = close_shield["place"][1]*2
+            close_shield["value"] = close_shield["place"][1]*1.7
             if close_shield["place"][1] != self.MAX_DISTANCE:
                 if (abs(head[0]-close_shield["place"][0][0]) + abs(head[1]-close_shield["place"][0][1]))<=close_shield["place"][2].lifespan:
                     my_options.append(close_shield)
