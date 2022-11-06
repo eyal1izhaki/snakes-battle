@@ -309,7 +309,7 @@ class ChaimSnake(Snake):
     
     def check_other_snake_length(self, other_snakes):
         for snake in other_snakes:
-            if ((len(snake.body_position) - len(self.body_position) > 1 and len(self.body_position) > 13) or len(snake.body_position)>9) and not snake.shield:
+            if ((len(snake.body_position) - len(self.body_position) > 1 and len(self.body_position) > 13) or len(snake.body_position)>9):
                 return True
             
     def the_longest_snake(self, other_snakes):
