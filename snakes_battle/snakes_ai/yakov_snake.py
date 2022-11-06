@@ -250,10 +250,34 @@ class Yakov(Snake):
                 elif dir == Direction.DOWN:
                     next = [current_best[0],current_best[1]+1]
 
-                if (next[0],next[1]) not in self.border_cells:
-                    return current_best  
-                elif i == int(len(his_snake)*0.80):
-                    return self.get_best_knife(fruits,[his_snake[0]],my_options)      
+                if next != his_snake[0]:
+                    if (next[0],next[1]) not in self.border_cells:
+                        return current_best  
+                    elif i == int(len(his_snake)*0.80):
+                        return self.get_best_knife(fruits,[his_snake[0]],my_options)
+                    elif self.bad_next([his_snake[0]], fruits, self.get_direction(current_best)):
+                        if dir == Direction.LEFT:
+                            return [current_best[0],current_best[1]+1]
+                        elif dir == Direction.RIGHT:
+                            next = [current_best[0],current_best[1]-1]
+                        elif dir == Direction.UP:
+                            next = [current_best[0]+1,current_best[1]]
+                        elif dir == Direction.DOWN:
+                            next = [current_best[0]-1,current_best[1]]
+                else:
+                    if dir == Direction.LEFT:
+                            return [current_best[0],current_best[1]+1]
+                    elif dir == Direction.RIGHT:
+                        next = [current_best[0],current_best[1]-1]
+                    elif dir == Direction.UP:
+                        next = [current_best[0]+1,current_best[1]]
+                    elif dir == Direction.DOWN:
+                        next = [current_best[0]-1,current_best[1]]
+
+                    if (next[0],next[1]) not in self.border_cells:
+                        return current_best  
+                    elif i == int(len(his_snake)*0.80):
+                        return self.get_best_knife(fruits,[his_snake[0]],my_options)
         else:
             the_min = min(option["value"] for option in my_options)
             return self.get_best_plain(the_min, my_options,fruits,his_snake)  
