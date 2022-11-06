@@ -290,6 +290,3 @@ def get_first_place(board):
                 tie_with_highest.append(snake)
         
     return [highest] + tie_with_highest
-    
-
-    
