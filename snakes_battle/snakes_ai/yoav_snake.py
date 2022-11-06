@@ -1,5 +1,6 @@
 from snakes_battle.snake import Snake, Direction
 from snakes_battle.fruit import FruitKind
+import math
 
 
 class YoavSnake(Snake):
@@ -19,10 +20,24 @@ class YoavSnake(Snake):
                     return True
         return False
 
+    def closest(self, fruits):
+        head = self.body_position[0]
+        closest = fruits[0]
+        d_default = d = math.dist(head, closest.pos)
+        for fruit in fruits:
+            d = math.dist(head, fruit.pos)
+            if d < d_default:
+                d_default = d
+                closest = fruit
+        return closest
+
     def is_snake(self, snakes, dir):
         x, y = dir
         head = self.body_position[0]
         for snake in snakes:
+            if self.knife or self.king:
+                if snake._name != "YoavSnake":
+                    return False
             curr_snake = snake.body_position
             for body_part in curr_snake:
                 if body_part[0] == head[0] + x and body_part[1] == head[1] + y:
@@ -39,15 +54,10 @@ class YoavSnake(Snake):
         return False
 
     def get_next_fruit(self, fruits):
-        for idx, fruit in enumerate(fruits):
-            if fruit.kind in FruitKind.harmful_fruits:
-                continue
-            elif fruit.kind in FruitKind.special_fruits:
-                return fruit
-            elif fruits[idx+1].kind in FruitKind.special_fruits:
-                return fruits[idx+1]
-            else:
-                return fruit
+        filtered = [x for x in fruits if x.kind not in FruitKind.harmful_fruits] # No harmful fruits
+        closest = self.closest(filtered)
+        return closest
+            
 
     def do_this_move(self, board_state):
         up, down, right, left = self.directions
