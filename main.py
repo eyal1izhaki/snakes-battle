@@ -17,6 +17,11 @@ from snakes_battle.snakes_ai.manual_control_snake_wasd import ManualSnakeWASD
 from snakes_battle.snakes_ai.snakysnake import SnakySnake
 from snakes_battle.snakes_ai.worstSnakeEU import WorstSnakeEU
 from snakes_battle.snakes_ai.dumpster import Dumpster
+from snakes_battle.snakes_ai.yoav_snake import YoavSnake
+from snakes_battle.snakes_ai.elitz_snake import ElitzSnake
+from snakes_battle.snakes_ai.chaim_snake import ChaimSnake
+from snakes_battle.snakes_ai.ari_snake import AriSnake
+from snakes_battle.snakes_ai.yakov_snake import Yakov
 from snakes_battle import logic
 from snakes_battle.graphics import GameGraphics
 import settings
@@ -25,7 +30,7 @@ from snakes_battle.fruit import FruitKind, Fruit
 
 def main():
     ai_classes_available = [
-        {"class": Dumpster, "should_play": False}
+        {"class": Dumpster, "should_play": False},
         # {"class": RandomSnake, "should_play": False},
         {"class": YoavSnake, "should_play": False},
         # {"class": SimpleSnake, "should_play": False},
